@@ -1,13 +1,22 @@
 {
-  "name": "libreria-componentes",
+  "name": "libreria-componentes-js",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Librería de componentes UI con estilo glassmorphism",
+  "main": "src/index.js",
+  "files": [
+    "src/",
+    "assets/"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": [
+    "ui",
+    "components",
+    "glassmorphism",
+    "vanilla-js"
+  ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "type": "commonjs"
 }

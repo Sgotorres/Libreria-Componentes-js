@@ -3,191 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Select Dinamico prueba 3 nya arigato</title>
-    <style>
-        /* --- ESTILOS GENERALES Y FONDO --- */
-        body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #05070a;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            overflow: hidden;
-        }
-
-        /* Contenedor de la escena */
-        .glass-background {
-            position: relative;
-            width: 100%;
-            max-width: 450px;
-            margin: 0 auto;
-        }
-
-        /* --- CIRCULOS FLOTANTES  --- */
-        .floating-orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(40px); /* Desenfoque mayor para más suavidad */
-            opacity: 0.6;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        .orb-1 { background-color: #3ee7b8; width: 120px; height: 120px; top: -50px; left: -40px; }
-        .orb-2 { background-color: #c893f9; width: 100px; height: 100px; top: -40px; right: -30px; }
-        .orb-3 { background-color: #29a3ff; width: 130px; height: 130px; bottom: -60px; left: 50%; transform: translateX(-50%); }
-
-        /* --- CONTENEDOR LIQUID GLASS --- */
-        .multiselect-container {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            border-radius: 40px;
-            padding: 12px 24px;
-            
-            /* Fondo base sutilmente inclinado */
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
-            
-            /* Efecto Cristal Líquido: mucho desenfoque y saturación extra */
-            backdrop-filter: blur(25px) saturate(180%);
-            -webkit-backdrop-filter: blur(25px) saturate(180%);
-            
-            /* Bordes que simulan relieve de cristal */
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-top: 1px solid rgba(255, 255, 255, 0.35);
-            border-left: 1px solid rgba(255, 255, 255, 0.2);
-            
-            /* Sombras: Externa para flotar e Interna para volumen */
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 
-                        inset 0 0 20px rgba(255, 255, 255, 0.05);
-            
-            /* Transición suave para la animación de encoger */
-            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), 
-                        border-radius 0.3s ease, 
-                        box-shadow 0.3s ease;
-        }
-
-        /* --- ANIMACIÓN AL ESCRIBIR --- */
-        .multiselect-container.is-typing {
-            transform: scale(0.95); /* Encogimiento reactivo */
-            border-radius: 50px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6), 
-                        inset 0 0 35px rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(35px) saturate(220%);
-        }
-
-        .multiselect-box {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            align-items: center;
-            min-height: 40px;
-        }
-
-        /* --- ETIQUETAS (TAGS) --- */
-        .tags-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .tag {
-            background: rgba(62, 231, 184, 0.2);
-            color: #ffffff;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border: 1px solid rgba(62, 231, 184, 0.4);
-            animation: tagPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes tagPop {
-            from { transform: scale(0.5); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .tag-close {
-            cursor: pointer;
-            opacity: 0.7;
-            font-size: 16px;
-        }
-
-        .tag-close:hover { opacity: 1; }
-
-        /* --- INPUT --- */
-        #searchInput {
-            border: none;
-            outline: none;
-            background: transparent;
-            color: white;
-            flex-grow: 1;
-            min-width: 120px;
-            padding: 8px 0;
-            font-size: 16px;
-        }
-
-        #searchInput::placeholder { color: rgba(255, 255, 255, 0.4); }
-
-        /* --- LISTA DE SUGERENCIAS --- */
-        .suggestions-list {
-            position: absolute;
-            top: calc(100% + 12px);
-            left: 0;
-            right: 0;
-            background: rgba(10, 12, 15, 0.7);
-            backdrop-filter: blur(20px);
-            border-radius: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            margin: 0;
-            padding: 10px;
-            list-style: none;
-            max-height: 220px;
-            overflow-y: auto;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
-            z-index: 10;
-            transition: all 0.3s ease;
-            transform-origin: top;
-        }
-
-        .suggestions-list.hidden {
-            opacity: 0;
-            transform: scaleY(0);
-            pointer-events: none;
-        }
-
-        .suggestion-item {
-            padding: 12px 20px;
-            cursor: pointer;
-            border-radius: 15px;
-            color: rgba(255, 255, 255, 0.8);
-            transition: all 0.2s;
-            font-size: 14px;
-        }
-
-        .suggestion-item:hover {
-            background: rgba(62, 231, 184, 0.15);
-            color: white;
-            transform: translateX(5px);
-        }
-
-        .suggestion-item.selected-in-list {
-            opacity: 0.3;
-            font-style: italic;
-        }
-
-        /* Personalización Scrollbar */
-        .suggestions-list::-webkit-scrollbar { width: 6px; }
-        .suggestions-list::-webkit-scrollbar-thumb { 
-            background: rgba(255, 255, 255, 0.2); 
-            border-radius: 10px; 
-        }
-    </style>
+    <title>Librería de Componentes</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <link rel="stylesheet" href="src/components/gallery/style.css">
+    <link rel="stylesheet" href="src/components/modal/style.css">
+    <link rel="stylesheet" href="src/components/date-range/style.css">
+    <link rel="stylesheet" href="src/components/input-text/style.css">
+    <link rel="stylesheet" href="src/components/select-dinamico/style.css">
 </head>
 <body>
 
@@ -196,119 +18,20 @@
         <div class="floating-orb orb-2"></div>
         <div class="floating-orb orb-3"></div>
 
-        <div class="multiselect-container" id="mainContainer">
-            <div class="multiselect-box" id="multiselectBox">
-                <div id="selectedTags" class="tags-container"></div>
-                <input type="text" id="searchInput" placeholder="Buscar tecnología..." autocomplete="off" />
-            </div>
-            
-            <ul id="suggestionsList" class="suggestions-list hidden"></ul>
-        </div>
+        <div id="search-container"></div>
     </div>
 
-    <script>
-        // Datos para la práctica
-        const dataBase = [
-            "React.js", "Vue.js", "nyaaa", "Svelte", 
-            "Node.js", "Python", "nya ichi ni san", "TypeScript", "JavaScript",
-            "senpai", "Yamete kudasai", "GraphQL", "kakegurui mashooo",
-            "Figma", "toston", "Mondongo", "jai", "arigato dai maso"
-        ];
+    <div id="gallery-container"></div>
 
-        let selectedItems = new Set();
-        let typingTimer;
+    <div style="margin-top:24px;width:100%;max-width:1260px;display:flex;gap:20px;justify-content:center;flex-wrap:wrap">
+        <div id="date-range-demo"></div>
+    </div>
 
-        const searchInput = document.getElementById('searchInput');
-        const suggestionsList = document.getElementById('suggestionsList');
-        const selectedTagsContainer = document.getElementById('selectedTags');
-        const mainContainer = document.getElementById('mainContainer');
-        const multiselectBox = document.getElementById('multiselectBox');
-
-        // Enfocar input al hacer clic en el cristal
-        multiselectBox.addEventListener('click', () => searchInput.focus());
-
-        // Lógica de búsqueda y animación
-        searchInput.addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase().trim();
-
-            // Animacion del liquid a escribir
-            mainContainer.classList.add('is-typing');
-            
-            clearTimeout(typingTimer);
-            typingTimer = setTimeout(() => {
-                mainContainer.classList.remove('is-typing');
-            }, 150);
-
-            if (searchTerm === "") {
-                suggestionsList.classList.add('hidden');
-                return;
-            }
-
-            const filtered = dataBase.filter(item => 
-                item.toLowerCase().includes(searchTerm)
-            );
-
-            renderSuggestions(filtered);
-        });
-
-        function renderSuggestions(items) {
-            suggestionsList.innerHTML = '';
-            
-            if (items.length === 0) {
-                const li = document.createElement('li');
-                li.className = 'suggestion-item';
-                li.textContent = 'Sin resultados...';
-                li.style.opacity = '0.5';
-                suggestionsList.appendChild(li);
-            } else {
-                items.forEach(item => {
-                    const li = document.createElement('li');
-                    li.className = 'suggestion-item';
-                    if (selectedItems.has(item)) li.classList.add('selected-in-list');
-                    
-                    li.textContent = item;
-                    li.addEventListener('click', () => {
-                        toggleSelection(item);
-                        searchInput.value = '';
-                        suggestionsList.classList.add('hidden');
-                        searchInput.focus();
-                    });
-                    suggestionsList.appendChild(li);
-                });
-            }
-            suggestionsList.classList.remove('hidden');
-        }
-
-        function toggleSelection(item) {
-            if (selectedItems.has(item)) {
-                selectedItems.delete(item);
-            } else {
-                selectedItems.add(item);
-            }
-            renderTags();
-        }
-
-        function renderTags() {
-            selectedTagsContainer.innerHTML = '';
-            selectedItems.forEach(item => {
-                const tag = document.createElement('div');
-                tag.className = 'tag';
-                tag.innerHTML = `${item} <span class="tag-close">&times;</span>`;
-                
-                tag.querySelector('.tag-close').onclick = (e) => {
-                    e.stopPropagation();
-                    toggleSelection(item);
-                };
-                selectedTagsContainer.appendChild(tag);
-            });
-        }
-
-        // Cerrar lista al hacer clic fuera
-        document.addEventListener('click', (e) => {
-            if (!mainContainer.contains(e.target)) {
-                suggestionsList.classList.add('hidden');
-            }
-        });
-    </script>
+    <script src="src/components/modal/index.js"></script>
+    <script src="src/components/date-range/index.js"></script>
+    <script src="src/components/input-text/index.js"></script>
+    <script src="src/components/select-dinamico/index.js"></script>
+    <script src="src/components/gallery/index.js"></script>
+    <script src="assets/app.js"></script>
 </body>
 </html>
