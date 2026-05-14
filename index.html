@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sandbox - Librería de Componentes</title>
+    
+    <style>
+        /* =========================================
+           SISTEMA DE VARIABLES GLOBALES (FASE 1)
+           ========================================= */
+        :root {
+            /* Colores Base */
+            --primary-color: #2563eb;    /* Azul principal para botones y acentos */
+            --secondary-color: #475569;  /* Gris oscuro para textos secundarios */
+            --background-color: #f8fafc; /* Fondo general más suave que el blanco puro */
+            --text-color: #0f172a;       /* Texto principal (casi negro para mejor lectura) */
+
+            /* Colores de Estado (Cruciales para el componente Modal que pidió el profesor) */
+            --error-color: #ef4444;      /* Rojo para Modal de error */
+            --success-color: #22c55e;    /* Verde para confirmaciones */
+            --info-color: #3b82f6;       /* Azul claro para Modal de información */
+
+            /* Tipografía y Geometría */
+            --font-family: 'Segoe UI', system-ui, sans-serif;
+            --border-radius: 8px;        /* Bordes redondeados para un look moderno */
+            --transition-speed: 0.3s;    /* Velocidad de animaciones (ej. el hover del calendario) */
+        }
+
+        /* Estilos base del entorno de pruebas */
+        body {
+            font-family: var(--font-family);
+            background-color: var(--background-color);
+            color: var(--text-color);
+            padding: 2rem;
+            margin: 0;
+        }
+
+        .sandbox-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        header {
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sandbox-container">
+        <header>
+            <h1>🧪 Entorno de Pruebas (Sandbox)</h1>
+            <p>Espacio para que el equipo valide visual y lógicamente los componentes.</p>
+        </header>
+
+        <main id="component-testing-area">
+            </main>
+    </div>
+
+    </body>
+</html>
