@@ -37,7 +37,7 @@ const componentData = [
                 </div>
             </div>
         `,
-        source: "src/components/select-dinamico/"
+        source: "src/components/custom-select/"
     },
     {
         name: "Modal",
@@ -65,7 +65,7 @@ const componentData = [
                 </div>
             </div>
         `,
-        source: "src/components/modal/"
+        source: "src/components/custom-modal/"
     },
     {
         name: "Date Range",
