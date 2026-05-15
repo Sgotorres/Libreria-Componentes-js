@@ -1,4 +1,4 @@
-.input-text-wrapper {
+.it {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 20px;
     padding: 24px;
@@ -9,14 +9,14 @@
     max-width: 320px;
 }
 
-.input-text-wrapper label {
+.it label {
     color: rgba(255, 255, 255, 0.5);
     font-size: 12px;
     letter-spacing: 1px;
     text-transform: uppercase;
 }
 
-.input-text-wrapper input {
+.it input {
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 14px;
@@ -27,17 +27,17 @@
     transition: border-color 0.2s;
 }
 
-.input-text-wrapper input:focus {
+.it input:focus {
     border-color: rgba(62, 231, 184, 0.5);
 }
 
-.input-text-tags {
+.it__tags {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
 }
 
-.input-text-tag {
+.it__tag {
     background: rgba(62, 231, 184, 0.2);
     color: #fff;
     padding: 6px 14px;
@@ -49,12 +49,12 @@
     gap: 6px;
 }
 
-.input-text-tag-close {
+.it__tag-close {
     cursor: pointer;
     opacity: 0.6;
     font-size: 14px;
 }
 
-.input-text-tag-close:hover {
+.it__tag-close:hover {
     opacity: 1;
 }

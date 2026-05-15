@@ -1,3 +1,68 @@
+function fmtDate(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+}
+
+function buildDateRangePreview() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth();
+    const monthName = today.toLocaleDateString('es', { month: 'long', year: 'numeric' });
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const daysInPrev = new Date(year, month, 0).getDate();
+
+    let daysHTML = '';
+    const rangeStart = 1;
+    const rangeEnd = 14;
+
+    for (let i = firstDay - 1; i >= 0; i--) {
+        daysHTML += `<span style="color:rgba(255,255,255,0.12);font-size:12px;text-align:center;padding:6px 0">${daysInPrev - i}</span>`;
+    }
+    for (let i = 1; i <= daysInMonth; i++) {
+        let style = 'color:rgba(255,255,255,0.6);font-size:12px;text-align:center;padding:6px 0';
+        if (i === rangeStart) style += ';background:rgba(41,163,255,0.2);color:#fff;border-radius:10px 0 0 10px';
+        else if (i === rangeEnd) style += ';background:#29a3ff;color:#fff;border-radius:0 10px 10px 0';
+        else if (i > rangeStart && i < rangeEnd) style += ';background:rgba(41,163,255,0.2);color:#fff';
+        daysHTML += `<span style="${style}">${i}</span>`;
+    }
+
+    return `<div style="display:flex;flex-direction:column;align-items:center;gap:16px;width:100%">
+        <div style="background:rgba(255,255,255,0.05);border-radius:20px;padding:20px;width:100%;max-width:340px;box-sizing:border-box">
+            <div style="display:flex;gap:10px;margin-bottom:12px">
+                <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+                    <label style="color:rgba(255,255,255,0.4);font-size:11px;text-transform:uppercase">Desde</label>
+                    <input type="date" value="${fmtDate(today)}" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:10px 12px;color:#fff;font-size:13px;outline:none;font-family:inherit;width:100%;box-sizing:border-box">
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+                    <label style="color:rgba(255,255,255,0.4);font-size:11px;text-transform:uppercase">Hasta</label>
+                    <input type="date" value="${fmtDate(new Date(today.getTime() + 6 * 86400000))}" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:10px 12px;color:#fff;font-size:13px;outline:none;font-family:inherit;width:100%;box-sizing:border-box">
+                </div>
+            </div>
+            <div style="background:rgba(10,12,18,0.95);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:16px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                    <span style="color:rgba(255,255,255,0.4);font-size:12px">◀</span>
+                    <span style="color:#fff;font-size:14px;font-weight:500">${monthName}</span>
+                    <span style="color:rgba(255,255,255,0.4);font-size:12px">▶</span>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;margin-bottom:4px">
+                    ${['Do','Lu','Ma','Mi','Ju','Vi','Sá'].map(d => `<span style="color:rgba(255,255,255,0.25);font-size:10px;padding:4px 0">${d}</span>`).join('')}
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px">
+                    ${daysHTML}
+                </div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:10px;justify-content:center">
+                <span style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:6px 14px;color:rgba(255,255,255,0.5);font-size:11px">7 días</span>
+                <span style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:6px 14px;color:rgba(255,255,255,0.5);font-size:11px">30 días</span>
+                <span style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:6px 14px;color:rgba(255,255,255,0.5);font-size:11px">Limpiar</span>
+            </div>
+        </div>
+    </div>`;
+}
+
 const componentData = [
     {
         name: "Input Text",
@@ -73,65 +138,7 @@ const componentData = [
         color: "#29a3ff",
         desc: "Calendario con rango de fechas, colores personalizados y validaciones.",
         badge: "v1.0",
-        preview: `
-            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;width:100%">
-                <div style="background:rgba(255,255,255,0.05);border-radius:20px;padding:20px;width:100%;max-width:340px;box-sizing:border-box">
-                    <div style="display:flex;gap:10px;margin-bottom:12px">
-                        <div style="flex:1;display:flex;flex-direction:column;gap:4px">
-                            <label style="color:rgba(255,255,255,0.4);font-size:11px;text-transform:uppercase">Desde</label>
-                            <input type="date" value="2026-05-01" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:10px 12px;color:#fff;font-size:13px;outline:none;font-family:inherit;width:100%;box-sizing:border-box">
-                        </div>
-                        <div style="flex:1;display:flex;flex-direction:column;gap:4px">
-                            <label style="color:rgba(255,255,255,0.4);font-size:11px;text-transform:uppercase">Hasta</label>
-                            <input type="date" value="2026-05-14" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:10px 12px;color:#fff;font-size:13px;outline:none;font-family:inherit;width:100%;box-sizing:border-box">
-                        </div>
-                    </div>
-                    <div style="background:rgba(10,12,18,0.95);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:16px">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-                            <span style="color:rgba(255,255,255,0.4);font-size:12px;cursor:pointer">◀</span>
-                            <span style="color:#fff;font-size:14px;font-weight:500">mayo 2026</span>
-                            <span style="color:rgba(255,255,255,0.4);font-size:12px;cursor:pointer">▶</span>
-                        </div>
-                        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;margin-bottom:4px">
-                            <span style="color:rgba(255,255,255,0.25);font-size:10px;padding:4px 0">Do</span>
-                            <span style="color:rgba(255,255,255,0.25);font-size:10px;padding:4px 0">Lu</span>
-                            <span style="color:rgba(255,255,255,0.25);font-size:10px;padding:4px 0">Ma</span>
-                            <span style="color:rgba(255,255,255,0.25);font-size:10px;padding:4px 0">Mi</span>
-                            <span style="color:rgba(255,255,255,0.25);font-size:10px;padding:4px 0">Ju</span>
-                            <span style="color:rgba(255,255,255,0.25);font-size:10px;padding:4px 0">Vi</span>
-                            <span style="color:rgba(255,255,255,0.25);font-size:10px;padding:4px 0">Sá</span>
-                        </div>
-                        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px">
-                            <span style="color:rgba(255,255,255,0.15);font-size:12px;text-align:center;padding:6px 0">27</span>
-                            <span style="color:rgba(255,255,255,0.15);font-size:12px;text-align:center;padding:6px 0">28</span>
-                            <span style="color:rgba(255,255,255,0.15);font-size:12px;text-align:center;padding:6px 0">29</span>
-                            <span style="color:rgba(255,255,255,0.15);font-size:12px;text-align:center;padding:6px 0">30</span>
-                            <span style="background:rgba(41,163,255,0.2);color:#fff;font-size:12px;text-align:center;padding:6px 0;border-radius:10px 0 0 10px">1</span>
-                            <span style="background:rgba(41,163,255,0.2);color:#fff;font-size:12px;text-align:center;padding:6px 0">2</span>
-                            <span style="background:rgba(41,163,255,0.2);color:#fff;font-size:12px;text-align:center;padding:6px 0">3</span>
-                            <span style="background:rgba(41,163,255,0.2);color:#fff;font-size:12px;text-align:center;padding:6px 0">4</span>
-                            <span style="background:rgba(41,163,255,0.2);color:#fff;font-size:12px;text-align:center;padding:6px 0">5</span>
-                            <span style="background:rgba(41,163,255,0.2);color:#fff;font-size:12px;text-align:center;padding:6px 0">6</span>
-                            <span style="background:rgba(41,163,255,0.2);color:#fff;font-size:12px;text-align:center;padding:6px 0">7</span>
-                            <span style="background:rgba(41,163,255,0.2);color:#fff;font-size:12px;text-align:center;padding:6px 0">8</span>
-                            <span style="background:rgba(41,163,255,0.2);color:#fff;font-size:12px;text-align:center;padding:6px 0">9</span>
-                            <span style="background:rgba(41,163,255,0.2);color:#fff;font-size:12px;text-align:center;padding:6px 0">10</span>
-                            <span style="background:rgba(41,163,255,0.2);color:#fff;font-size:12px;text-align:center;padding:6px 0">11</span>
-                            <span style="background:rgba(41,163,255,0.2);color:#fff;font-size:12px;text-align:center;padding:6px 0">12</span>
-                            <span style="background:rgba(41,163,255,0.2);color:#fff;font-size:12px;text-align:center;padding:6px 0">13</span>
-                            <span style="background:#29a3ff;color:#fff;font-size:12px;text-align:center;padding:6px 0;border-radius:0 10px 10px 0">14</span>
-                            <span style="color:rgba(255,255,255,0.5);font-size:12px;text-align:center;padding:6px 0">15</span>
-                            <span style="color:rgba(255,255,255,0.5);font-size:12px;text-align:center;padding:6px 0">16</span>
-                        </div>
-                    </div>
-                    <div style="display:flex;gap:8px;margin-top:10px">
-                        <span style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:6px 14px;color:rgba(255,255,255,0.5);font-size:11px;cursor:pointer">7 días</span>
-                        <span style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:6px 14px;color:rgba(255,255,255,0.5);font-size:11px;cursor:pointer">30 días</span>
-                        <span style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:6px 14px;color:rgba(255,255,255,0.5);font-size:11px;cursor:pointer">Limpiar</span>
-                    </div>
-                </div>
-            </div>
-        `,
+        preview: buildDateRangePreview(),
         source: "src/components/date-range/"
     },
     {
@@ -140,21 +147,21 @@ const componentData = [
         color: "#ff6464",
         desc: "Paginación, ordenamiento, filtros, buscador, scroll horizontal, responsive.",
         badge: "Próximamente",
-        preview: '<div style="color:rgba(255,255,255,0.4);font-size:14px">🚧 En desarrollo</div>',
-        code: "// Próximamente"
+        preview: '<div style="color:rgba(255,255,255,0.4);font-size:14px;text-align:center;padding:40px">En desarrollo</div>'
     }
 ];
 
 const componentNames = componentData.map(c => c.name);
-
-const gallery = Gallery(document.getElementById('gallery-container'), {
+const galleryContainer = document.getElementById('gallery-container');
+const gallery = galleryContainer ? Gallery(galleryContainer, {
     title: 'Componentes',
     components: componentData
-});
+}) : null;
 
 const searchContainer = document.getElementById('search-container');
-if (searchContainer) {
-    SelectDinamico(searchContainer, {
+let searchInstance = null;
+if (searchContainer && gallery) {
+    searchInstance = SelectDinamico(searchContainer, {
         data: componentNames,
         placeholder: 'Buscar componente...',
         onSearch: (term) => gallery.filter(term),
@@ -162,23 +169,23 @@ if (searchContainer) {
     });
 }
 
-const inputDemo = document.getElementById('input-text-demo');
-if (inputDemo) {
-    InputText(inputDemo, {
-        label: 'Tecnología',
-        placeholder: 'Agrega una tecnología...',
-        tags: ['React.js', 'Node.js']
-    });
-}
-
-const drDemo = document.getElementById('date-range-demo');
+const drDemo = document.getElementById('mi-calendario');
 if (drDemo) {
-    DateRange(drDemo, {
+    drDemo.configure({
         allowFuture: true,
         allowPast: true,
         rangeColor: '#29a3ff',
         startDate: new Date(),
-        endDate: (() => { const d = new Date(); d.setDate(d.getDate() + 7); return d; })(),
-        onChange: (start, end) => console.log('Rango:', start, end)
+        endDate: (() => {
+            const d = new Date();
+            d.setDate(d.getDate() + 7);
+            return d;
+        })()
     });
+    drDemo.addEventListener('range-changed', (e) => console.log('Rango:', e.detail.start, e.detail.end));
 }
+
+window.addEventListener('beforeunload', () => {
+    if (searchInstance) searchInstance.destroy();
+    if (gallery) gallery.destroy();
+});

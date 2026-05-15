@@ -1,5 +1,5 @@
 /* --- GALERÍA --- */
-.gallery-title {
+.gl__title {
     color: rgba(255, 255, 255, 0.6);
     font-size: 14px;
     font-weight: 400;
@@ -8,20 +8,18 @@
     letter-spacing: 2px;
     text-transform: uppercase;
     width: 100%;
-    max-width: 1260px;
 }
 
-.gallery {
+.gl {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
     padding-bottom: 40px;
     width: 100%;
-    max-width: 1260px;
     justify-content: center;
 }
 
-.component-card {
+.gl__card {
     width: 320px;
     height: 280px;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
@@ -44,12 +42,12 @@
     text-align: center;
 }
 
-.component-card:hover {
+.gl__card:hover {
     transform: scale(1.02);
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
 }
 
-.component-card-header {
+.gl__card-header {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -57,7 +55,7 @@
     margin-bottom: 14px;
 }
 
-.component-card-icon {
+.gl__card-icon {
     width: 56px;
     height: 56px;
     border-radius: 18px;
@@ -68,13 +66,13 @@
     flex-shrink: 0;
 }
 
-.component-card-name {
+.gl__card-name {
     color: #ffffff;
     font-size: 18px;
     font-weight: 600;
 }
 
-.component-card-desc {
+.gl__card-desc {
     color: rgba(255, 255, 255, 0.5);
     font-size: 13px;
     line-height: 1.5;
@@ -82,7 +80,7 @@
     max-width: 240px;
 }
 
-.component-card-badge {
+.gl__card-badge {
     display: inline-block;
     margin-top: 14px;
     padding: 4px 14px;

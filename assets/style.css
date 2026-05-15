@@ -1,3 +1,5 @@
+@import url('../src/theme.css');
+
 /* --- ESTILOS GENERALES Y FONDO --- */
 body {
     font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -20,6 +22,12 @@ body {
     margin: 0 auto;
 }
 
+/* --- GALERÍA --- */
+#gallery-container {
+    width: 100%;
+    max-width: 1260px;
+}
+
 /* --- CIRCULOS FLOTANTES  --- */
 .floating-orb {
     position: absolute;
@@ -35,85 +43,6 @@ body {
 .orb-3 { background-color: #29a3ff; width: 130px; height: 130px; bottom: -60px; left: 50%; transform: translateX(-50%); }
 
 /* Personalización Scrollbar */
-
-/* --- ANIMACIÓN AL ESCRIBIR --- */
-.multiselect-container.is-typing {
-    transform: scale(0.95);
-    border-radius: 50px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6), 
-                inset 0 0 35px rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(35px) saturate(220%);
-}
-
-.multiselect-box {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
-    min-height: 40px;
-}
-
-
-/* --- INPUT --- */
-#searchInput {
-    border: none;
-    outline: none;
-    background: transparent;
-    color: white;
-    flex-grow: 1;
-    min-width: 120px;
-    padding: 8px 0;
-    font-size: 16px;
-}
-
-#searchInput::placeholder { color: rgba(255, 255, 255, 0.4); }
-
-/* --- LISTA DE SUGERENCIAS --- */
-.suggestions-list {
-    position: absolute;
-    top: calc(100% + 12px);
-    left: 0;
-    right: 0;
-    background: rgba(10, 12, 15, 0.7);
-    backdrop-filter: blur(20px);
-    border-radius: 25px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    margin: 0;
-    padding: 10px;
-    list-style: none;
-    max-height: 220px;
-    overflow-y: auto;
-    box-shadow: 0 15px 30px rgba(0,0,0,0.5);
-    z-index: 10;
-    transition: all 0.3s ease;
-    transform-origin: top;
-}
-
-.suggestions-list.hidden {
-    opacity: 0;
-    transform: scaleY(0);
-    pointer-events: none;
-}
-
-.suggestion-item {
-    padding: 12px 20px;
-    cursor: pointer;
-    border-radius: 15px;
-    color: rgba(255, 255, 255, 0.8);
-    transition: all 0.2s;
-    font-size: 14px;
-}
-
-.suggestion-item:hover {
-    background: rgba(62, 231, 184, 0.15);
-    color: white;
-    transform: translateX(5px);
-}
-
-.suggestion-item.selected-in-list {
-    opacity: 0.3;
-    font-style: italic;
-}
 
 /* Personalización Scrollbar */
 ::-webkit-scrollbar { width: 6px; height: 6px; }

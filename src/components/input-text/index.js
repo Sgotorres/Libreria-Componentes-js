@@ -1,12 +1,13 @@
-(function (global, factory) {
-    if (typeof module !== 'undefined' && module.exports) {
-        module.exports = factory();
-    } else {
-        global.InputText = factory();
-    }
-}(typeof window !== 'undefined' ? window : this, function () {
-    "use strict";
-
+/**
+ * @param {HTMLElement} container
+ * @param {Object} [options]
+ * @param {string} [options.label='Etiqueta']
+ * @param {string} [options.placeholder='Escribe algo...']
+ * @param {string[]} [options.tags]
+ * @param {(tag: string) => void} [options.onTagAdd]
+ * @param {(tag: string) => void} [options.onTagRemove]
+ * @returns {{ element: HTMLElement, getTags: () => string[], addTag: (tag: string) => void, removeTag: (tag: string) => void, clearTags: () => void }}
+ */
 function InputText(container, options = {}) {
     const {
         label = 'Etiqueta',
@@ -15,7 +16,7 @@ function InputText(container, options = {}) {
     } = options;
 
     const wrapper = document.createElement('div');
-    wrapper.className = 'input-text-wrapper';
+    wrapper.className = 'it';
 
     const labelEl = document.createElement('label');
     labelEl.textContent = label;
@@ -27,7 +28,7 @@ function InputText(container, options = {}) {
     wrapper.appendChild(input);
 
     const tagsContainer = document.createElement('div');
-    tagsContainer.className = 'input-text-tags';
+    tagsContainer.className = 'it__tags';
     wrapper.appendChild(tagsContainer);
 
     let currentTags = [...tags];
@@ -36,9 +37,9 @@ function InputText(container, options = {}) {
         tagsContainer.innerHTML = '';
         currentTags.forEach(tag => {
             const tagEl = document.createElement('span');
-            tagEl.className = 'input-text-tag';
-            tagEl.innerHTML = `${tag} <span class="input-text-tag-close">&times;</span>`;
-            tagEl.querySelector('.input-text-tag-close').onclick = () => {
+            tagEl.className = 'it__tag';
+            tagEl.innerHTML = `${tag} <span class="it__tag-close">&times;</span>`;
+            tagEl.querySelector('.it__tag-close').onclick = () => {
                 currentTags = currentTags.filter(t => t !== tag);
                 renderTags();
                 if (options.onTagRemove) options.onTagRemove(tag);
@@ -69,5 +70,18 @@ function InputText(container, options = {}) {
     };
 }
 
+(function (global, factory) {
+    try {
+        if (typeof module !== 'undefined' && module.exports) {
+            module.exports = factory();
+            return;
+        }
+    } catch {}
+    global.InputText = factory();
+}(typeof window !== 'undefined' ? window : this, function () {
     return InputText;
 }));
+
+export default InputText;
+
+

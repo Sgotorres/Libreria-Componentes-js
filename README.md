@@ -1,48 +1,96 @@
-# 📦 Librería de Componentes UI - V1
+# Librería de Componentes UI
 
-Librería de 5 componentes web nativos (Web Components) construida con Vanilla JavaScript, HTML y CSS. Este proyecto es escalable, libre de dependencias externas y utiliza el Shadow DOM para encapsular estilos.
+Librería de componentes web nativos con estilo glassmorphism, construida con Vanilla JS.
 
-## 👥 Equipo y División de Trabajo
+## Instalación
 
-Para optimizar el desarrollo, el equipo se ha dividido según sus fortalezas técnicas:
+```bash
+npm install libreria-componentes-js
+```
 
-**🎨 Equipo de Diseño y UI (Eduardo y Yox)**
-Encargados de la experiencia de usuario, interfaz y estilos.
-* Maquetación HTML interna de cada componente.
-* Estilización CSS (Variables nativas, animaciones, hover).
-* Diseño responsivo (adaptación móvil para la Tabla).
-* Estética visual de estados (errores, éxito, disabled).
+## Uso
 
-**⚙️ Equipo de Lógica y Funcionalidad (David y Ángel)**
-Encargados de la arquitectura JavaScript y manipulación del DOM.
-* Creación de las clases y registro de los Web Components (`customElements.define`).
-* Manejo de estado interno y propiedades (`props` / `attributes`).
-* Lógica de validaciones (Regex, fechas, rangos).
-* Eventos (Listeners, emisión de CustomEvents, filtros de búsqueda).
+### ESM (moderno)
 
----
+```js
+import { SelectDinamico, DateRange, InputText, Modal, Gallery } from 'libreria-componentes-js';
 
-## 🚀 Fases del Proyecto
+const search = SelectDinamico(document.getElementById('container'), {
+    data: ['React', 'Vue', 'Angular'],
+    placeholder: 'Buscar...',
+    onSelect: (item) => console.log(item),
+    onSearch: (term) => console.log(term),
+});
+```
 
-### Fase 1: Arquitectura y Setup (Programación de Software)
-- [x] Inicialización del repositorio y protección (`.gitignore`).
-- [x] Definición de la estructura de carpetas.
-- [ ] Creación del archivo `index.html` base para pruebas.
-- [ ] Definición del sistema de variables CSS globales (temas y colores).
+### UMD (script tag)
 
-### Fase 2: Desarrollo de Componentes
-Cada componente se desarrollará en su propia rama (`feature/nombre-componente`) combinando el trabajo de UI y Lógica:
-- [ ] **Input Text:** Validaciones Regex (letras, números, caracteres especiales), límites de longitud y manejo de errores.
-- [ ] **Select:** Buscador interno dinámico y selección múltiple toggleable.
-- [ ] **Date Range:** Calendario visual interactivo, validación de fechas (futuro/pasado) y resaltado por hover.
-- [ ] **Modal:** Sistema de Slots para contenido inyectable, customización de colores y botones de acción configurables.
-- [ ] **Data Table:** Sistema de paginación, ordenamiento (alfabético/numérico), barra de búsqueda, scroll horizontal y versión móvil (tarjetas).
+```html
+<script src="https://cdn.example.com/libreria-componentes.umd.js"></script>
+<script>
+    SelectDinamico(document.getElementById('container'), {
+        data: ['React', 'Vue'],
+        placeholder: 'Buscar...',
+    });
+</script>
+```
 
-### Fase 3: Cierre y QA
-- [ ] Integración de todas las ramas en `development`.
-- [ ] Pruebas de estrés de los componentes (QA).
-- [ ] Documentación técnica de uso y ejemplos de implementación.
-- [ ] Despliegue / Entrega final.
+### Custom Element (DateRange)
 
----
-*Documentación generada para el equipo de QA.*
+```html
+<custom-date-range id="calendario"></custom-date-range>
+
+<script>
+    const el = document.getElementById('calendario');
+    el.configure({
+        allowFuture: true,
+        allowPast: true,
+        rangeColor: '#29a3ff',
+        startDate: new Date(),
+    });
+    el.addEventListener('range-changed', (e) => {
+        console.log(e.detail.start, e.detail.end);
+    });
+</script>
+```
+
+## Componentes
+
+| Componente     | Tipo            | API principal                         |
+|----------------|-----------------|---------------------------------------|
+| SelectDinamico | Factory function| `getSelected()`, `addItem()`, `destroy()` |
+| InputText      | Factory function| `getTags()`, `addTag()`, `clearTags()`   |
+| DateRange      | Web Component   | `configure()`, evento `range-changed`    |
+| Modal          | Factory function| `open()`, `close()`, `destroy()`         |
+| Gallery        | Factory function| `filter()`, `open()`, `destroy()`        |
+
+## Desarrollo
+
+```bash
+# Instalar dependencias
+npm install
+
+# Servidor de desarrollo
+npm run dev
+
+# Lint
+npm run lint
+
+# Pruebas
+npm run test
+
+# Build
+npm run build
+```
+
+## Build
+
+Genera `dist/libreria-componentes.umd.js` y `dist/libreria-componentes.es.js`.
+
+```bash
+npm run build
+```
+
+## Licencia
+
+MIT

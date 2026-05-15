@@ -1,4 +1,4 @@
-.multiselect-container {
+.sd {
     position: relative;
     z-index: 10;
     width: 100%;
@@ -18,7 +18,7 @@
     box-sizing: border-box;
 }
 
-.multiselect-container.is-typing {
+.sd.sd--typing {
     transform: scale(0.95);
     border-radius: 50px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6),
@@ -26,7 +26,7 @@
     backdrop-filter: blur(35px) saturate(220%);
 }
 
-.multiselect-box {
+.sd__box {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
@@ -34,13 +34,13 @@
     min-height: 40px;
 }
 
-.tags-container {
+.sd__tags {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
 }
 
-.tag {
+.sd__tag {
     background: rgba(62, 231, 184, 0.2);
     color: #ffffff;
     padding: 6px 14px;
@@ -59,15 +59,15 @@
     to { transform: scale(1); opacity: 1; }
 }
 
-.tag-close {
+.sd__tag-close {
     cursor: pointer;
     opacity: 0.7;
     font-size: 16px;
 }
 
-.tag-close:hover { opacity: 1; }
+.sd__tag-close:hover { opacity: 1; }
 
-#searchInput {
+.sd__input {
     border: none;
     outline: none;
     background: transparent;
@@ -80,7 +80,7 @@
 
 #searchInput::placeholder { color: rgba(255, 255, 255, 0.4); }
 
-.suggestions-list {
+.sd__suggestions {
     position: absolute;
     top: calc(100% + 12px);
     left: 0;
@@ -100,13 +100,13 @@
     transform-origin: top;
 }
 
-.suggestions-list.hidden {
+.sd__suggestions.hidden {
     opacity: 0;
     transform: scaleY(0);
     pointer-events: none;
 }
 
-.suggestion-item {
+.sd__suggestion {
     padding: 12px 20px;
     cursor: pointer;
     border-radius: 15px;
@@ -115,19 +115,19 @@
     font-size: 14px;
 }
 
-.suggestion-item:hover {
+.sd__suggestion:hover {
     background: rgba(62, 231, 184, 0.15);
     color: white;
     transform: translateX(5px);
 }
 
-.suggestion-item.selected-in-list {
+.sd__suggestion.sd__suggestion--selected {
     opacity: 0.3;
     font-style: italic;
 }
 
-.suggestions-list::-webkit-scrollbar { width: 6px; }
-.suggestions-list::-webkit-scrollbar-thumb {
+.sd__suggestions::-webkit-scrollbar { width: 6px; }
+.sd__suggestions::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.2);
     border-radius: 10px;
 }

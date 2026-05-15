@@ -1,5 +1,5 @@
 /* --- MODAL --- */
-.modal-overlay {
+.md {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.6);
@@ -13,12 +13,12 @@
     transition: opacity 0.3s ease;
 }
 
-.modal-overlay.hidden {
+.md.hidden {
     opacity: 0;
     pointer-events: none;
 }
 
-.modal-content {
+.md__content {
     background: linear-gradient(135deg, rgba(20, 22, 28, 0.95), rgba(10, 12, 18, 0.95));
     backdrop-filter: blur(30px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -35,24 +35,24 @@
     transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.modal-overlay.hidden .modal-content {
+.md.hidden .md__content {
     transform: scale(0.9);
 }
 
-.modal-header {
+.md__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 20px 28px 0;
 }
 
-.modal-title {
+.md__title {
     color: #ffffff;
     font-size: 20px;
     font-weight: 600;
 }
 
-.modal-close {
+.md__close {
     color: rgba(255, 255, 255, 0.4);
     font-size: 28px;
     cursor: pointer;
@@ -60,17 +60,17 @@
     transition: color 0.2s;
 }
 
-.modal-close:hover {
+.md__close:hover {
     color: #fff;
 }
 
-.modal-tabs {
+.md__tabs {
     display: flex;
     gap: 4px;
     padding: 16px 28px 0;
 }
 
-.modal-tab {
+.md__tab {
     background: transparent;
     border: none;
     color: rgba(255, 255, 255, 0.4);
@@ -82,33 +82,33 @@
     transition: all 0.2s;
 }
 
-.modal-tab.active {
+.md__tab.active {
     background: rgba(255, 255, 255, 0.08);
     color: #fff;
 }
 
-.modal-tab:hover {
+.md__tab:hover {
     color: rgba(255, 255, 255, 0.8);
 }
 
-.modal-body {
+.md__body {
     padding: 20px 28px 28px;
     overflow-y: auto;
     flex: 1;
 }
 
-.modal-preview {
+.md__preview {
     display: none;
     min-height: 200px;
 }
 
-.modal-preview.active {
+.md__preview.active {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.modal-code {
+.md__code {
     display: none;
     margin: 0;
     background: rgba(0, 0, 0, 0.4);
@@ -117,11 +117,11 @@
     overflow-x: auto;
 }
 
-.modal-code.active {
+.md__code.active {
     display: block;
 }
 
-.modal-code code {
+.md__code code {
     color: #e0e0e0;
     font-size: 13px;
     line-height: 1.6;
