@@ -8,8 +8,9 @@
     <link rel="stylesheet" href="src/components/gallery/style.css">
     <link rel="stylesheet" href="src/components/modal/style.css">
     <link rel="stylesheet" href="src/components/date-range/style.css">
-    <link rel="stylesheet" href="src/components/input-text/style.css">
+<!-- input-text usa Shadow DOM, su CSS va inline -->
     <link rel="stylesheet" href="src/components/select-dinamico/style.css">
+    <link rel="stylesheet" href="src/components/table/style.css">
 </head>
 <body>
 
@@ -27,11 +28,14 @@
     <custom-date-range id="mi-calendario"></custom-date-range>
     </div>
 
+    <div id="table-container" style="margin-top:24px;max-width:1260px;width:100%;margin-left:auto;margin-right:auto"></div>
+
     <script type="module" src="src/components/modal/index.js"></script>
     <script type="module" src="src/components/date-range/index.js"></script>
     <script type="module" src="src/components/input-text/index.js"></script>
     <script type="module" src="src/components/select-dinamico/index.js"></script>
     <script type="module" src="src/components/gallery/index.js"></script>
+    <script type="module" src="src/components/table/index.js"></script>
     <script type="module" src="assets/app.js"></script>
 </body>
 </html>

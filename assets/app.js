@@ -146,8 +146,25 @@ const componentData = [
         icon: "⊞",
         color: "#ff6464",
         desc: "Paginación, ordenamiento, filtros, buscador, scroll horizontal, responsive.",
-        badge: "Próximamente",
-        preview: '<div style="color:rgba(255,255,255,0.4);font-size:14px;text-align:center;padding:40px">En desarrollo</div>'
+        badge: "v1.0",
+        preview: `
+            <div style="background:rgba(255,255,255,0.05);border-radius:20px;padding:16px;width:100%;max-width:500px;box-sizing:border-box">
+                <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:10px 14px;margin-bottom:12px;color:rgba(255,255,255,0.3);font-size:13px">Buscar...</div>
+                <table style="width:100%;border-collapse:collapse;min-width:400px">
+                    <thead><tr>${['Nombre','Email','Rol'].map(h => `<th style="text-align:left;padding:10px 14px;font-size:11px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid rgba(255,255,255,0.08)">${h}</th>`).join('')}</tr></thead>
+                    <tbody>
+                        ${[['Ana García','ana@mail.com','Admin'],['Carlos Ruiz','carlos@mail.com','Editor'],['Lucía Pérez','lucia@mail.com','Usuario']].map((r, i) => `<tr style="background:${i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent'}">
+                            ${r.map(c => `<td style="padding:10px 14px;font-size:13px;color:rgba(255,255,255,0.7);border-bottom:1px solid rgba(255,255,255,0.04)">${c}</td>`).join('')}
+                        </tr>`).join('')}
+                    </tbody>
+                </table>
+                <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px">
+                    <span style="color:rgba(255,255,255,0.3);font-size:11px">Filas: 5</span>
+                    <span style="color:rgba(255,255,255,0.3);font-size:11px">1-3 de 3</span>
+                    <div style="display:flex;gap:4px">${['◀','1','▶'].map(b => `<span style="background:${b === '1' ? '#ff6464' : 'rgba(255,255,255,0.06)'};border:1px solid ${b === '1' ? '#ff6464' : 'rgba(255,255,255,0.08)'};border-radius:8px;padding:4px 10px;color:${b === '1' ? '#0a0c12' : 'rgba(255,255,255,0.5)'};font-size:11px;cursor:${b === '1' ? 'default' : 'pointer'}">${b}</span>`).join('')}</div>
+                </div>
+            </div>
+        `
     }
 ];
 
@@ -166,6 +183,41 @@ if (searchContainer && gallery) {
         placeholder: 'Buscar componente...',
         onSearch: (term) => gallery.filter(term),
         onSelect: (item) => gallery.open(item)
+    });
+}
+
+const tableContainer = document.getElementById('table-container');
+let tableInstance = null;
+if (tableContainer) {
+    const now = new Date();
+    function daysAgo(n) { const d = new Date(now); d.setDate(d.getDate() - n); return d.toISOString().slice(0, 10); }
+    tableInstance = Table(tableContainer, {
+        ancho: '100%',
+        largo: 'auto',
+        columns: [
+            { key: 'id', label: 'ID', sortable: true, width: '70px' },
+            { key: 'name', label: 'Nombre', sortable: true },
+            { key: 'email', label: 'Email', sortable: true },
+            { key: 'role', label: 'Rol', sortable: true },
+            { key: 'signup', label: 'Registro', sortable: true, type: 'date' },
+            { key: 'score', label: 'Puntaje', sortable: true, sortFn: (a, b) => b - a },
+        ],
+        data: [
+            { id: 104, name: 'Ana García', email: 'ana@mail.com', role: 'Admin', signup: daysAgo(120), score: 95 },
+            { id: 101, name: 'Carlos Ruiz', email: 'carlos@mail.com', role: 'Editor', signup: daysAgo(45), score: 78 },
+            { id: 108, name: 'Lucía Pérez', email: 'lucia@mail.com', role: 'Usuario', signup: daysAgo(200), score: 82 },
+            { id: 103, name: 'Miguel Torres', email: 'miguel@mail.com', role: 'Admin', signup: daysAgo(15), score: 91 },
+            { id: 106, name: 'Sofía López', email: 'sofia@mail.com', role: 'Editor', signup: daysAgo(90), score: 88 },
+            { id: 110, name: 'Diego Gómez', email: 'diego@mail.com', role: 'Usuario', signup: daysAgo(5), score: 64 },
+            { id: 102, name: 'Valentina Díaz', email: 'valentina@mail.com', role: 'Usuario', signup: daysAgo(365), score: 73 },
+            { id: 105, name: 'Fernando Castro', email: 'fernando@mail.com', role: 'Editor', signup: daysAgo(30), score: 97 },
+            { id: 109, name: 'Isabella Ríos', email: 'isabella@mail.com', role: 'Admin', signup: daysAgo(60), score: 100 },
+            { id: 112, name: 'Javier Mendoza', email: 'javier@mail.com', role: 'Usuario', signup: daysAgo(180), score: 55 },
+            { id: 107, name: 'Camila Ortiz', email: 'camila@mail.com', role: 'Editor', signup: daysAgo(10), score: 89 },
+            { id: 111, name: 'Andrés Vega', email: 'andres@mail.com', role: 'Admin', signup: daysAgo(730), score: 92 },
+        ],
+        pageSize: 5,
+        onRowClick: (row) => console.log('Fila:', row),
     });
 }
 
@@ -188,4 +240,5 @@ if (drDemo) {
 window.addEventListener('beforeunload', () => {
     if (searchInstance) searchInstance.destroy();
     if (gallery) gallery.destroy();
+    if (tableInstance) tableInstance.destroy();
 });
