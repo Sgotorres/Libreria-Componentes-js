@@ -217,6 +217,7 @@ if (tableContainer) {
             { id: 111, name: 'Andrés Vega', email: 'andres@mail.com', role: 'Admin', signup: daysAgo(730), score: 92 },
         ],
         pageSize: 5,
+        addable: true,
         onRowClick: (row) => console.log('Fila:', row),
     });
 }

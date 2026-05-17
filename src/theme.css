@@ -12,8 +12,8 @@
     --glass-border: 1px solid rgba(255, 255, 255, 0.1);
     --glass-border-top: 1px solid rgba(255, 255, 255, 0.35);
     --glass-border-left: 1px solid rgba(255, 255, 255, 0.2);
-    --glass-blur: blur(25px) saturate(180%);
-    --glass-blur-intense: blur(35px) saturate(220%);
+    --glass-blur: blur(10px) saturate(180%);
+    --glass-blur-intense: blur(15px) saturate(220%);
     --glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
     --glass-shadow-inset: inset 0 0 20px rgba(255, 255, 255, 0.05);
     --glass-shadow-dense: 0 10px 20px rgba(0, 0, 0, 0.6);

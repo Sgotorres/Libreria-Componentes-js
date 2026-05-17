@@ -3,7 +3,7 @@
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(4px);
     z-index: 1000;
     display: flex;
     align-items: center;
@@ -20,7 +20,7 @@
 
 .md__content {
     background: linear-gradient(135deg, rgba(20, 22, 28, 0.95), rgba(10, 12, 18, 0.95));
-    backdrop-filter: blur(30px) saturate(180%);
+    backdrop-filter: blur(12px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-top: 1px solid rgba(255, 255, 255, 0.25);
     border-left: 1px solid rgba(255, 255, 255, 0.12);

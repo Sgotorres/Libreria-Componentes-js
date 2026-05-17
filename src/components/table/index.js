@@ -11,6 +11,7 @@ function Table(container, options = {}) {
         striped = true,
         emptyMessage = 'No hay datos disponibles',
         onRowClick = null,
+        addable = false,
     } = options;
 
     let currentData = [...data];
@@ -81,6 +82,10 @@ function Table(container, options = {}) {
     searchInput.className = 'tb__search';
     searchInput.type = 'text';
     searchInput.placeholder = 'Buscar...';
+
+    const addBtn = document.createElement('button');
+    addBtn.className = 'tb__add-btn';
+    addBtn.textContent = '+ Agregar';
 
     const scrollWrap = document.createElement('div');
     scrollWrap.className = 'tb__scroll';
@@ -338,6 +343,94 @@ function Table(container, options = {}) {
         });
     }
 
+    if (addable) {
+        toolbar.appendChild(addBtn);
+
+        function openAddForm() {
+            const existing = document.querySelector('.tb__form-overlay');
+            if (existing) existing.remove();
+
+            const overlay = document.createElement('div');
+            overlay.className = 'tb__form-overlay';
+
+            const panel = document.createElement('div');
+            panel.className = 'tb__form-panel';
+
+            const header = document.createElement('div');
+            header.className = 'tb__form-header';
+            const title = document.createElement('span');
+            title.textContent = 'Agregar fila';
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'tb__form-close';
+            closeBtn.innerHTML = '&times;';
+            header.appendChild(title);
+            header.appendChild(closeBtn);
+
+            const body = document.createElement('div');
+            body.className = 'tb__form-body';
+
+            const inputs = {};
+            columns.forEach(col => {
+                const label = document.createElement('label');
+                label.className = 'tb__form-label';
+                label.textContent = col.label || col.key;
+                const input = document.createElement('input');
+                input.className = 'tb__form-input';
+                input.type = col.type === 'date' ? 'date' : 'text';
+                input.placeholder = (col.label || col.key);
+                body.appendChild(label);
+                body.appendChild(input);
+                inputs[col.key] = input;
+            });
+
+            const footer = document.createElement('div');
+            footer.className = 'tb__form-footer';
+
+            const cancelBtn = document.createElement('button');
+            cancelBtn.className = 'tb__form-btn tb__form-btn--cancel';
+            cancelBtn.textContent = 'Cancelar';
+
+            const submitBtn = document.createElement('button');
+            submitBtn.className = 'tb__form-btn tb__form-btn--submit';
+            submitBtn.textContent = 'Agregar';
+
+            footer.appendChild(cancelBtn);
+            footer.appendChild(submitBtn);
+            panel.appendChild(header);
+            panel.appendChild(body);
+            panel.appendChild(footer);
+            overlay.appendChild(panel);
+            document.body.appendChild(overlay);
+
+            function closeForm() {
+                overlay.remove();
+                document.body.style.overflow = '';
+            }
+
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) closeForm();
+            });
+            closeBtn.addEventListener('click', closeForm);
+            cancelBtn.addEventListener('click', closeForm);
+            submitBtn.addEventListener('click', () => {
+                const row = {};
+                columns.forEach(col => {
+                    const val = inputs[col.key].value.trim();
+                    if (val) {
+                        row[col.key] = col.type === 'date' ? val : isNaN(val) ? val : Number(val);
+                    } else {
+                        row[col.key] = null;
+                    }
+                });
+                api.addRow(row);
+                closeForm();
+            });
+            document.body.style.overflow = 'hidden';
+        }
+
+        addBtn.addEventListener('click', openAddForm);
+    }
+
     render();
 
     const api = {
@@ -367,6 +460,16 @@ function Table(container, options = {}) {
             searchTerm = term;
             if (searchable) searchInput.value = term;
             currentPage = 1;
+            render();
+        },
+        getData: () => [...currentData],
+        addRow(row) {
+            currentData.push(row);
+            currentPage = Math.max(1, Math.ceil(currentData.length / currentPageSize));
+            render();
+        },
+        removeRow(predicate) {
+            currentData = currentData.filter((row, i) => !predicate(row, i));
             render();
         },
         destroy() {
