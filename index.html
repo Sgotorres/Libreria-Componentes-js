@@ -3,41 +3,884 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Librería de Componentes</title>
-    <link rel="stylesheet" href="assets/style.css">
-    <link rel="stylesheet" href="src/components/gallery/style.css">
-    <link rel="stylesheet" href="src/components/modal/style.css">
-    <link rel="stylesheet" href="src/components/date-range/style.css">
-<!-- input-text usa Shadow DOM, su CSS va inline -->
-    <link rel="stylesheet" href="src/components/select-dinamico/style.css">
-    <link rel="stylesheet" href="src/components/table/style.css">
+    <title>Ecosistema UI Glassmorphism - Ángel Team</title>
+    <style>
+        /* --- ESTILOS GLOBALES (Reemplaza assets/style.css) --- */
+        :root {
+            --bg-dark: #0f172a;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --primary-color: #3ee7b8;
+            --primary-hover: #2bc299;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --danger: #ef4444;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Los Orbes Flotantes de Yox */
+        .glass-background {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+            background: radial-gradient(circle at top right, #1e293b, #0f172a);
+        }
+
+        .floating-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            animation: float 10s infinite alternate ease-in-out;
+        }
+
+        .orb-1 { width: 400px; height: 400px; background: #3ee7b8; top: -10%; left: -10%; }
+        .orb-2 { width: 500px; height: 500px; background: #3b82f6; bottom: -20%; right: -10%; animation-delay: -5s; }
+        .orb-3 { width: 300px; height: 300px; background: #8b5cf6; top: 40%; left: 40%; animation-duration: 15s; }
+
+        @keyframes float {
+            0% { transform: translateY(0px) translateX(0px); }
+            100% { transform: translateY(50px) translateX(50px); }
+        }
+
+        /* --- ESTILOS DEL LAYOUT --- */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+        @media(min-width: 1024px) {
+            .grid-layout {
+                grid-template-columns: 380px 1fr;
+            }
+        }
+        .sidebar, .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        .panel-cristal {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 25px;
+            border-radius: 16px;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .panel-titulo {
+            color: var(--primary-color, #3ee7b8);
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 10px;
+            font-weight: 700;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .label-tech {
+            font-size: 12px;
+            color: var(--text-muted, #94a3b8);
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        /* Botón estilizado para invocar el modal */
+        .btn-trigger {
+            background: linear-gradient(135deg, rgba(62, 231, 184, 0.2), rgba(62, 231, 184, 0.05));
+            border: 1px solid rgba(62, 231, 184, 0.4);
+            color: var(--primary-color, #3ee7b8);
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+            width: 100%;
+        }
+        .btn-trigger:hover {
+            background: var(--primary-color, #3ee7b8);
+            color: #0f172a;
+            box-shadow: 0 0 20px rgba(62, 231, 184, 0.4);
+            transform: translateY(-2px);
+        }
+    </style>
 </head>
 <body>
 
+    <!-- Capa de Orbes Animados de Yox -->
     <div class="glass-background">
         <div class="floating-orb orb-1"></div>
         <div class="floating-orb orb-2"></div>
         <div class="floating-orb orb-3"></div>
-
-        <div id="search-container"></div>
     </div>
 
-    <div id="gallery-container"></div>
+    <div class="lab-container" style="max-width: 1400px; margin: 0 auto; padding: 40px 20px;">
+        <header style="text-align: center; margin-bottom: 20px;">
+            <h1 style="color: var(--primary-color, #3ee7b8); font-size: 3rem; margin: 0; font-weight: 800; letter-spacing: -1px;">Librería Core UI</h1>
+            <p style="color: var(--text-muted, #94a3b8); margin-top: 8px; font-size: 16px;">Arquitectura de Componentes Empresariales - Sprint Final</p>
+        </header>
 
-    <div id="table-container" style="margin-top:24px;max-width:1260px;width:100%;margin-left:auto;margin-right:auto"></div>
+        <main class="grid-layout">
+            
+            <!-- COLUMNA IZQUIERDA: CONTROLES DE FORMULARIO -->
+            <section class="sidebar">
+                
+                <!-- 1. Input Text (David) -->
+                <div class="panel-cristal">
+                    <div class="panel-titulo">1. Motor de Validaciones (Input)</div>
+                    <div class="control-group">
+                        <div>
+                            <span class="label-tech">Solo Números (Mín 3 - Máx 8):</span>
+                            <input-text tipo="numeros" min="3" max="8" placeholder="Ej: 123456" ancho="100%"></input-text>
+                        </div>
+                        <div>
+                            <span class="label-tech">Sin Caracteres Especiales:</span>
+                            <input-text tipo="sin-especiales" placeholder="Ej: Usuario2026" ancho="100%"></input-text>
+                        </div>
+                    </div>
+                </div>
 
-    <div style="margin-top:24px;width:100%;max-width:1260px;display:flex;gap:20px;justify-content:center;flex-wrap:wrap">
-    <custom-date-range id="mi-calendario"></custom-date-range>
+                <!-- 2. Select Dinámico (Dudu) -->
+                <div class="panel-cristal">
+                    <div class="panel-titulo">2. Menús Inteligentes (Select)</div>
+                    <div class="control-group">
+                        <div>
+                            <span class="label-tech">Multiselección con Buscador (Tags):</span>
+                            <custom-select id="select-roles" enable-search="true" multiple="true" placeholder="Asignar roles..."></custom-select>
+                        </div>
+                        <div>
+                            <span class="label-tech">Selección Única Simple:</span>
+                            <custom-select id="select-estado" enable-search="false" multiple="false" placeholder="Estado del sistema..."></custom-select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Rango de Fechas (Yox) -->
+                <div class="panel-cristal">
+                    <div class="panel-titulo">3. Control Cronológico (Date)</div>
+                    <div class="control-group" style="align-items: center;">
+                        <span class="label-tech" style="width: 100%; text-align: left;">Calendario (Pasado Bloqueado):</span>
+                        <date-range color-tema="#3ee7b8" allow-past="false" allow-future="true"></date-range>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- COLUMNA DERECHA: TABLA Y MODAL -->
+            <section class="main-content">
+                
+                <!-- 4. Disparador del Modal -->
+                <div class="panel-cristal" style="display: flex; flex-direction: column; gap: 15px;">
+                    <div class="panel-titulo" style="margin: 0; border: none; padding: 0;">4. Ventanas Emergentes Inyectables (Modal)</div>
+                    <p style="margin: 0; font-size: 13px; color: var(--text-muted, #94a3b8); line-height: 1.5;">
+                        Cumpliendo la rúbrica: Modal con imagen de cabecera, fondo personalizado, y componentes (Input y Select) anidados en su interior mediante Slots nativos.
+                    </p>
+                    <button class="btn-trigger" id="open-modal-btn">Abrir Formulario en Modal</button>
+                </div>
+
+                <!-- 5. Tabla Dinámica de Ángel -->
+                <div style="flex-grow: 1; display: flex; flex-direction: column;">
+                    <h3 class="panel-titulo" style="margin-bottom: 10px; padding-left: 10px;">5. Data Table Avanzada (Ángel)</h3>
+                    <custom-table id="tabla-maestra" page-size="6" ancho="100%"></custom-table>
+                </div>
+
+            </section>
+        </main>
     </div>
 
-    <script type="module" src="src/components/modal/index.js"></script>
-    <script type="module" src="src/components/date-range/index.js"></script>
-    <script type="module" src="src/components/input-text/index.js"></script>
-    <script type="module" src="src/components/select-dinamico/index.js"></script>
-    <script type="module" src="src/components/gallery/index.js"></script>
-    <script type="module" src="src/components/table/index.js"></script>
-    <script type="module" src="assets/app.js"></script>
+    <!-- COMPONENTE MODAL GLOBAL (Oculto por defecto) -->
+    <!-- Rúbrica: Imagen superior, custom bg, 2 botones, componentes inyectados -->
+    <custom-modal 
+        id="modal-sistema" 
+        type="custom" 
+        bg-color="rgba(15, 23, 42, 0.9)" 
+        header-image="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80"
+        btn-1="Crear Registro" 
+        btn-2="Cancelar Operación">
+        
+        <h3 style="color: #3ee7b8; margin-top: 0; margin-bottom: 5px;">Nuevo Registro de Sistema</h3>
+        <p style="color: #94a3b8; font-size: 13px; margin-bottom: 25px;">Complete los datos utilizando nuestros propios componentes web.</p>
+        
+        <!-- Aquí inyectamos componentes dentro de otro componente (SLOT) -->
+        <div style="display: flex; flex-direction: column; gap: 15px; text-align: left;">
+            <div>
+                <label style="font-size: 12px; color: #94a3b8; margin-bottom: 5px; display: block;">Nombre (Solo Letras):</label>
+                <input-text tipo="letras" placeholder="Ej: Proyecto Alfa"></input-text>
+            </div>
+            <div>
+                <label style="font-size: 12px; color: #94a3b8; margin-bottom: 5px; display: block;">Nivel de Prioridad:</label>
+                <custom-select id="select-prioridad" enable-search="false" multiple="false" placeholder="Seleccione prioridad..."></custom-select>
+            </div>
+        </div>
+    </custom-modal>
+
+    <!-- INYECCIÓN LÓGICA (Componentes Nativos Unificados) -->
+    <script type="module">
+        // ==========================================
+        // 1. DEFINICIÓN DEL COMPONENTE: INPUT TEXT
+        // ==========================================
+        class InputText extends HTMLElement {
+            constructor() {
+                super();
+                this.attachShadow({ mode: 'open' });
+                this._errorMsg = '';
+            }
+            static get observedAttributes() { return ['ancho', 'largo', 'min', 'max', 'tipo', 'placeholder']; }
+            connectedCallback() { this.render(); this._attachEvents(); }
+            attributeChangedCallback() { this.render(); this._attachEvents(); }
+
+            _validate(value) {
+                const min = parseInt(this.getAttribute('min')) || 0;
+                const max = parseInt(this.getAttribute('max')) || Infinity;
+                const tipo = this.getAttribute('tipo') || 'todo';
+                let isValid = true;
+                this._errorMsg = '';
+
+                if (value.length > 0) {
+                    if (value.length < min) { this._errorMsg = `Debe tener al menos ${min} caracteres`; isValid = false; }
+                    else if (value.length > max) { this._errorMsg = `Máximo ${max} caracteres`; isValid = false; }
+                    else {
+                        if (tipo === 'numeros' && !/^[0-9]+$/.test(value)) { this._errorMsg = 'Solo se permiten números'; isValid = false; }
+                        else if (tipo === 'letras' && !/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(value)) { this._errorMsg = 'Solo se permiten letras'; isValid = false; }
+                        else if (tipo === 'sin-especiales' && !/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/.test(value)) { this._errorMsg = 'No se admiten caracteres especiales'; isValid = false; }
+                    }
+                }
+                
+                const input = this.shadowRoot.querySelector('input');
+                const errorSpan = this.shadowRoot.querySelector('.error-text');
+                
+                if (!isValid) {
+                    input.style.borderColor = '#ef4444';
+                    errorSpan.textContent = this._errorMsg;
+                    errorSpan.style.display = 'block';
+                } else {
+                    input.style.borderColor = 'rgba(255,255,255,0.1)';
+                    errorSpan.style.display = 'none';
+                }
+            }
+
+            _attachEvents() {
+                const input = this.shadowRoot.querySelector('input');
+                if (!input) return;
+                input.addEventListener('input', (e) => {
+                    const tipo = this.getAttribute('tipo');
+                    if (tipo === 'numeros') e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                    if (tipo === 'letras') e.target.value = e.target.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+                    if (tipo === 'sin-especiales') e.target.value = e.target.value.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]/g, '');
+                    this._validate(e.target.value);
+                });
+            }
+
+            render() {
+                const ancho = this.getAttribute('ancho') || '100%';
+                const largo = this.getAttribute('largo') || '44px';
+                const placeholder = this.getAttribute('placeholder') || '';
+                const max = this.getAttribute('max');
+
+                this.shadowRoot.innerHTML = `
+                    <style>
+                        :host { display: block; width: ${ancho}; font-family: system-ui, sans-serif; }
+                        input { width: 100%; height: ${largo}; padding: 0 16px; box-sizing: border-box; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-size: 14px; outline: none; transition: 0.3s; }
+                        input:focus { border-color: #3ee7b8; }
+                        .error-text { color: #ef4444; font-size: 12px; display: none; margin-top: 4px; }
+                    </style>
+                    <div>
+                        <input type="text" placeholder="${placeholder}" ${max ? `maxlength="${max}"` : ''}>
+                        <div class="error-text"></div>
+                    </div>
+                `;
+            }
+        }
+        customElements.define('input-text', InputText);
+
+        // ==========================================
+        // 2. DEFINICIÓN DEL COMPONENTE: CUSTOM SELECT
+        // ==========================================
+        class CustomSelect extends HTMLElement {
+            constructor() {
+                super();
+                this.attachShadow({ mode: 'open' });
+                this._opciones = [];
+                this._seleccionados = [];
+                this._isOpen = false;
+                this._searchTerm = '';
+            }
+
+            static get observedAttributes() { return ['ancho', 'enable-search', 'multiple', 'placeholder']; }
+            connectedCallback() {
+                this.render();
+                document.addEventListener('click', this._handleOutsideClick.bind(this));
+            }
+            disconnectedCallback() { document.removeEventListener('click', this._handleOutsideClick.bind(this)); }
+            attributeChangedCallback() { this.render(); }
+
+            set opciones(val) { this._opciones = Array.isArray(val) ? val : []; this.render(); }
+            get seleccionados() { return this._seleccionados; }
+
+            _handleOutsideClick(e) {
+                if (!e.composedPath().includes(this) && this._isOpen) {
+                    this._isOpen = false;
+                    this.render();
+                }
+            }
+
+            _toggleMenu() {
+                this._isOpen = !this._isOpen;
+                this.render();
+                if (this._isOpen && this.getAttribute('enable-search') === 'true') {
+                    setTimeout(() => { const searchBox = this.shadowRoot.querySelector('.search-box'); if (searchBox) searchBox.focus(); }, 50);
+                }
+            }
+
+            _handleSelect(item) {
+                const isMultiple = this.getAttribute('multiple') === 'true';
+                if (isMultiple) {
+                    if (this._seleccionados.includes(item)) this._seleccionados = this._seleccionados.filter(i => i !== item);
+                    else this._seleccionados.push(item);
+                } else {
+                    this._seleccionados = [item];
+                    this._isOpen = false;
+                }
+                this.render();
+            }
+
+            _removeTag(e, item) {
+                e.stopPropagation();
+                this._seleccionados = this._seleccionados.filter(i => i !== item);
+                this.render();
+            }
+
+            _updateOptionsList() {
+                const list = this.shadowRoot.querySelector('.options-list');
+                if (!list) return;
+                const filtered = this._opciones.filter(opt => opt.toLowerCase().includes(this._searchTerm));
+                if (filtered.length > 0) {
+                    list.innerHTML = filtered.map(opt => `
+                        <div class="option-item ${this._seleccionados.includes(opt) ? 'selected' : ''}" data-value="${opt}">
+                            <span>${opt}</span><span class="check-icon">✓</span>
+                        </div>
+                    `).join('');
+                } else {
+                    list.innerHTML = `<div class="empty-msg">No se encontraron resultados</div>`;
+                }
+                list.querySelectorAll('.option-item').forEach(item => {
+                    item.addEventListener('click', (e) => { e.stopPropagation(); this._handleSelect(item.dataset.value); });
+                });
+            }
+
+            _attachEvents() {
+                const trigger = this.shadowRoot.querySelector('.select-trigger');
+                if (trigger) trigger.addEventListener('click', () => this._toggleMenu());
+
+                const search = this.shadowRoot.querySelector('.search-box');
+                if (search) {
+                    search.addEventListener('input', (e) => {
+                        this._searchTerm = e.target.value.toLowerCase();
+                        this._updateOptionsList();
+                    });
+                    search.addEventListener('click', (e) => e.stopPropagation());
+                }
+
+                this.shadowRoot.querySelectorAll('.tag-close').forEach(btn => {
+                    btn.addEventListener('click', (e) => this._removeTag(e, btn.dataset.value));
+                });
+
+                this.shadowRoot.querySelectorAll('.option-item').forEach(item => {
+                    item.addEventListener('click', (e) => { e.stopPropagation(); this._handleSelect(item.dataset.value); });
+                });
+            }
+
+            render() {
+                const ancho = this.getAttribute('ancho') || '100%';
+                const enableSearch = this.getAttribute('enable-search') === 'true';
+                const isMultiple = this.getAttribute('multiple') === 'true';
+                const placeholder = this.getAttribute('placeholder') || 'Seleccione...';
+
+                let triggerContent = `<span class="placeholder">${placeholder}</span>`;
+                if (this._seleccionados.length > 0) {
+                    if (isMultiple) {
+                        triggerContent = `<div class="tags-wrapper">` + this._seleccionados.map(s => `<span class="tag">${s} <span class="tag-close" data-value="${s}">×</span></span>`).join('') + `</div>`;
+                    } else {
+                        triggerContent = `<span class="selected-text">${this._seleccionados[0]}</span>`;
+                    }
+                }
+
+                const initialFiltered = this._opciones.filter(opt => opt.toLowerCase().includes(this._searchTerm));
+
+                this.shadowRoot.innerHTML = `
+                    <style>
+                        :host { display: block; width: ${ancho}; font-family: system-ui, sans-serif; position: relative; }
+                        .select-trigger { min-height: 44px; padding: 8px 16px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; cursor: pointer; display: flex; align-items: center; transition: 0.3s; backdrop-filter: blur(10px); }
+                        .select-trigger.active { border-color: #3ee7b8; }
+                        .placeholder { color: #94a3b8; font-size: 14px; }
+                        .selected-text { color: #f8fafc; font-size: 14px; }
+                        .tags-wrapper { display: flex; flex-wrap: wrap; gap: 6px; }
+                        .tag { background: rgba(62,231,184,0.15); border: 1px solid rgba(62,231,184,0.3); color: #3ee7b8; padding: 4px 8px; border-radius: 6px; font-size: 12px; display: flex; align-items: center; gap: 6px; }
+                        .tag-close { cursor: pointer; color: #3ee7b8; transition: 0.2s; } .tag-close:hover { color: white; }
+                        .dropdown-menu { position: absolute; top: calc(100% + 8px); left: 0; width: 100%; background: rgba(15,23,42,0.95); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; backdrop-filter: blur(20px); z-index: 1000; display: ${this._isOpen ? 'flex' : 'none'}; flex-direction: column; max-height: 250px; overflow: hidden; }
+                        .search-box { margin: 12px; padding: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; outline: none; font-size: 14px; }
+                        .search-box:focus { border-color: #3ee7b8; }
+                        .options-list { overflow-y: auto; padding: 0 8px 12px 8px; }
+                        .option-item { padding: 10px; border-radius: 8px; color: #e2e8f0; font-size: 14px; cursor: pointer; display: flex; justify-content: space-between; }
+                        .option-item:hover { background: rgba(255,255,255,0.05); color: #3ee7b8; }
+                        .option-item.selected { background: rgba(62,231,184,0.1); color: #3ee7b8; }
+                        .check-icon { display: none; } .option-item.selected .check-icon { display: block; }
+                        .empty-msg { padding: 10px; color: #94a3b8; font-size: 13px; text-align: center; }
+                    </style>
+                    <div class="select-trigger ${this._isOpen ? 'active' : ''}">${triggerContent}</div>
+                    <div class="dropdown-menu">
+                        ${enableSearch ? `<input type="text" class="search-box" placeholder="Buscar..." value="${this._searchTerm}">` : ''}
+                        <div class="options-list">
+                            ${initialFiltered.map(opt => `<div class="option-item ${this._seleccionados.includes(opt) ? 'selected' : ''}" data-value="${opt}"><span>${opt}</span><span class="check-icon">✓</span></div>`).join('')}
+                        </div>
+                    </div>
+                `;
+                this._attachEvents();
+            }
+        }
+        customElements.define('custom-select', CustomSelect);
+
+        // ==========================================
+        // 3. DEFINICIÓN DEL COMPONENTE: DATE RANGE
+        // ==========================================
+        class DateRange extends HTMLElement {
+            constructor() {
+                super();
+                this.attachShadow({ mode: 'open' });
+                this._currentDate = new Date();
+                this._selectedDate = null;
+            }
+
+            static get observedAttributes() { return ['color-tema', 'allow-past', 'allow-future']; }
+            connectedCallback() { this.render(); }
+            attributeChangedCallback() { this.render(); }
+
+            _changeMonth(offset) {
+                this._currentDate.setMonth(this._currentDate.getMonth() + offset);
+                this.render();
+            }
+
+            _selectDate(day) {
+                this._selectedDate = new Date(this._currentDate.getFullYear(), this._currentDate.getMonth(), day);
+                this.render();
+            }
+
+            render() {
+                const colorTema = this.getAttribute('color-tema') || '#3ee7b8';
+                const allowPast = this.getAttribute('allow-past') !== 'false';
+                const allowFuture = this.getAttribute('allow-future') !== 'false';
+                
+                const year = this._currentDate.getFullYear();
+                const month = this._currentDate.getMonth();
+                
+                const firstDay = new Date(year, month, 1).getDay();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                
+                const today = new Date();
+                today.setHours(0,0,0,0);
+
+                const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+                let daysHtml = '';
+                
+                for (let i = 0; i < firstDay; i++) {
+                    daysHtml += `<div></div>`;
+                }
+
+                for (let i = 1; i <= daysInMonth; i++) {
+                    const thisDay = new Date(year, month, i);
+                    thisDay.setHours(0,0,0,0);
+                    
+                    let isDisabled = false;
+                    if (!allowPast && thisDay < today) isDisabled = true;
+                    if (!allowFuture && thisDay > today) isDisabled = true;
+
+                    let isSelected = this._selectedDate && thisDay.getTime() === this._selectedDate.getTime();
+                    
+                    let classNames = 'day-btn';
+                    if (isDisabled) classNames += ' disabled';
+                    if (isSelected) classNames += ' selected';
+
+                    daysHtml += `<div class="${classNames}" data-day="${i}">${i}</div>`;
+                }
+
+                this.shadowRoot.innerHTML = `
+                    <style>
+                        :host { display: block; font-family: system-ui, sans-serif; --tema: ${colorTema}; width: 100%; max-width: 320px; }
+                        .calendar-box { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; backdrop-filter: blur(10px); }
+                        .header { display: flex; justify-content: space-between; align-items: center; color: white; margin-bottom: 15px; font-weight: 600; }
+                        .btn-nav { background: transparent; border: none; color: var(--tema); font-size: 18px; cursor: pointer; padding: 5px; }
+                        .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; color: #94a3b8; font-size: 12px; font-weight: bold; margin-bottom: 10px; }
+                        .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+                        .day-btn { padding: 8px 0; text-align: center; color: #e2e8f0; font-size: 14px; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+                        .day-btn:not(.disabled):not(.selected):hover { background: var(--tema); opacity: 0.7; color: #0f172a; }
+                        .day-btn.selected { background: var(--tema); color: #0f172a; font-weight: bold; opacity: 1; }
+                        .day-btn.disabled { color: rgba(255,255,255,0.2); cursor: not-allowed; }
+                    </style>
+                    <div class="calendar-box">
+                        <div class="header">
+                            <button class="btn-nav" id="prev-month">◀</button>
+                            <span>${monthNames[month]} ${year}</span>
+                            <button class="btn-nav" id="next-month">▶</button>
+                        </div>
+                        <div class="weekdays"><div>Do</div><div>Lu</div><div>Ma</div><div>Mi</div><div>Ju</div><div>Vi</div><div>Sa</div></div>
+                        <div class="days-grid">${daysHtml}</div>
+                    </div>
+                `;
+
+                this.shadowRoot.querySelector('#prev-month').addEventListener('click', () => this._changeMonth(-1));
+                this.shadowRoot.querySelector('#next-month').addEventListener('click', () => this._changeMonth(1));
+                this.shadowRoot.querySelectorAll('.day-btn:not(.disabled)').forEach(btn => {
+                    btn.addEventListener('click', (e) => this._selectDate(parseInt(e.target.dataset.day)));
+                });
+            }
+        }
+        customElements.define('date-range', DateRange);
+
+        // ==========================================
+        // 4. DEFINICIÓN DEL COMPONENTE: CUSTOM MODAL
+        // ==========================================
+        class CustomModal extends HTMLElement {
+            constructor() {
+                super();
+                this.attachShadow({ mode: 'open' });
+                this._isOpen = false;
+            }
+
+            static get observedAttributes() { return ['type', 'bg-color', 'header-image', 'btn-1', 'btn-2']; }
+            connectedCallback() { this.render(); }
+            attributeChangedCallback() { if (this._isOpen) this.render(); }
+
+            open() {
+                this._isOpen = true;
+                this.render();
+                document.body.style.overflow = 'hidden';
+            }
+
+            close() {
+                this._isOpen = false;
+                this.render();
+                document.body.style.overflow = 'auto';
+            }
+
+            _handleBtn1() { this.dispatchEvent(new CustomEvent('action-1', { bubbles: true, composed: true })); this.close(); }
+            _handleBtn2() { this.dispatchEvent(new CustomEvent('action-2', { bubbles: true, composed: true })); this.close(); }
+
+            render() {
+                if (!this._isOpen) {
+                    this.shadowRoot.innerHTML = '';
+                    return;
+                }
+
+                const type = this.getAttribute('type') || 'info';
+                const bgColor = this.getAttribute('bg-color') || 'rgba(15, 23, 42, 0.85)';
+                const headerImage = this.getAttribute('header-image');
+                const btn1 = this.getAttribute('btn-1') || 'Aceptar';
+                const btn2 = this.getAttribute('btn-2');
+
+                let iconSvg = '';
+                let typeColor = '#3ee7b8'; 
+
+                if (type === 'error') {
+                    typeColor = '#ef4444';
+                    iconSvg = `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="${typeColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`;
+                } else if (type === 'info') {
+                    typeColor = '#3b82f6';
+                    iconSvg = `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="${typeColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`;
+                } else if (type === 'confirm') {
+                    typeColor = '#eab308';
+                    iconSvg = `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="${typeColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`;
+                }
+
+                this.shadowRoot.innerHTML = `
+                    <style>
+                        .overlay { position: fixed; inset: 0; z-index: 9999; background: ${bgColor}; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; animation: fadeIn 0.3s ease forwards; }
+                        .modal-container { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; width: 90%; max-width: 450px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); display: flex; flex-direction: column; overflow: hidden; animation: slideUp 0.3s ease forwards; font-family: system-ui, sans-serif; }
+                        .header-img { width: 100%; height: 160px; object-fit: cover; border-bottom: 1px solid rgba(255,255,255,0.05); }
+                        .modal-body { padding: 30px 24px 20px 24px; display: flex; flex-direction: column; gap: 15px; }
+                        .icon-container { display: flex; justify-content: center; margin-bottom: 10px; }
+                        .content-slot { color: #f8fafc; font-size: 15px; line-height: 1.5; text-align: center; }
+                        .modal-actions { display: flex; justify-content: center; gap: 12px; padding: 0 24px 30px 24px; }
+                        button { padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; outline: none; letter-spacing: 0.5px; }
+                        .btn-primary { background: ${typeColor}; color: #0f172a; border: none; }
+                        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px ${typeColor}60; }
+                        .btn-secondary { background: transparent; color: #94a3b8; border: 1px solid rgba(255,255,255,0.2); }
+                        .btn-secondary:hover { background: rgba(255,255,255,0.05); color: white; }
+                        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+                        @keyframes slideUp { from { opacity: 0; transform: translateY(30px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+                    </style>
+                    <div class="overlay">
+                        <div class="modal-container">
+                            ${headerImage ? `<img src="${headerImage}" class="header-img" alt="Modal Header">` : ''}
+                            <div class="modal-body">
+                                ${type !== 'custom' ? `<div class="icon-container">${iconSvg}</div>` : ''}
+                                <div class="content-slot"><slot></slot></div>
+                            </div>
+                            <div class="modal-actions">
+                                ${btn2 ? `<button class="btn-secondary" id="btn-2">${btn2}</button>` : ''}
+                                <button class="btn-primary" id="btn-1">${btn1}</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                const overlay = this.shadowRoot.querySelector('.overlay');
+                const btn1El = this.shadowRoot.querySelector('#btn-1');
+                const btn2El = this.shadowRoot.querySelector('#btn-2');
+
+                overlay.addEventListener('click', (e) => { if (e.target === overlay) this.close(); });
+                if (btn1El) btn1El.addEventListener('click', () => this._handleBtn1());
+                if (btn2El) btn2El.addEventListener('click', () => this._handleBtn2());
+            }
+        }
+        customElements.define('custom-modal', CustomModal);
+
+        // ==========================================
+        // 5. DEFINICIÓN DEL COMPONENTE: CUSTOM TABLE
+        // ==========================================
+        class CustomTable extends HTMLElement {
+            constructor() {
+                super();
+                this.attachShadow({ mode: 'open' });
+                this._data = [];
+                this._columns = [];
+                this._currentPage = 1;
+                this._pageSize = 10;
+                this._searchTerm = '';
+                this._sortKey = null;
+                this._sortDir = null;
+            }
+
+            static get observedAttributes() { return ['ancho', 'page-size']; }
+
+            connectedCallback() {
+                this._pageSize = parseInt(this.getAttribute('page-size')) || 10;
+                this.render();
+            }
+
+            attributeChangedCallback(name, oldVal, newVal) {
+                if (oldVal !== newVal && name === 'page-size') this._pageSize = parseInt(newVal) || 10;
+                this.render();
+            }
+
+            set data(val) { this._data = Array.isArray(val) ? val : []; this._currentPage = 1; this.render(); }
+            set columns(val) { this._columns = Array.isArray(val) ? val : []; this.render(); }
+
+            _getProcessedData() {
+                let processed = [...this._data];
+
+                if (this._searchTerm) {
+                    const term = this._searchTerm.toLowerCase();
+                    processed = processed.filter(row => 
+                        this._columns.some(col => String(row[col.key]).toLowerCase().includes(term))
+                    );
+                }
+
+                if (this._sortKey && this._sortDir) {
+                    const colDef = this._columns.find(c => c.key === this._sortKey);
+                    processed.sort((a, b) => {
+                        let vA = a[this._sortKey], vB = b[this._sortKey];
+                        if (vA == null) return 1; if (vB == null) return -1;
+                        
+                        if (colDef && colDef.type === 'date') return this._sortDir === 'asc' ? new Date(vA) - new Date(vB) : new Date(vB) - new Date(vA);
+                        if (typeof vA === 'number') return this._sortDir === 'asc' ? vA - vB : vB - vA;
+                        return this._sortDir === 'asc' ? String(vA).localeCompare(String(vB)) : String(vB).localeCompare(String(vA));
+                    });
+                }
+                return processed;
+            }
+
+            _attachEvents() {
+                const root = this.shadowRoot;
+                const searchInput = root.querySelector('.search-input');
+                if (searchInput) {
+                    searchInput.addEventListener('input', (e) => {
+                        this._searchTerm = e.target.value;
+                        this._currentPage = 1;
+                        this.render();
+                        root.querySelector('.search-input').focus();
+                    });
+                }
+
+                root.querySelectorAll('th').forEach(th => {
+                    th.addEventListener('click', () => {
+                        const key = th.dataset.key;
+                        if (this._sortKey === key) {
+                            this._sortDir = this._sortDir === 'asc' ? 'desc' : null;
+                            if (!this._sortDir) this._sortKey = null;
+                        } else {
+                            this._sortKey = key; this._sortDir = 'asc';
+                        }
+                        this.render();
+                    });
+                });
+
+                const prev = root.querySelector('#prev');
+                const next = root.querySelector('#next');
+                const totalPages = Math.ceil(this._getProcessedData().length / this._pageSize) || 1;
+
+                if (prev) prev.addEventListener('click', () => { if(this._currentPage > 1) { this._currentPage--; this.render(); } });
+                if (next) next.addEventListener('click', () => { if(this._currentPage < totalPages) { this._currentPage++; this.render(); } });
+            }
+
+            render() {
+                const ancho = this.getAttribute('ancho') || '100%';
+                const processedData = this._getProcessedData();
+                const totalPages = Math.ceil(processedData.length / this._pageSize) || 1;
+                if (this._currentPage > totalPages) this._currentPage = totalPages;
+                
+                const start = (this._currentPage - 1) * this._pageSize;
+                const pageData = processedData.slice(start, start + this._pageSize);
+
+                this.shadowRoot.innerHTML = `
+                    <style>
+                        :host { display: block; width: ${ancho}; font-family: system-ui, sans-serif; color: #f8fafc; }
+                        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 24px; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; gap: 20px; }
+                        .toolbar { display: flex; justify-content: space-between; align-items: center; }
+                        .search-input { background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px 16px; border-radius: 8px; color: white; width: 250px; outline: none; transition: border-color 0.3s; }
+                        .search-input:focus { border-color: #3ee7b8; }
+                        .table-responsive { overflow-x: auto; }
+                        table { width: 100%; border-collapse: collapse; text-align: left; }
+                        th, td { padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+                        th { color: #94a3b8; font-weight: 600; text-transform: uppercase; font-size: 12px; cursor: pointer; transition: color 0.2s; }
+                        th:hover { color: #3ee7b8; background: rgba(255,255,255,0.02); }
+                        tr:hover td { background: rgba(255,255,255,0.02); }
+                        .sort-icon { color: #3ee7b8; margin-left: 5px; font-size: 10px; }
+                        .pagination { display: flex; justify-content: flex-end; align-items: center; gap: 15px; font-size: 14px; color: #94a3b8; }
+                        .btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 6px 12px; border-radius: 6px; cursor: pointer; transition: 0.3s; }
+                        .btn:hover:not(:disabled) { background: #3ee7b8; color: #0f172a; border-color: #3ee7b8; }
+                        .btn:disabled { opacity: 0.3; cursor: not-allowed; }
+                        .mobile-cards { display: none; flex-direction: column; gap: 12px; }
+                        .card { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; }
+                        .card-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.02); }
+                        .card-row:last-child { border: none; }
+                        .card-label { color: #94a3b8; font-size: 12px; text-transform: uppercase; }
+                        @media (max-width: 768px) { .table-responsive { display: none; } .mobile-cards { display: flex; } .search-input { width: 100%; } }
+                    </style>
+                    <div class="glass-card">
+                        <div class="toolbar">
+                            <input type="text" class="search-input" placeholder="Buscar registros..." value="${this._searchTerm}">
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        ${this._columns.map(col => {
+                                            const isSorted = this._sortKey === col.key;
+                                            const icon = isSorted ? (this._sortDir === 'asc' ? '▲' : '▼') : '';
+                                            return `<th data-key="${col.key}">${col.label} <span class="sort-icon">${icon}</span></th>`;
+                                        }).join('')}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${pageData.length ? pageData.map(row => `
+                                        <tr>${this._columns.map(col => `<td>${row[col.key] != null ? row[col.key] : ''}</td>`).join('')}</tr>
+                                    `).join('') : `<tr><td colspan="${this._columns.length}" style="text-align:center; color:#94a3b8;">No se encontraron datos</td></tr>`}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mobile-cards">
+                            ${pageData.map(row => `
+                                <div class="card">
+                                    ${this._columns.map(col => `
+                                        <div class="card-row">
+                                            <span class="card-label">${col.label}</span>
+                                            <span>${row[col.key] != null ? row[col.key] : ''}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="pagination">
+                            <span>Pág. ${this._currentPage} de ${totalPages}</span>
+                            <div>
+                                <button id="prev" class="btn" ${this._currentPage === 1 ? 'disabled' : ''}>Anterior</button>
+                                <button id="next" class="btn" ${this._currentPage === totalPages ? 'disabled' : ''}>Siguiente</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                this._attachEvents();
+            }
+        }
+        customElements.define('custom-table', CustomTable);
+
+        // ==========================================
+        // 6. INICIALIZACIÓN DE DATOS (DOM LOADED)
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- 1. Inicializar Selects de la Barra Lateral ---
+            const selectRoles = document.getElementById('select-roles');
+            if (selectRoles) {
+                selectRoles.opciones = ['Administrador', 'Auditor QA', 'Desarrollador Frontend', 'Arquitecto Cloud', 'Diseñador UI', 'DevOps'];
+            }
+
+            const selectEstado = document.getElementById('select-estado');
+            if (selectEstado) {
+                selectEstado.opciones = ['Activo', 'En Mantenimiento', 'Caído (Offline)'];
+            }
+
+            // --- 2. Inicializar Select dentro del Modal ---
+            const selectPrioridad = document.getElementById('select-prioridad');
+            if (selectPrioridad) {
+                selectPrioridad.opciones = ['Alta (Crítica)', 'Media', 'Baja'];
+            }
+
+            // --- 3. Inicializar Tabla Maestra (Ángel) ---
+            const tabla = document.getElementById('tabla-maestra');
+            if (tabla) {
+                tabla.columns = [
+                    { key: 'ticket', label: 'Ticket', type: 'number' },
+                    { key: 'asunto', label: 'Asunto / Tarea', type: 'string' },
+                    { key: 'fecha', label: 'Fecha Límite', type: 'date' },
+                    { key: 'prioridad', label: 'Prioridad', type: 'string' }
+                ];
+                tabla.data = [
+                    { ticket: 1045, asunto: 'Migración a Web Components', fecha: '2026-06-15', prioridad: 'Alta' },
+                    { ticket: 1046, asunto: 'Optimización de assets CSS', fecha: '2026-05-22', prioridad: 'Media' },
+                    { ticket: 1047, asunto: 'Pruebas unitarias de Input', fecha: '2026-05-25', prioridad: 'Baja' },
+                    { ticket: 1048, asunto: 'Reunión de Arquitectura', fecha: '2026-05-21', prioridad: 'Alta' },
+                    { ticket: 1049, asunto: 'Despliegue a Producción', fecha: '2026-07-01', prioridad: 'Crítica' },
+                    { ticket: 1050, asunto: 'Actualización de Readme', fecha: '2026-05-30', prioridad: 'Baja' },
+                    { ticket: 1051, asunto: 'Revisión de QA (Rubrica)', fecha: '2026-06-05', prioridad: 'Media' }
+                ];
+            }
+
+            // --- 4. Conexión del Botón con el Modal ---
+            const modal = document.getElementById('modal-sistema');
+            const openBtn = document.getElementById('open-modal-btn');
+
+            if (openBtn && modal) {
+                openBtn.addEventListener('click', () => {
+                    if (typeof modal.open === 'function') {
+                        modal.open();
+                    } else {
+                        console.error('El componente modal aún no tiene el método open() programado.');
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
-
-

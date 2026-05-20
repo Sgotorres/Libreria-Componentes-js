@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba Aislada - Modal</title>
+    <style>
+        body { 
+            background: #0f172a; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; height: 100vh; margin: 0; 
+            color: white; font-family: system-ui, sans-serif; 
+        }
+        .sandbox { 
+            background: rgba(255,255,255,0.05); padding: 40px; 
+            border-radius: 15px; border: 1px solid rgba(255,255,255,0.1);
+            display: flex; gap: 20px;
+        }
+        button.trigger {
+            padding: 12px 24px; background: #3ee7b8; color: #0f172a; 
+            border: none; border-radius: 8px; font-weight: bold; cursor: pointer;
+        }
+        button.trigger.custom { background: #8b5cf6; color: white; }
+    </style>
+</head>
+<body>
+    
+    <div class="sandbox">
+        <button class="trigger" id="btn-info">Probar Modal Info</button>
+        <button class="trigger custom" id="btn-custom">Probar Modal Custom (Formulario)</button>
+    </div>
+
+    <custom-modal id="modal-info" type="info" btn-1="Entendido">
+        <h2 style="margin-top:0; color: #3b82f6;">Información del Sistema</h2>
+        <p>Este es el color de fondo predestinado. El profesor pidió que si el usuario no pone color, usemos uno por defecto.</p>
+    </custom-modal>
+
+    <custom-modal 
+        id="modal-custom" 
+        type="custom" 
+        bg-color="rgba(20, 10, 40, 0.95)" 
+        header-image="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80"
+        btn-1="Agregar Producto" 
+        btn-2="Cancelar">
+        
+        <h3 style="color: #8b5cf6; margin-top:0;">Nuevo Producto</h3>
+        <p style="font-size: 13px; color: #aaa;">Inyección de formulario mediante Slot:</p>
+        <div style="display: flex; flex-direction: column; gap: 10px; text-align: left;">
+            <input type="text" placeholder="Nombre del producto..." style="padding: 10px; border-radius: 5px;">
+            <input type="number" placeholder="Precio..." style="padding: 10px; border-radius: 5px;">
+        </div>
+    </custom-modal>
+
+    <script type="module">
+        import './index.js';
+        
+        // Lógica para abrir los modales al hacer clic
+        document.getElementById('btn-info').addEventListener('click', () => {
+            document.getElementById('modal-info').open();
+        });
+
+        document.getElementById('btn-custom').addEventListener('click', () => {
+            document.getElementById('modal-custom').open();
+        });
+    </script>
+</body>
+</html>

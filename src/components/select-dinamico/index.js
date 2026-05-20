@@ -1,161 +1,187 @@
-/**
- * @param {HTMLElement} container
- * @param {Object} [options]
- * @param {string[]} [options.data]
- * @param {string} [options.placeholder='Buscar...']
- * @param {(item: string) => void} [options.onSelect]
- * @param {(term: string) => void} [options.onSearch]
- * @param {(item: string) => void} [options.onTagRemove]
- * @returns {{ element: HTMLElement, getSelected: () => string[], addItem: (item: string) => void, removeItem: (item: string) => void, clear: () => void, setData: (data: string[]) => void, destroy: () => void }}
- */
-function SelectDinamico(container, options = {}) {
-    const {
-        data = [],
-        placeholder = 'Buscar...',
-        onSelect = null,
-        onSearch = null,
-        onTagRemove = null
-    } = options;
+class CustomSelect extends HTMLElement {
+    constructor() {
+        super();
+        this.attachShadow({ mode: 'open' });
+        
+        // Estado interno
+        this._opciones = [];
+        this._seleccionados = [];
+        this._isOpen = false;
+        this._searchTerm = '';
+    }
 
-    const selected = new Set();
-    let typingTimer;
+    // Leemos las reglas de la rúbrica del profesor
+    static get observedAttributes() { 
+        return ['ancho', 'enable-search', 'multiple', 'placeholder']; 
+    }
 
-    const wrapper = document.createElement('div');
-    wrapper.className = 'sd';
+    connectedCallback() {
+        this.render();
+        // Cierra el menú al hacer clic fuera del componente
+        this._outsideClickHandler = this._handleOutsideClick.bind(this);
+        document.addEventListener('click', this._outsideClickHandler);
+    }
 
-    const box = document.createElement('div');
-    box.className = 'sd__box';
+    disconnectedCallback() { 
+        document.removeEventListener('click', this._outsideClickHandler); 
+    }
+    
+    attributeChangedCallback() { 
+        this.render(); 
+    }
 
-    const tagsContainer = document.createElement('div');
-    tagsContainer.className = 'sd__tags';
-    box.appendChild(tagsContainer);
+    // API Pública para inyectar datos
+    set opciones(val) { 
+        this._opciones = Array.isArray(val) ? val : []; 
+        this.render(); 
+    }
+    get seleccionados() { return this._seleccionados; }
 
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.className = 'sd__input';
-    input.placeholder = placeholder;
-    input.autocomplete = 'off';
-    box.appendChild(input);
+    _handleOutsideClick(e) {
+        if (!e.composedPath().includes(this) && this._isOpen) {
+            this._isOpen = false;
+            this.render();
+        }
+    }
 
-    wrapper.appendChild(box);
+    _toggleMenu() {
+        this._isOpen = !this._isOpen;
+        this.render();
+        
+        // Foco automático en el buscador si está activado
+        if (this._isOpen && this.getAttribute('enable-search') === 'true') {
+            setTimeout(() => { 
+                const searchBox = this.shadowRoot.querySelector('.search-box'); 
+                if (searchBox) searchBox.focus(); 
+            }, 50);
+        }
+    }
 
-    const list = document.createElement('ul');
-    list.className = 'sd__suggestions hidden';
-    wrapper.appendChild(list);
+    _handleSelect(item) {
+        const isMultiple = this.getAttribute('multiple') === 'true';
+        
+        if (isMultiple) {
+            if (this._seleccionados.includes(item)) {
+                this._seleccionados = this._seleccionados.filter(i => i !== item);
+            } else {
+                this._seleccionados.push(item);
+            }
+        } else {
+            this._seleccionados = [item];
+            this._isOpen = false;
+        }
+        this.render();
+        
+        this.dispatchEvent(new CustomEvent('cambio-seleccion', { 
+            detail: this._seleccionados, 
+            bubbles: true, composed: true 
+        }));
+    }
 
-    container.appendChild(wrapper);
+    _removeTag(e, item) {
+        e.stopPropagation(); // Evita que se abra el menú al cerrar una etiqueta
+        this._seleccionados = this._seleccionados.filter(i => i !== item);
+        this.render();
+    }
 
-    box.addEventListener('click', () => input.focus());
-
-    input.addEventListener('input', (e) => {
-        const term = e.target.value.toLowerCase().trim();
-
-        wrapper.classList.add('sd--typing');
-        clearTimeout(typingTimer);
-        typingTimer = setTimeout(() => {
-            wrapper.classList.remove('sd--typing');
-        }, 150);
-
-        if (onSearch) onSearch(term);
-
-        if (term === "") {
-            list.classList.add('hidden');
-            return;
+    // Función que filtra SIN re-renderizar todo el componente (evita el bug de escritura)
+    _updateOptionsList() {
+        const list = this.shadowRoot.querySelector('.options-list');
+        if (!list) return;
+        
+        const filtered = this._opciones.filter(opt => opt.toLowerCase().includes(this._searchTerm));
+        
+        if (filtered.length > 0) {
+            list.innerHTML = filtered.map(opt => `
+                <div class="option-item ${this._seleccionados.includes(opt) ? 'selected' : ''}" data-value="${opt}">
+                    <span>${opt}</span><span class="check-icon">✓</span>
+                </div>
+            `).join('');
+        } else {
+            list.innerHTML = `<div class="empty-msg">No se encontraron productos</div>`;
         }
 
-        const filtered = data.filter(item =>
-            item.toLowerCase().includes(term)
-        );
-        renderSuggestions(filtered);
-    });
-
-    function renderSuggestions(items) {
-        list.innerHTML = '';
-
-        if (items.length === 0) {
-            const li = document.createElement('li');
-            li.className = 'sd__suggestion';
-            li.textContent = 'Sin resultados...';
-            li.style.opacity = '0.5';
-            list.appendChild(li);
-        } else {
-            items.forEach(item => {
-                const li = document.createElement('li');
-                li.className = 'sd__suggestion';
-                if (selected.has(item)) li.classList.add('sd__suggestion--selected');
-
-                li.textContent = item;
-                li.addEventListener('click', () => {
-                    toggleItem(item);
-                    input.value = '';
-                    list.classList.add('hidden');
-                    if (onSearch) onSearch('');
-                    input.focus();
-                });
-                list.appendChild(li);
+        // Reasignamos eventos a la nueva lista filtrada
+        list.querySelectorAll('.option-item').forEach(item => {
+            item.addEventListener('click', (e) => { 
+                e.stopPropagation(); 
+                this._handleSelect(item.dataset.value); 
             });
-        }
-        list.classList.remove('hidden');
-    }
-
-    function toggleItem(item) {
-        if (selected.has(item)) {
-            selected.delete(item);
-            if (onTagRemove) onTagRemove(item);
-        } else {
-            selected.add(item);
-            if (onSelect) onSelect(item);
-        }
-        renderTags();
-    }
-
-    function renderTags() {
-        tagsContainer.innerHTML = '';
-        selected.forEach(item => {
-            const tag = document.createElement('div');
-            tag.className = 'sd__tag';
-            tag.innerHTML = `${item} <span class="sd__tag-close">&times;</span>`;
-
-            tag.querySelector('.sd__tag-close').onclick = (e) => {
-                e.stopPropagation();
-                toggleItem(item);
-            };
-            tagsContainer.appendChild(tag);
         });
     }
 
-    const closeOnOutsideClick = (e) => {
-        if (!wrapper.contains(e.target)) {
-            list.classList.add('hidden');
-        }
-    };
-    document.addEventListener('click', closeOnOutsideClick);
+    _attachEvents() {
+        const trigger = this.shadowRoot.querySelector('.select-trigger');
+        if (trigger) trigger.addEventListener('click', () => this._toggleMenu());
 
-    return {
-        element: wrapper,
-        getSelected: () => [...selected],
-        addItem: (item) => { selected.add(item); renderTags(); },
-        removeItem: (item) => { selected.delete(item); renderTags(); },
-        clear: () => { selected.clear(); renderTags(); },
-        setData: (newData) => { data.length = 0; data.push(...newData); },
-        destroy() {
-            document.removeEventListener('click', closeOnOutsideClick);
-            clearTimeout(typingTimer);
-            if (wrapper.parentNode) wrapper.parentNode.removeChild(wrapper);
+        const search = this.shadowRoot.querySelector('.search-box');
+        if (search) {
+            search.addEventListener('input', (e) => {
+                this._searchTerm = e.target.value.toLowerCase();
+                this._updateOptionsList();
+            });
+            // Evita cerrar el menú al hacer clic dentro de la barra de búsqueda
+            search.addEventListener('click', (e) => e.stopPropagation());
         }
-    };
+
+        this.shadowRoot.querySelectorAll('.tag-close').forEach(btn => {
+            btn.addEventListener('click', (e) => this._removeTag(e, btn.dataset.value));
+        });
+
+        this.shadowRoot.querySelectorAll('.option-item').forEach(item => {
+            item.addEventListener('click', (e) => { 
+                e.stopPropagation(); 
+                this._handleSelect(item.dataset.value); 
+            });
+        });
+    }
+
+    render() {
+        const ancho = this.getAttribute('ancho') || '100%';
+        const enableSearch = this.getAttribute('enable-search') === 'true';
+        const isMultiple = this.getAttribute('multiple') === 'true';
+        const placeholder = this.getAttribute('placeholder') || 'Seleccione...';
+
+        // Lógica visual para la barra de trigger (Botón principal)
+        let triggerContent = `<span class="placeholder">${placeholder}</span>`;
+        if (this._seleccionados.length > 0) {
+            if (isMultiple) {
+                triggerContent = `<div class="tags-wrapper">` + 
+                    this._seleccionados.map(s => `
+                        <span class="tag">
+                            ${s} <span class="tag-close" data-value="${s}">×</span>
+                        </span>
+                    `).join('') + `</div>`;
+            } else {
+                triggerContent = `<span class="selected-text">${this._seleccionados[0]}</span>`;
+            }
+        }
+
+        const initialFiltered = this._opciones.filter(opt => opt.toLowerCase().includes(this._searchTerm));
+
+        this.shadowRoot.innerHTML = `
+            <style>:host { width: ${ancho}; }</style>
+            <link rel="stylesheet" href="./style.css">
+            
+            <div class="select-trigger ${this._isOpen ? 'active' : ''}">
+                ${triggerContent}
+            </div>
+            
+            <div class="dropdown-menu ${this._isOpen ? 'open' : ''}">
+                ${enableSearch ? `<input type="text" class="search-box" placeholder="Buscar productos..." value="${this._searchTerm}">` : ''}
+                
+                <div class="options-list">
+                    ${initialFiltered.map(opt => `
+                        <div class="option-item ${this._seleccionados.includes(opt) ? 'selected' : ''}" data-value="${opt}">
+                            <span>${opt}</span><span class="check-icon">✓</span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+
+        this._attachEvents();
+    }
 }
-
-(function (global, factory) {
-    try {
-        if (typeof module !== 'undefined' && module.exports) {
-            module.exports = factory();
-            return;
-        }
-    } catch {}
-    global.SelectDinamico = factory();
-}(typeof window !== 'undefined' ? window : this, function () {
-    return SelectDinamico;
-}));
-
-export default SelectDinamico;
+customElements.define('custom-select', CustomSelect);
+export default CustomSelect;

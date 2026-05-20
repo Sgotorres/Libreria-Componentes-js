@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba Aislada - Input Text</title>
+    <style>
+        body { 
+            background: #0f172a; display: flex; justify-content: center; 
+            align-items: center; height: 100vh; margin: 0; 
+            color: white; font-family: system-ui, sans-serif; 
+        }
+        .sandbox { 
+            background: rgba(255,255,255,0.05); padding: 30px; 
+            border-radius: 15px; border: 1px solid rgba(255,255,255,0.1);
+            width: 100%; max-width: 500px;
+            display: flex; flex-direction: column; gap: 20px;
+        }
+        .label { font-size: 12px; color: #94a3b8; margin-bottom: 5px; display: block; }
+    </style>
+</head>
+<body>
+    
+    <div class="sandbox">
+        <h3 style="color: #3ee7b8; margin-top: 0; text-align: center;">Prueba: Input Text (David)</h3>
+        
+        <div>
+            <span class="label">1. Solo Números (Mín 3, Máx 8) - Ancho 100%, Largo 45px</span>
+            <input-text tipo="numeros" min="3" max="8" ancho="100%" largo="45px" placeholder="Ej: 123456"></input-text>
+        </div>
+
+        <div>
+            <span class="label">2. Solo Letras (Ancho 80%, Largo 40px)</span>
+            <input-text tipo="letras" ancho="80%" largo="40px" placeholder="Ej: Angel Torres"></input-text>
+        </div>
+
+        <div>
+            <span class="label">3. Letras y Números (Sin caracteres especiales)</span>
+            <input-text tipo="sin-especiales" ancho="100%" largo="45px" placeholder="Ej: User2026"></input-text>
+        </div>
+    </div>
+
+    <script type="module" src="./index.js"></script>
+</body>
+</html>

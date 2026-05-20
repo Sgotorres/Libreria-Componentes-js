@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba Aislada - Tabla de Datos</title>
+    <style>
+        body { 
+            background: #0f172a; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; min-height: 100vh; margin: 0; 
+            color: white; font-family: system-ui, sans-serif; padding: 20px; box-sizing: border-box;
+        }
+        .sandbox { 
+            background: rgba(255,255,255,0.05); padding: 30px; 
+            border-radius: 15px; border: 1px solid rgba(255,255,255,0.1);
+            width: 100%; max-width: 900px; display: flex; flex-direction: column; gap: 20px;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="sandbox">
+        <h3 style="color: #3ee7b8; margin-top: 0;">Prueba: Data Table (Ángel)</h3>
+        <p style="font-size: 13px; color: #94a3b8; margin-top: -15px;">Prueba reducir el tamaño de la ventana para ver cómo se convierte en tarjetas móviles.</p>
+        
+        <custom-table id="tabla-prueba" ancho="100%" largo="auto" page-size="4"></custom-table>
+    </div>
+
+    <script type="module">
+        import './index.js';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabla = document.getElementById('tabla-prueba');
+            if (tabla) {
+                // Definimos los Headers y sus "tipos" para que el motor sepa cómo ordenarlos
+                tabla.columns = [
+                    { key: 'id', label: 'ID Producto', type: 'number' },
+                    { key: 'nombre', label: 'Descripción', type: 'string' },
+                    { key: 'fecha', label: 'Fecha de Ingreso', type: 'date' },
+                    { key: 'precio', label: 'Precio (USD)', type: 'number' }
+                ];
+                
+                // Inyectamos la información
+                tabla.data = [
+                    { id: 105, nombre: 'Monitor 4K', fecha: '2026-03-15', precio: 320 },
+                    { id: 102, nombre: 'Teclado Mecánico', fecha: '2026-01-10', precio: 85 },
+                    { id: 108, nombre: 'Mouse Inalámbrico', fecha: '2026-05-22', precio: 45 },
+                    { id: 101, nombre: 'Silla Ergonómica', fecha: '2025-11-05', precio: 190 },
+                    { id: 106, nombre: 'Audífonos Bluetooth', fecha: '2026-02-28', precio: 150 },
+                    { id: 109, nombre: 'Disco Duro 2TB', fecha: '2026-06-01', precio: 95 }
+                ];
+            }
+        });
+    </script>
+</body>
+</html>

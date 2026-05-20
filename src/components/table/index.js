@@ -1,495 +1,208 @@
-function Table(container, options = {}) {
-    const {
-        columns = [],
-        data = [],
-        ancho = '100%',
-        largo = 'auto',
-        pageSize = 10,
-        pageSizeOptions = [5, 10, 20, 50],
-        searchable = true,
-        sortable = true,
-        striped = true,
-        emptyMessage = 'No hay datos disponibles',
-        onRowClick = null,
-        addable = false,
-    } = options;
-
-    let currentData = [...data];
-    let searchTerm = '';
-    let currentPage = 1;
-    let currentPageSize = pageSize;
-    let sortKey = null;
-    let sortDir = null;
-
-    function getFiltered() {
-        if (!searchTerm) return [...currentData];
-        const term = searchTerm.toLowerCase();
-        return currentData.filter(row =>
-            columns.some(col => {
-                const val = row[col.key];
-                return val != null && String(val).toLowerCase().includes(term);
-            })
-        );
+class CustomTable extends HTMLElement {
+    constructor() {
+        super();
+        this.attachShadow({ mode: 'open' });
+        
+        // Estado Interno (Estado de la aplicación)
+        this._data = [];
+        this._columns = [];
+        this._currentPage = 1;
+        this._pageSize = 10;
+        this._searchTerm = '';
+        this._sortKey = null;
+        this._sortDir = null; // 'asc' o 'desc'
     }
 
-    function getSorted(arr) {
-        if (!sortKey || !sortDir) return arr;
-        return [...arr].sort((a, b) => {
-            const col = columns.find(c => c.key === sortKey);
-            const va = a[sortKey];
-            const vb = b[sortKey];
-            if (va == null) return 1;
-            if (vb == null) return -1;
-
-            let cmp;
-            if (col && col.sortFn) {
-                cmp = col.sortFn(va, vb);
-            } else if (col && col.type === 'date') {
-                const da = new Date(va);
-                const db = new Date(vb);
-                if (isNaN(da)) return 1;
-                if (isNaN(db)) return -1;
-                cmp = da - db;
-            } else if (typeof va === 'number') {
-                cmp = va - vb;
-            } else {
-                cmp = String(va).localeCompare(String(vb));
-            }
-            return sortDir === 'asc' ? cmp : -cmp;
-        });
+    // Leemos las reglas de la rúbrica del profesor
+    static get observedAttributes() { 
+        return ['ancho', 'largo', 'page-size']; 
     }
 
-    function getPageData() {
-        const filtered = getFiltered();
-        const sorted = getSorted(filtered);
-        const total = sorted.length;
-        const totalPages = Math.max(1, Math.ceil(total / currentPageSize));
-        if (currentPage > totalPages) currentPage = totalPages;
-        const start = (currentPage - 1) * currentPageSize;
-        const page = sorted.slice(start, start + currentPageSize);
-        return { data: page, total, totalPages, start };
+    connectedCallback() {
+        // Validación de paginación por defecto si el usuario no pone el atributo
+        this._pageSize = parseInt(this.getAttribute('page-size')) || 10;
+        this.render();
     }
 
-    const wrapper = document.createElement('div');
-    wrapper.className = 'tb';
-    wrapper.style.maxWidth = ancho;
-    wrapper.style.maxHeight = largo;
-
-    const toolbar = document.createElement('div');
-    toolbar.className = 'tb__toolbar';
-
-    const searchInput = document.createElement('input');
-    searchInput.className = 'tb__search';
-    searchInput.type = 'text';
-    searchInput.placeholder = 'Buscar...';
-
-    const addBtn = document.createElement('button');
-    addBtn.className = 'tb__add-btn';
-    addBtn.textContent = '+ Agregar';
-
-    const scrollWrap = document.createElement('div');
-    scrollWrap.className = 'tb__scroll';
-
-    const table = document.createElement('table');
-    table.className = 'tb__table';
-
-    const thead = document.createElement('thead');
-    const headerRow = document.createElement('tr');
-    headerRow.className = 'tb__tr';
-    thead.appendChild(headerRow);
-    table.appendChild(thead);
-
-    const tbody = document.createElement('tbody');
-    table.appendChild(tbody);
-    scrollWrap.appendChild(table);
-
-    const mobileContainer = document.createElement('div');
-    mobileContainer.className = 'tb__cards';
-
-    const emptyEl = document.createElement('div');
-    emptyEl.className = 'tb__empty';
-
-    const pagination = document.createElement('div');
-    pagination.className = 'tb__pagination';
-
-    wrapper.appendChild(toolbar);
-    wrapper.appendChild(scrollWrap);
-    wrapper.appendChild(mobileContainer);
-    wrapper.appendChild(emptyEl);
-    wrapper.appendChild(pagination);
-    container.appendChild(wrapper);
-
-    function renderHeaders() {
-        headerRow.innerHTML = '';
-        columns.forEach(col => {
-            const th = document.createElement('th');
-            th.className = 'tb__th';
-            if (sortable && col.sortable !== false) {
-                th.classList.add('tb__th--sortable');
-                if (sortKey === col.key) {
-                    th.classList.add(sortDir === 'asc' ? 'tb__th--asc' : 'tb__th--desc');
-                }
-                th.addEventListener('click', () => {
-                    if (sortKey === col.key) {
-                        sortDir = sortDir === 'asc' ? 'desc' : sortDir === 'desc' ? null : 'asc';
-                        if (!sortDir) sortKey = null;
-                    } else {
-                        sortKey = col.key;
-                        sortDir = 'asc';
-                    }
-                    currentPage = 1;
-                    render();
-                });
-            }
-            th.textContent = col.label || col.key;
-            if (col.width) th.style.width = col.width;
-            headerRow.appendChild(th);
-        });
-    }
-
-    function renderBody() {
-        tbody.innerHTML = '';
-        mobileContainer.innerHTML = '';
-        const result = getPageData();
-        const pageData = result.data;
-
-        if (pageData.length === 0) {
-            emptyEl.textContent = emptyMessage;
-            emptyEl.style.display = 'block';
-            scrollWrap.style.display = 'none';
-            mobileContainer.style.display = 'none';
-            pagination.style.display = 'none';
-            return;
+    attributeChangedCallback(name, oldVal, newVal) {
+        if (oldVal !== newVal && name === 'page-size') {
+            this._pageSize = parseInt(newVal) || 10;
         }
-        emptyEl.style.display = 'none';
-        scrollWrap.removeAttribute('style');
-        mobileContainer.removeAttribute('style');
-        pagination.style.display = 'flex';
+        this.render();
+    }
 
-        pageData.forEach((row, i) => {
-            const tr = document.createElement('tr');
-            tr.className = 'tb__tr';
-            if (striped) tr.classList.add(i % 2 === 0 ? 'tb__tr--even' : 'tb__tr--odd');
-            if (onRowClick) {
-                tr.classList.add('tb__tr--clickable');
-                tr.addEventListener('click', () => onRowClick(row, i));
-            }
-            columns.forEach(col => {
-                const td = document.createElement('td');
-                td.className = 'tb__td';
-                if (col.render) {
-                    td.appendChild(col.render(row[col.key], row, i));
+    // Recepción de la información (Requisito)
+    set data(val) { 
+        this._data = Array.isArray(val) ? val : []; 
+        this._currentPage = 1; // Reiniciamos a la pág 1 al recibir nueva data
+        this.render(); 
+    }
+    
+    // Indicador de headers
+    set columns(val) { 
+        this._columns = Array.isArray(val) ? val : []; 
+        this.render(); 
+    }
+
+    // --- MOTOR DE FILTROS Y ORDENAMIENTO (Requisitos del Profesor) ---
+    _getProcessedData() {
+        let processed = [...this._data];
+
+        // 1. Buscador Aparte Integrado
+        if (this._searchTerm) {
+            const term = this._searchTerm.toLowerCase();
+            processed = processed.filter(row => 
+                this._columns.some(col => String(row[col.key]).toLowerCase().includes(term))
+            );
+        }
+
+        // 2. Ordenamiento Personalizado (Números, Fechas, Alfabético)
+        if (this._sortKey && this._sortDir) {
+            const colDef = this._columns.find(c => c.key === this._sortKey);
+            
+            processed.sort((a, b) => {
+                let vA = a[this._sortKey];
+                let vB = b[this._sortKey];
+                
+                // Manejo de valores vacíos
+                if (vA == null) return 1; 
+                if (vB == null) return -1;
+                
+                // Ordenar por Fechas
+                if (colDef && colDef.type === 'date') {
+                    return this._sortDir === 'asc' ? new Date(vA) - new Date(vB) : new Date(vB) - new Date(vA);
+                }
+                // Ordenar por Números
+                if (colDef && colDef.type === 'number' || (typeof vA === 'number' && typeof vB === 'number')) {
+                    return this._sortDir === 'asc' ? vA - vB : vB - vA;
+                }
+                // Ordenar Alfabéticamente (por defecto)
+                return this._sortDir === 'asc' 
+                    ? String(vA).localeCompare(String(vB)) 
+                    : String(vB).localeCompare(String(vA));
+            });
+        }
+        return processed;
+    }
+
+    _attachEvents() {
+        const root = this.shadowRoot;
+        
+        // Evento del Buscador
+        const searchInput = root.querySelector('.search-input');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                this._searchTerm = e.target.value;
+                this._currentPage = 1;
+                this.render();
+                // Devolvemos el foco al input para que no se pierda al escribir
+                root.querySelector('.search-input').focus();
+            });
+        }
+
+        // Eventos de los Headers para Ordenar
+        root.querySelectorAll('th').forEach(th => {
+            th.addEventListener('click', () => {
+                const key = th.dataset.key;
+                if (this._sortKey === key) {
+                    this._sortDir = this._sortDir === 'asc' ? 'desc' : null; // asc -> desc -> sin filtro
+                    if (!this._sortDir) this._sortKey = null;
                 } else {
-                    td.textContent = row[col.key] ?? '';
+                    this._sortKey = key; 
+                    this._sortDir = 'asc';
                 }
-                if (col.width) td.style.width = col.width;
-                tr.appendChild(td);
+                this.render();
             });
-            tbody.appendChild(tr);
+        });
 
-            const card = document.createElement('div');
-            card.className = 'tb__card';
-            if (striped) card.classList.add(i % 2 === 0 ? 'tb__card--even' : 'tb__card--odd');
-            if (onRowClick) {
-                card.classList.add('tb__card--clickable');
-                card.addEventListener('click', () => onRowClick(row, i));
-            }
-            columns.forEach(col => {
-                const field = document.createElement('div');
-                field.className = 'tb__card-field';
-                const label = document.createElement('span');
-                label.className = 'tb__card-label';
-                label.textContent = col.label || col.key;
-                const value = document.createElement('span');
-                value.className = 'tb__card-value';
-                if (col.render) {
-                    value.appendChild(col.render(row[col.key], row, i));
-                } else {
-                    value.textContent = row[col.key] ?? '';
-                }
-                field.appendChild(label);
-                field.appendChild(value);
-                card.appendChild(field);
-            });
-            mobileContainer.appendChild(card);
+        // Eventos de Paginación
+        const processedData = this._getProcessedData();
+        const totalPages = Math.ceil(processedData.length / this._pageSize) || 1;
+        
+        const prev = root.querySelector('#prev');
+        const next = root.querySelector('#next');
+
+        if (prev) prev.addEventListener('click', () => { 
+            if(this._currentPage > 1) { this._currentPage--; this.render(); } 
+        });
+        
+        if (next) next.addEventListener('click', () => { 
+            if(this._currentPage < totalPages) { this._currentPage++; this.render(); } 
         });
     }
 
-    function renderPagination() {
-        pagination.innerHTML = '';
-        const result = getPageData();
-        const { total, totalPages, start } = result;
-        if (total === 0) return;
-        pagination.style.display = 'flex';
+    render() {
+        // Dimensiones dinámicas
+        const ancho = this.getAttribute('ancho') || '100%';
+        const largo = this.getAttribute('largo') || 'auto';
+        
+        const processedData = this._getProcessedData();
+        const totalPages = Math.ceil(processedData.length / this._pageSize) || 1;
+        
+        // Prevención de página vacía al buscar
+        if (this._currentPage > totalPages) this._currentPage = totalPages;
+        
+        // Paginación Matemática
+        const start = (this._currentPage - 1) * this._pageSize;
+        const pageData = processedData.slice(start, start + this._pageSize);
 
-        const sizeLabel = document.createElement('span');
-        sizeLabel.className = 'tb__page-label';
-        sizeLabel.textContent = 'Filas:';
-        pagination.appendChild(sizeLabel);
+        this.shadowRoot.innerHTML = `
+            <style>:host { width: ${ancho}; height: ${largo}; }</style>
+            <link rel="stylesheet" href="./style.css">
+            
+            <div class="table-wrapper">
+                
+                <div class="toolbar">
+                    <input type="text" class="search-input" placeholder="Buscar en la tabla..." value="${this._searchTerm}">
+                </div>
 
-        const sizeSelect = document.createElement('select');
-        sizeSelect.className = 'tb__page-size';
-        pageSizeOptions.forEach(opt => {
-            const el = document.createElement('option');
-            el.value = opt;
-            el.textContent = opt;
-            if (opt === currentPageSize) el.selected = true;
-            sizeSelect.appendChild(el);
-        });
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                ${this._columns.map(col => {
+                                    const isSorted = this._sortKey === col.key;
+                                    const icon = isSorted ? (this._sortDir === 'asc' ? '▲' : '▼') : '';
+                                    return `<th data-key="${col.key}">${col.label} <span class="sort-icon">${icon}</span></th>`;
+                                }).join('')}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${pageData.length > 0 ? pageData.map(row => `
+                                <tr>
+                                    ${this._columns.map(col => `<td>${row[col.key] != null ? row[col.key] : ''}</td>`).join('')}
+                                </tr>
+                            `).join('') : `<tr><td colspan="${this._columns.length}" style="text-align:center; color:#94a3b8; padding: 20px;">No se encontraron registros.</td></tr>`}
+                        </tbody>
+                    </table>
+                </div>
 
-        const info = document.createElement('span');
-        info.className = 'tb__page-info';
-        const end = Math.min(start + currentPageSize, total);
-        info.textContent = `${start + 1}-${end} de ${total}`;
+                <div class="mobile-cards">
+                    ${pageData.length > 0 ? pageData.map(row => `
+                        <div class="card">
+                            ${this._columns.map(col => `
+                                <div class="card-row">
+                                    <span class="card-label">${col.label}</span>
+                                    <span class="card-value">${row[col.key] != null ? row[col.key] : ''}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `).join('') : `<div class="card" style="text-align:center; color:#94a3b8;">No se encontraron registros.</div>`}
+                </div>
 
-        const btnContainer = document.createElement('div');
-        btnContainer.className = 'tb__page-btns';
+                <div class="pagination">
+                    <span>Página ${this._currentPage} de ${totalPages}</span>
+                    <div>
+                        <button id="prev" class="btn-page" ${this._currentPage === 1 ? 'disabled' : ''}>Anterior</button>
+                        <button id="next" class="btn-page" ${this._currentPage === totalPages ? 'disabled' : ''}>Siguiente</button>
+                    </div>
+                </div>
+                
+            </div>
+        `;
 
-        const prevBtn = document.createElement('button');
-        prevBtn.className = 'tb__page-btn';
-        prevBtn.textContent = '◀';
-        prevBtn.disabled = currentPage <= 1;
-
-        const nextBtn = document.createElement('button');
-        nextBtn.className = 'tb__page-btn';
-        nextBtn.textContent = '▶';
-        nextBtn.disabled = currentPage >= totalPages;
-
-        btnContainer.appendChild(prevBtn);
-
-        const maxVisible = 5;
-        let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
-        let endPage = Math.min(totalPages, startPage + maxVisible - 1);
-        if (endPage - startPage + 1 < maxVisible) {
-            startPage = Math.max(1, endPage - maxVisible + 1);
-            endPage = Math.min(totalPages, startPage + maxVisible - 1);
-        }
-
-        let first = null;
-        let last = null;
-        if (startPage > 1) {
-            first = document.createElement('button');
-            first.className = 'tb__page-btn';
-            first.textContent = '1';
-            btnContainer.appendChild(first);
-            if (startPage > 2) {
-                const dots = document.createElement('span');
-                dots.className = 'tb__page-dots';
-                dots.textContent = '…';
-                btnContainer.appendChild(dots);
-            }
-        }
-        for (let i = startPage; i <= endPage; i++) {
-            const btn = document.createElement('button');
-            btn.className = 'tb__page-btn';
-            btn.textContent = i;
-            if (i === currentPage) btn.classList.add('tb__page-btn--active');
-            btnContainer.appendChild(btn);
-        }
-        if (endPage < totalPages) {
-            if (endPage < totalPages - 1) {
-                const dots = document.createElement('span');
-                dots.className = 'tb__page-dots';
-                dots.textContent = '…';
-                btnContainer.appendChild(dots);
-            }
-            last = document.createElement('button');
-            last.className = 'tb__page-btn';
-            last.textContent = totalPages;
-            btnContainer.appendChild(last);
-        }
-        btnContainer.appendChild(nextBtn);
-
-        pagination.appendChild(sizeSelect);
-        pagination.appendChild(info);
-        pagination.appendChild(btnContainer);
-
-        function goToPage(page) {
-            if (page < 1 || page > totalPages) return;
-            currentPage = page;
-            render();
-        }
-
-        prevBtn.addEventListener('click', () => goToPage(currentPage - 1));
-        nextBtn.addEventListener('click', () => goToPage(currentPage + 1));
-
-        btnContainer.querySelectorAll('.tb__page-btn').forEach(btn => {
-            if (btn !== prevBtn && btn !== nextBtn && btn !== first && btn !== last) {
-                btn.addEventListener('click', () => goToPage(Number(btn.textContent)));
-            }
-        });
-        if (first) first.addEventListener('click', () => goToPage(1));
-        if (last) last.addEventListener('click', () => goToPage(totalPages));
-
-        sizeSelect.addEventListener('change', () => {
-            currentPageSize = Number(sizeSelect.value);
-            currentPage = 1;
-            render();
-        });
+        this._attachEvents();
     }
-
-    function render() {
-        renderHeaders();
-        renderBody();
-        renderPagination();
-    }
-
-    if (searchable) {
-        toolbar.appendChild(searchInput);
-        searchInput.addEventListener('input', () => {
-            searchTerm = searchInput.value;
-            currentPage = 1;
-            render();
-        });
-    }
-
-    if (addable) {
-        toolbar.appendChild(addBtn);
-
-        function openAddForm() {
-            const existing = document.querySelector('.tb__form-overlay');
-            if (existing) existing.remove();
-
-            const overlay = document.createElement('div');
-            overlay.className = 'tb__form-overlay';
-
-            const panel = document.createElement('div');
-            panel.className = 'tb__form-panel';
-
-            const header = document.createElement('div');
-            header.className = 'tb__form-header';
-            const title = document.createElement('span');
-            title.textContent = 'Agregar fila';
-            const closeBtn = document.createElement('button');
-            closeBtn.className = 'tb__form-close';
-            closeBtn.innerHTML = '&times;';
-            header.appendChild(title);
-            header.appendChild(closeBtn);
-
-            const body = document.createElement('div');
-            body.className = 'tb__form-body';
-
-            const inputs = {};
-            columns.forEach(col => {
-                const label = document.createElement('label');
-                label.className = 'tb__form-label';
-                label.textContent = col.label || col.key;
-                const input = document.createElement('input');
-                input.className = 'tb__form-input';
-                input.type = col.type === 'date' ? 'date' : 'text';
-                input.placeholder = (col.label || col.key);
-                body.appendChild(label);
-                body.appendChild(input);
-                inputs[col.key] = input;
-            });
-
-            const footer = document.createElement('div');
-            footer.className = 'tb__form-footer';
-
-            const cancelBtn = document.createElement('button');
-            cancelBtn.className = 'tb__form-btn tb__form-btn--cancel';
-            cancelBtn.textContent = 'Cancelar';
-
-            const submitBtn = document.createElement('button');
-            submitBtn.className = 'tb__form-btn tb__form-btn--submit';
-            submitBtn.textContent = 'Agregar';
-
-            footer.appendChild(cancelBtn);
-            footer.appendChild(submitBtn);
-            panel.appendChild(header);
-            panel.appendChild(body);
-            panel.appendChild(footer);
-            overlay.appendChild(panel);
-            document.body.appendChild(overlay);
-
-            function closeForm() {
-                overlay.remove();
-                document.body.style.overflow = '';
-            }
-
-            overlay.addEventListener('click', (e) => {
-                if (e.target === overlay) closeForm();
-            });
-            closeBtn.addEventListener('click', closeForm);
-            cancelBtn.addEventListener('click', closeForm);
-            submitBtn.addEventListener('click', () => {
-                const row = {};
-                columns.forEach(col => {
-                    const val = inputs[col.key].value.trim();
-                    if (val) {
-                        row[col.key] = col.type === 'date' ? val : isNaN(val) ? val : Number(val);
-                    } else {
-                        row[col.key] = null;
-                    }
-                });
-                api.addRow(row);
-                closeForm();
-            });
-            document.body.style.overflow = 'hidden';
-        }
-
-        addBtn.addEventListener('click', openAddForm);
-    }
-
-    render();
-
-    const api = {
-        element: wrapper,
-        setData(newData) {
-            currentData = [...newData];
-            currentPage = 1;
-            sortKey = null;
-            sortDir = null;
-            render();
-        },
-        setColumns(newColumns) {
-            columns.length = 0;
-            columns.push(...newColumns);
-            render();
-        },
-        setPageSize(size) {
-            currentPageSize = size;
-            currentPage = 1;
-            render();
-        },
-        getCurrentPage: () => currentPage,
-        getTotalPages() {
-            return Math.max(1, Math.ceil(getFiltered().length / currentPageSize));
-        },
-        filter(term) {
-            searchTerm = term;
-            if (searchable) searchInput.value = term;
-            currentPage = 1;
-            render();
-        },
-        getData: () => [...currentData],
-        addRow(row) {
-            currentData.push(row);
-            currentPage = Math.max(1, Math.ceil(currentData.length / currentPageSize));
-            render();
-        },
-        removeRow(predicate) {
-            currentData = currentData.filter((row, i) => !predicate(row, i));
-            render();
-        },
-        destroy() {
-            wrapper.remove();
-        }
-    };
-
-    return api;
 }
-
-(function (global, factory) {
-    try {
-        if (typeof module !== 'undefined' && module.exports) {
-            module.exports = factory();
-            return;
-        }
-    } catch {}
-    global.Table = factory();
-}(typeof window !== 'undefined' ? window : this, function () {
-    return Table;
-}));
-
-export default Table;
+customElements.define('custom-table', CustomTable);
+export default CustomTable;
