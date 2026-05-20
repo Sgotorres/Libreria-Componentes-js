@@ -3,23 +3,22 @@ class CustomTable extends HTMLElement {
         super();
         this.attachShadow({ mode: 'open' });
         
-        // Estado Interno (Estado de la aplicación)
+        // Estado interno
         this._data = [];
         this._columns = [];
         this._currentPage = 1;
         this._pageSize = 10;
         this._searchTerm = '';
         this._sortKey = null;
-        this._sortDir = null; // 'asc' o 'desc'
+        this._sortDir = null; // 'asc', 'desc', o null
     }
 
-    // Leemos las reglas de la rúbrica del profesor
+    // Atributos de dimensiones y paginación por defecto
     static get observedAttributes() { 
         return ['ancho', 'largo', 'page-size']; 
     }
 
     connectedCallback() {
-        // Validación de paginación por defecto si el usuario no pone el atributo
         this._pageSize = parseInt(this.getAttribute('page-size')) || 10;
         this.render();
     }
@@ -31,20 +30,19 @@ class CustomTable extends HTMLElement {
         this.render();
     }
 
-    // Recepción de la información (Requisito)
+    // Propiedades para inyectar información y cabeceras
     set data(val) { 
         this._data = Array.isArray(val) ? val : []; 
-        this._currentPage = 1; // Reiniciamos a la pág 1 al recibir nueva data
+        this._currentPage = 1; // Reinicia la paginación al recibir nueva data
         this.render(); 
     }
     
-    // Indicador de headers
     set columns(val) { 
         this._columns = Array.isArray(val) ? val : []; 
         this.render(); 
     }
 
-    // --- MOTOR DE FILTROS Y ORDENAMIENTO (Requisitos del Profesor) ---
+    // --- MOTOR DE FILTROS Y ORGANIZADORES ---
     _getProcessedData() {
         let processed = [...this._data];
 
@@ -56,7 +54,7 @@ class CustomTable extends HTMLElement {
             );
         }
 
-        // 2. Ordenamiento Personalizado (Números, Fechas, Alfabético)
+        // 2. Ordenamiento en el Header (Mayor a menor, Menor a mayor, Fechas, Alfabético)
         if (this._sortKey && this._sortDir) {
             const colDef = this._columns.find(c => c.key === this._sortKey);
             
@@ -64,7 +62,12 @@ class CustomTable extends HTMLElement {
                 let vA = a[this._sortKey];
                 let vB = b[this._sortKey];
                 
-                // Manejo de valores vacíos
+                // PRIORIDAD AL DESARROLLADOR: Organizador personalizado
+                if (colDef && typeof colDef.customSort === 'function') {
+                    return colDef.customSort(vA, vB, this._sortDir);
+                }
+                
+                // Manejo estándar de valores vacíos
                 if (vA == null) return 1; 
                 if (vB == null) return -1;
                 
@@ -94,18 +97,24 @@ class CustomTable extends HTMLElement {
             searchInput.addEventListener('input', (e) => {
                 this._searchTerm = e.target.value;
                 this._currentPage = 1;
+                
+                // Mantiene el foco y cursor para que el usuario pueda escribir de corrido
+                const cursor = e.target.selectionStart;
                 this.render();
-                // Devolvemos el foco al input para que no se pierda al escribir
-                root.querySelector('.search-input').focus();
+                const newSearch = this.shadowRoot.querySelector('.search-input');
+                if (newSearch) {
+                    newSearch.focus();
+                    newSearch.setSelectionRange(cursor, cursor);
+                }
             });
         }
 
-        // Eventos de los Headers para Ordenar
+        // Eventos de los Headers para Organizar
         root.querySelectorAll('th').forEach(th => {
             th.addEventListener('click', () => {
                 const key = th.dataset.key;
                 if (this._sortKey === key) {
-                    this._sortDir = this._sortDir === 'asc' ? 'desc' : null; // asc -> desc -> sin filtro
+                    this._sortDir = this._sortDir === 'asc' ? 'desc' : null;
                     if (!this._sortDir) this._sortKey = null;
                 } else {
                     this._sortKey = key; 
@@ -132,22 +141,20 @@ class CustomTable extends HTMLElement {
     }
 
     render() {
-        // Dimensiones dinámicas
         const ancho = this.getAttribute('ancho') || '100%';
         const largo = this.getAttribute('largo') || 'auto';
         
         const processedData = this._getProcessedData();
         const totalPages = Math.ceil(processedData.length / this._pageSize) || 1;
         
-        // Prevención de página vacía al buscar
         if (this._currentPage > totalPages) this._currentPage = totalPages;
         
-        // Paginación Matemática
+        // Render de la página actual
         const start = (this._currentPage - 1) * this._pageSize;
         const pageData = processedData.slice(start, start + this._pageSize);
 
         this.shadowRoot.innerHTML = `
-            <style>:host { width: ${ancho}; height: ${largo}; }</style>
+            <style>:host { width: ${ancho}; height: ${largo}; display: block; }</style>
             <link rel="stylesheet" href="./style.css">
             
             <div class="table-wrapper">
@@ -162,7 +169,7 @@ class CustomTable extends HTMLElement {
                             <tr>
                                 ${this._columns.map(col => {
                                     const isSorted = this._sortKey === col.key;
-                                    const icon = isSorted ? (this._sortDir === 'asc' ? '▲' : '▼') : '';
+                                    const icon = isSorted ? (this._sortDir === 'asc' ? '▲' : '▼') : '↕';
                                     return `<th data-key="${col.key}">${col.label} <span class="sort-icon">${icon}</span></th>`;
                                 }).join('')}
                             </tr>
@@ -172,7 +179,7 @@ class CustomTable extends HTMLElement {
                                 <tr>
                                     ${this._columns.map(col => `<td>${row[col.key] != null ? row[col.key] : ''}</td>`).join('')}
                                 </tr>
-                            `).join('') : `<tr><td colspan="${this._columns.length}" style="text-align:center; color:#94a3b8; padding: 20px;">No se encontraron registros.</td></tr>`}
+                            `).join('') : `<tr><td colspan="${this._columns.length}" class="empty-state">No se encontraron resultados.</td></tr>`}
                         </tbody>
                     </table>
                 </div>
@@ -187,12 +194,12 @@ class CustomTable extends HTMLElement {
                                 </div>
                             `).join('')}
                         </div>
-                    `).join('') : `<div class="card" style="text-align:center; color:#94a3b8;">No se encontraron registros.</div>`}
+                    `).join('') : `<div class="card empty-state">No se encontraron resultados.</div>`}
                 </div>
 
                 <div class="pagination">
                     <span>Página ${this._currentPage} de ${totalPages}</span>
-                    <div>
+                    <div class="btn-group">
                         <button id="prev" class="btn-page" ${this._currentPage === 1 ? 'disabled' : ''}>Anterior</button>
                         <button id="next" class="btn-page" ${this._currentPage === totalPages ? 'disabled' : ''}>Siguiente</button>
                     </div>
