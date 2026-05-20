@@ -1,11 +1,11 @@
-class InputText extends HTMLElement {
+class CustomInput extends HTMLElement {
     constructor() {
         super();
         this.attachShadow({ mode: 'open' });
         this._errorMsg = '';
     }
 
-    // Leemos las reglas de la rúbrica del profesor
+    // Leemos las reglas de la rúbrica 
     static get observedAttributes() { 
         return ['ancho', 'largo', 'min', 'max', 'tipo', 'placeholder']; 
     }
@@ -15,9 +15,11 @@ class InputText extends HTMLElement {
         this._attachEvents(); 
     }
     
-    attributeChangedCallback() { 
-        this.render(); 
-        this._attachEvents(); 
+    attributeChangedCallback(name, oldValue, newValue) { 
+        if (oldValue !== newValue && this.shadowRoot.querySelector('input')) {
+            this.render(); 
+            this._attachEvents(); 
+        }
     }
 
     _validate(value) {
@@ -52,6 +54,7 @@ class InputText extends HTMLElement {
                     this._errorMsg = 'Error: No se admiten caracteres especiales.'; 
                     isValid = false; 
                 }
+                // Si el tipo es 'todo', admite caracteres especiales y no genera error por tipo.
             }
         }
 
@@ -76,15 +79,14 @@ class InputText extends HTMLElement {
         const input = this.shadowRoot.querySelector('input');
         if (!input) return;
         
-        // El atributo 'max' corta el texto nativamente, pero igual lo validamos
         const max = this.getAttribute('max');
-        if (max) input.setAttribute('maxlength', max);
+        if (max) input.setAttribute('maxlength', max); // Bloqueo nativo
 
         // Escuchamos cada vez que el usuario teclea
         input.addEventListener('input', (e) => {
             this._validate(e.target.value);
             
-            // Emitimos evento personalizado por si otro componente necesita la data
+            // Emitimos evento para interactuar con otros componentes
             this.dispatchEvent(new CustomEvent('valor-cambiado', { 
                 detail: { valor: e.target.value, valido: this._errorMsg === '' },
                 bubbles: true, composed: true 
@@ -93,15 +95,13 @@ class InputText extends HTMLElement {
     }
 
     render() {
-        // Configuraciones de dimensiones pedidas por el profesor
         const ancho = this.getAttribute('ancho') || '100%';
         const largo = this.getAttribute('largo') || '45px';
         const placeholder = this.getAttribute('placeholder') || 'Escriba aquí...';
 
         this.shadowRoot.innerHTML = `
             <style>
-                /* Inyectamos dinámicamente las dimensiones en el host */
-                :host { width: ${ancho}; }
+                :host { width: ${ancho}; display: block; }
                 input { height: ${largo}; }
             </style>
             <link rel="stylesheet" href="./style.css">
@@ -113,5 +113,5 @@ class InputText extends HTMLElement {
         `;
     }
 }
-customElements.define('input-text', InputText);
-export default InputText;
+customElements.define('custom-input', CustomInput);
+export default CustomInput;

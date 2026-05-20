@@ -12,46 +12,49 @@
 
 input { 
     width: 100%; 
-    /* El alto lo inyectaremos dinámicamente desde JS según el atributo 'largo' */
     padding: 0 16px; 
     box-sizing: border-box; 
-    background: rgba(255,255,255,0.03); 
-    border: 1px solid rgba(255,255,255,0.1); 
-    border-radius: 8px; 
+    background: rgba(255, 255, 255, 0.05); 
+    border: 1px solid rgba(255, 255, 255, 0.15); 
+    border-radius: 12px; 
     color: white; 
-    font-size: 14px; 
+    font-size: 15px; 
     outline: none; 
     transition: all 0.3s ease; 
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
 }
 
 input:focus { 
     border-color: #3ee7b8; 
-    box-shadow: 0 0 10px rgba(62, 231, 184, 0.2); 
-    background: rgba(255,255,255,0.06);
+    box-shadow: 0 0 0 3px rgba(62, 231, 184, 0.2), 0 4px 6px rgba(0, 0, 0, 0.1); 
+    background: rgba(255, 255, 255, 0.08);
 }
 
 /* Estado visual de Error */
 input.invalid { 
     border-color: #ef4444; 
-    box-shadow: 0 0 10px rgba(239, 68, 68, 0.2); 
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2), 0 4px 6px rgba(0, 0, 0, 0.1); 
     background: rgba(239, 68, 68, 0.05);
 }
 
-input.invalid:focus {
-    box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); 
-}
-
 .error-msg { 
-    color: #ef4444; 
-    font-size: 12px; 
-    min-height: 16px; 
+    color: #ff6b6b; 
+    font-size: 13px; 
+    min-height: 18px; 
     opacity: 0; 
-    transition: opacity 0.3s ease; 
+    transition: opacity 0.3s ease, transform 0.3s ease; 
     margin-left: 4px;
     font-weight: 500;
+    transform: translateY(-4px);
 }
 
 .error-msg.visible {
     opacity: 1;
+    transform: translateY(0);
 }
