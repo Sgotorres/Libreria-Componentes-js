@@ -3,55 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prueba Aislada - Select Dinámico</title>
-    <style>
-        body { 
-            background: #0f172a; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; height: 100vh; margin: 0; 
-            color: white; font-family: system-ui, sans-serif; 
-        }
-        .sandbox { 
-            background: rgba(255,255,255,0.05); padding: 40px; 
-            border-radius: 15px; border: 1px solid rgba(255,255,255,0.1);
-            width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 30px;
-        }
-        .label { font-size: 13px; color: #94a3b8; margin-bottom: 8px; display: block; }
-    </style>
+    <title>Select Bar</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    
-    <div class="sandbox">
-        <h3 style="color: #3ee7b8; margin-top: 0; text-align: center;">Prueba: Select Dinámico (Dudu)</h3>
-        
-        <div>
-            <span class="label">1. Categorías de Tienda (Múltiple activado + Buscador activado)</span>
-            <custom-select id="select-tienda" enable-search="true" multiple="true" placeholder="Elige categorías..."></custom-select>
+
+    <div class="app-wrapper">
+        <!-- opciones -->
+        <div class="config-panel glass-element">
+            <label>
+                <input type="checkbox" id="toggleSearch" checked> Habilitar Búsqueda
+            </label>
+            <label>
+                <input type="checkbox" id="toggleMultiSelect" checked> Selección Múltiple
+            </label>
         </div>
 
-        <div>
-            <span class="label">2. Estado del Producto (Múltiple desactivado + Buscador desactivado)</span>
-            <custom-select id="select-estado" enable-search="false" multiple="false" placeholder="Selecciona estado..."></custom-select>
+        <!-- Contenedor principal del Select -->
+        <div class="select-container" id="selectContainer">
+            <div class="select-box glass-element" id="selectBox">
+                <div id="tagsContainer" class="tags-container"></div>
+                <input type="text" id="searchInput" placeholder="Buscar en la tienda...">
+            </div>
+            
+            <ul id="dropdownList" class="glass-element hidden">
+                <!-- categorias y opciones -->
+            </ul>
         </div>
     </div>
 
-    <script type="module">
-        import './index.js';
-
-        // Alimentamos los componentes con datos una vez que carga la página
-        document.addEventListener('DOMContentLoaded', () => {
-            const selectTienda = document.getElementById('select-tienda');
-            if (selectTienda) {
-                selectTienda.opciones = [
-                    'Laptops y PC', 'Smartphones', 'Audio y Auriculares', 
-                    'Monitores', 'Teclados Mecánicos', 'Cables y Accesorios', 'Sillas Gamer'
-                ];
-            }
-
-            const selectEstado = document.getElementById('select-estado');
-            if (selectEstado) {
-                selectEstado.opciones = ['Nuevo', 'Reacondicionado', 'Usado'];
-            }
-        });
-    </script>
+    <script src="index.js"></script>
 </body>
 </html>
