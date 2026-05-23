@@ -3,53 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prueba Aislada - Tabla de Datos</title>
+    <title>Tabla - Entorno de Pruebas</title>
     <style>
         body { 
             background: #0f172a; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; min-height: 100vh; margin: 0; 
-            color: white; font-family: system-ui, sans-serif; padding: 20px; box-sizing: border-box;
+            align-items: center; padding: 40px 20px; margin: 0; 
+            font-family: system-ui, sans-serif;
         }
-        .sandbox { 
-            background: rgba(255,255,255,0.05); padding: 30px; 
-            border-radius: 15px; border: 1px solid rgba(255,255,255,0.1);
-            width: 100%; max-width: 900px; display: flex; flex-direction: column; gap: 20px;
-        }
+        .contenedor { width: 100%; max-width: 900px; }
+        h2 { color: #3ee7b8; text-align: center; }
     </style>
 </head>
 <body>
     
-    <div class="sandbox">
-        <h3 style="color: #3ee7b8; margin-top: 0;">Prueba: Data Table (Ángel)</h3>
-        <p style="font-size: 13px; color: #94a3b8; margin-top: -15px;">Prueba reducir el tamaño de la ventana para ver cómo se convierte en tarjetas móviles.</p>
-        
-        <custom-table id="tabla-prueba" ancho="100%" largo="auto" page-size="4"></custom-table>
+    <div class="contenedor">
+        <h2>Componente: Tabla de Datos (Ángel)</h2>
+        <custom-table id="mi-tabla" ancho="100%" largo="auto" page-size="5"></custom-table>
     </div>
 
     <script type="module">
         import './index.js';
 
         document.addEventListener('DOMContentLoaded', () => {
-            const tabla = document.getElementById('tabla-prueba');
-            if (tabla) {
-                // Definimos los Headers y sus "tipos" para que el motor sepa cómo ordenarlos
-                tabla.columns = [
-                    { key: 'id', label: 'ID Producto', type: 'number' },
-                    { key: 'nombre', label: 'Descripción', type: 'string' },
-                    { key: 'fecha', label: 'Fecha de Ingreso', type: 'date' },
-                    { key: 'precio', label: 'Precio (USD)', type: 'number' }
-                ];
-                
-                // Inyectamos la información
-                tabla.data = [
-                    { id: 105, nombre: 'Monitor 4K', fecha: '2026-03-15', precio: 320 },
-                    { id: 102, nombre: 'Teclado Mecánico', fecha: '2026-01-10', precio: 85 },
-                    { id: 108, nombre: 'Mouse Inalámbrico', fecha: '2026-05-22', precio: 45 },
-                    { id: 101, nombre: 'Silla Ergonómica', fecha: '2025-11-05', precio: 190 },
-                    { id: 106, nombre: 'Audífonos Bluetooth', fecha: '2026-02-28', precio: 150 },
-                    { id: 109, nombre: 'Disco Duro 2TB', fecha: '2026-06-01', precio: 95 }
-                ];
-            }
+            const tabla = document.getElementById('mi-tabla');
+            
+            // 1. INDICAR LA CANTIDAD Y TIPO DE HEADERS
+            tabla.columns = [
+                { key: 'id', label: 'Núm. Producto', type: 'number' },
+                { key: 'nombre', label: 'Descripción', type: 'string' },
+                { key: 'fecha', label: 'Fecha Lote', type: 'date' },
+                { key: 'precio', label: 'Precio', type: 'number' },
+                { 
+                    key: 'estado', 
+                    label: 'Estado (Custom Sort)', 
+                    type: 'string',
+                    // PRIORIDAD AL DESARROLLADOR: Lógica personalizada de organización
+                    customSort: (a, b, dir) => {
+                        const jerarquia = { 'Activo': 3, 'Pausado': 2, 'Agotado': 1 };
+                        const valA = jerarquia[a] || 0;
+                        const valB = jerarquia[b] || 0;
+                        return dir === 'asc' ? valA - valB : valB - valA;
+                    }
+                }
+            ];
+            
+            // 2. PASAR LA INFORMACIÓN (DATA)
+            tabla.data = [
+                { id: 1004, nombre: 'Lente de cámara', fecha: '2026-05-15', precio: 120, estado: 'Agotado' },
+                { id: 1001, nombre: 'Monitor 24"', fecha: '2026-02-10', precio: 200, estado: 'Activo' },
+                { id: 1005, nombre: 'Teclado Mecánico', fecha: '2025-11-20', precio: 80, estado: 'Activo' },
+                { id: 1002, nombre: 'Ratón Inalámbrico', fecha: '2026-01-05', precio: 45, estado: 'Pausado' },
+                { id: 1006, nombre: 'Alfombrilla XL', fecha: '2026-04-12', precio: 25, estado: 'Activo' },
+                { id: 1003, nombre: 'Auriculares USB', fecha: '2026-03-30', precio: 65, estado: 'Agotado' },
+                { id: 1007, nombre: 'Micrófono Condensador', fecha: '2026-05-01', precio: 150, estado: 'Pausado' }
+            ];
         });
     </script>
 </body>
