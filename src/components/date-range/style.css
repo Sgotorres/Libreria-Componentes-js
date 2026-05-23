@@ -3,8 +3,7 @@
     font-family: system-ui, sans-serif; 
     width: 100%; 
     max-width: 400px; 
-    min-width: 400px;
-    min-height: 440px;
+    box-sizing: border-box;
 }
 
 .calendar-wrapper { display: flex; flex-direction: column; gap: 18px; }
@@ -26,6 +25,8 @@
     border: 1px solid rgba(255,255,255,0.1); 
     border-radius: 14px; 
     padding: 24px; 
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .header { display: flex; justify-content: space-between; align-items: center; color: white; margin-bottom: 18px; font-weight: 700; font-size: 17px; }

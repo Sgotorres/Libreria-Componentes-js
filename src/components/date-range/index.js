@@ -76,9 +76,10 @@ class DateRange extends HTMLElement {
 
     _buildTemplate() {
         const colorTema = this.getAttribute('color-tema') || '#3ee7b8';
+        const cssUrl = new URL('./style.css', import.meta.url).href;
         this.shadowRoot.innerHTML = `
             <style id="theme-style">:host { --tema: ${colorTema}; }</style>
-            <link rel="stylesheet" href="./style.css">
+            <link rel="stylesheet" href="${cssUrl}">
             <div class="calendar-wrapper">
                 <div class="rango-input" id="rango-texto"></div>
                 <div class="calendar-box">
@@ -174,4 +175,16 @@ class DateRange extends HTMLElement {
     }
 }
 customElements.define('date-range', DateRange);
+
+if (window.__DATE_RANGE_STANDALONE || document.body.children.length === 0) {
+    document.title = 'Date Range';
+    const style = document.createElement('style');
+    style.textContent = 'body{background:#0f172a;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;color:#fff;font-family:system-ui,sans-serif}.sandbox{background:rgba(255,255,255,0.05);padding:30px;border-radius:15px;border:1px solid rgba(255,255,255,0.1)}';
+    document.head.appendChild(style);
+    const sandbox = document.createElement('div');
+    sandbox.className = 'sandbox';
+    sandbox.innerHTML = '<h3 style="color:#3ee7b8;margin:0 0 15px;text-align:center;font-weight:600">Selector de Rango</h3><date-range color-tema="#3ee7b8" allow-past="false" allow-future="true"></date-range>';
+    document.body.appendChild(sandbox);
+}
+
 export default DateRange;

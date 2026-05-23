@@ -155,7 +155,7 @@ class CustomTable extends HTMLElement {
 
         this.shadowRoot.innerHTML = `
             <style>:host { width: ${ancho}; height: ${largo}; display: block; }</style>
-            <link rel="stylesheet" href="./style.css">
+            <link rel="stylesheet" href="${new URL('./style.css', import.meta.url).href}">
             
             <div class="table-wrapper">
                 
@@ -169,7 +169,7 @@ class CustomTable extends HTMLElement {
                             <tr>
                                 ${this._columns.map(col => {
                                     const isSorted = this._sortKey === col.key;
-                                    const icon = isSorted ? (this._sortDir === 'asc' ? '▲' : '▼') : '↕';
+                                    const icon = isSorted ? (this._sortDir === 'asc' ? '▲' : '▼') : '';
                                     return `<th data-key="${col.key}">${col.label} <span class="sort-icon">${icon}</span></th>`;
                                 }).join('')}
                             </tr>
@@ -212,4 +212,34 @@ class CustomTable extends HTMLElement {
     }
 }
 customElements.define('custom-table', CustomTable);
+
+if (document.body.children.length === 0) {
+    const style = document.createElement('style');
+    style.textContent = 'body{background:#0f172a;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;color:#fff;font-family:system-ui,sans-serif}';
+    document.head.appendChild(style);
+    const wrapper = document.createElement('div');
+    wrapper.style.cssText = 'width:100%;max-width:900px;padding:20px';
+    wrapper.innerHTML = '<h2 style="color:#3ee7b8;text-align:center;margin-bottom:20px">Custom Table</h2><custom-table id="t-demo" page-size="5"></custom-table>';
+    document.body.appendChild(wrapper);
+
+    const tc = [
+        { key: 'id', label: 'ID', type: 'number' },
+        { key: 'nombre', label: 'Nombre', type: 'string' },
+        { key: 'rol', label: 'Rol', type: 'string' },
+        { key: 'estado', label: 'Estado', type: 'string' },
+    ];
+    const td = [
+        { id: 1, nombre: 'Yox', rol: 'Frontend', estado: 'Activo' },
+        { id: 2, nombre: 'David', rol: 'Backend', estado: 'Activo' },
+        { id: 3, nombre: 'Eduardo', rol: 'QA', estado: 'Revisión' },
+        { id: 4, nombre: 'Ángel', rol: 'Full Stack', estado: 'Activo' },
+        { id: 5, nombre: 'María', rol: 'Diseñadora', estado: 'Inactivo' },
+        { id: 6, nombre: 'Carlos', rol: 'DevOps', estado: 'Activo' },
+        { id: 7, nombre: 'Ana', rol: 'Product Owner', estado: 'Activo' },
+    ];
+    const table = document.getElementById('t-demo');
+    table.columns = tc;
+    table.data = td;
+}
+
 export default CustomTable;
