@@ -1,187 +1,196 @@
-class CustomSelect extends HTMLElement {
-    constructor() {
-        super();
-        this.attachShadow({ mode: 'open' });
-        
-        // Estado interno
-        this._opciones = [];
-        this._seleccionados = [];
-        this._isOpen = false;
-        this._searchTerm = '';
-    }
+const searchInput = document.getElementById('searchInput');
+const dropdownList = document.getElementById('dropdownList');
+const selectBox = document.getElementById('selectBox');
+const tagsContainer = document.getElementById('tagsContainer');
+const toggleSearch = document.getElementById('toggleSearch');
+const toggleMultiSelect = document.getElementById('toggleMultiSelect');
 
-    // Leemos las reglas de la rúbrica del profesor
-    static get observedAttributes() { 
-        return ['ancho', 'enable-search', 'multiple', 'placeholder']; 
+// categorias tienda y productos
+const storeData = [
+    {
+        category: "Laptops",
+        products: ["HP Pavilion", "Asus VivoBook Go 15", "MacBook Air M2", "Lenovo IdeaPad 3", "Dell Inspiron 15", "Acer Aspire 5", "MSI Modern 14", "Lenovo LOQ 15", "HP Omen 16", "Asus ROG Strix G15"]
+    },
+    {
+        category: "Periféricos",
+        products: ["Teclado Redragon Fizz Pro", "Teclado Fantech Atom 61", "Mouse Logitech G305", "Mouse Razer DeathAdder V2", "Monitor 24 pulgadas", "Monitor Asus 21 pulgadas", "Auriculares Logitech G432", "Auriculares Corsair HS50 Pro", ]
+    },
+    {
+        category: "Almacenamiento",
+        products: ["Disco HDD 320GB", "SSD NVMe 1TB", "Pendrive Kingston 64GB"]
+    },
+    {
+        category: "Accesorios Gaming",
+        products: ["Mando PS4 Genérico", "Auriculares KZ Castor BASS", "Mousepad XL"]
     }
+];
 
-    connectedCallback() {
-        this.render();
-        // Cierra el menú al hacer clic fuera del componente
-        this._outsideClickHandler = this._handleOutsideClick.bind(this);
-        document.addEventListener('click', this._outsideClickHandler);
-    }
+// Configuración actual
+let config = {
+    searchEnabled: true,
+    multiSelect: true
+};
 
-    disconnectedCallback() { 
-        document.removeEventListener('click', this._outsideClickHandler); 
-    }
+// Estado de selección
+let selectedItems = [];
+
+// Función para actualizar los tags
+function updateTagsDisplay() {
+    tagsContainer.innerHTML = '';
     
-    attributeChangedCallback() { 
-        this.render(); 
-    }
-
-    // API Pública para inyectar datos
-    set opciones(val) { 
-        this._opciones = Array.isArray(val) ? val : []; 
-        this.render(); 
-    }
-    get seleccionados() { return this._seleccionados; }
-
-    _handleOutsideClick(e) {
-        if (!e.composedPath().includes(this) && this._isOpen) {
-            this._isOpen = false;
-            this.render();
-        }
-    }
-
-    _toggleMenu() {
-        this._isOpen = !this._isOpen;
-        this.render();
+    if (config.multiSelect) {
+        selectedItems.forEach(item => {
+            const tag = document.createElement('div');
+            tag.className = 'tag';
+            tag.innerHTML = `
+                ${item} 
+                <span class="tag-close" data-item="${item}">×</span>
+            `;
+            tagsContainer.appendChild(tag);
+        });
         
-        // Foco automático en el buscador si está activado
-        if (this._isOpen && this.getAttribute('enable-search') === 'true') {
-            setTimeout(() => { 
-                const searchBox = this.shadowRoot.querySelector('.search-box'); 
-                if (searchBox) searchBox.focus(); 
-            }, 50);
-        }
-    }
-
-    _handleSelect(item) {
-        const isMultiple = this.getAttribute('multiple') === 'true';
-        
-        if (isMultiple) {
-            if (this._seleccionados.includes(item)) {
-                this._seleccionados = this._seleccionados.filter(i => i !== item);
-            } else {
-                this._seleccionados.push(item);
-            }
-        } else {
-            this._seleccionados = [item];
-            this._isOpen = false;
-        }
-        this.render();
-        
-        this.dispatchEvent(new CustomEvent('cambio-seleccion', { 
-            detail: this._seleccionados, 
-            bubbles: true, composed: true 
-        }));
-    }
-
-    _removeTag(e, item) {
-        e.stopPropagation(); // Evita que se abra el menú al cerrar una etiqueta
-        this._seleccionados = this._seleccionados.filter(i => i !== item);
-        this.render();
-    }
-
-    // Función que filtra SIN re-renderizar todo el componente (evita el bug de escritura)
-    _updateOptionsList() {
-        const list = this.shadowRoot.querySelector('.options-list');
-        if (!list) return;
-        
-        const filtered = this._opciones.filter(opt => opt.toLowerCase().includes(this._searchTerm));
-        
-        if (filtered.length > 0) {
-            list.innerHTML = filtered.map(opt => `
-                <div class="option-item ${this._seleccionados.includes(opt) ? 'selected' : ''}" data-value="${opt}">
-                    <span>${opt}</span><span class="check-icon">✓</span>
-                </div>
-            `).join('');
-        } else {
-            list.innerHTML = `<div class="empty-msg">No se encontraron productos</div>`;
-        }
-
-        // Reasignamos eventos a la nueva lista filtrada
-        list.querySelectorAll('.option-item').forEach(item => {
-            item.addEventListener('click', (e) => { 
-                e.stopPropagation(); 
-                this._handleSelect(item.dataset.value); 
+        // eliminar tags
+        document.querySelectorAll('.tag-close').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const itemToRemove = e.target.getAttribute('data-item');
+                selectedItems = selectedItems.filter(i => i !== itemToRemove);
+                updateTagsDisplay();
+                renderList(getFilteredData(searchInput.value));
             });
         });
-    }
-
-    _attachEvents() {
-        const trigger = this.shadowRoot.querySelector('.select-trigger');
-        if (trigger) trigger.addEventListener('click', () => this._toggleMenu());
-
-        const search = this.shadowRoot.querySelector('.search-box');
-        if (search) {
-            search.addEventListener('input', (e) => {
-                this._searchTerm = e.target.value.toLowerCase();
-                this._updateOptionsList();
-            });
-            // Evita cerrar el menú al hacer clic dentro de la barra de búsqueda
-            search.addEventListener('click', (e) => e.stopPropagation());
-        }
-
-        this.shadowRoot.querySelectorAll('.tag-close').forEach(btn => {
-            btn.addEventListener('click', (e) => this._removeTag(e, btn.dataset.value));
-        });
-
-        this.shadowRoot.querySelectorAll('.option-item').forEach(item => {
-            item.addEventListener('click', (e) => { 
-                e.stopPropagation(); 
-                this._handleSelect(item.dataset.value); 
-            });
-        });
-    }
-
-    render() {
-        const ancho = this.getAttribute('ancho') || '100%';
-        const enableSearch = this.getAttribute('enable-search') === 'true';
-        const isMultiple = this.getAttribute('multiple') === 'true';
-        const placeholder = this.getAttribute('placeholder') || 'Seleccione...';
-
-        // Lógica visual para la barra de trigger (Botón principal)
-        let triggerContent = `<span class="placeholder">${placeholder}</span>`;
-        if (this._seleccionados.length > 0) {
-            if (isMultiple) {
-                triggerContent = `<div class="tags-wrapper">` + 
-                    this._seleccionados.map(s => `
-                        <span class="tag">
-                            ${s} <span class="tag-close" data-value="${s}">×</span>
-                        </span>
-                    `).join('') + `</div>`;
-            } else {
-                triggerContent = `<span class="selected-text">${this._seleccionados[0]}</span>`;
-            }
-        }
-
-        const initialFiltered = this._opciones.filter(opt => opt.toLowerCase().includes(this._searchTerm));
-
-        this.shadowRoot.innerHTML = `
-            <style>:host { width: ${ancho}; }</style>
-            <link rel="stylesheet" href="./style.css">
-            
-            <div class="select-trigger ${this._isOpen ? 'active' : ''}">
-                ${triggerContent}
-            </div>
-            
-            <div class="dropdown-menu ${this._isOpen ? 'open' : ''}">
-                ${enableSearch ? `<input type="text" class="search-box" placeholder="Buscar productos..." value="${this._searchTerm}">` : ''}
-                
-                <div class="options-list">
-                    ${initialFiltered.map(opt => `
-                        <div class="option-item ${this._seleccionados.includes(opt) ? 'selected' : ''}" data-value="${opt}">
-                            <span>${opt}</span><span class="check-icon">✓</span>
-                        </div>
-                    `).join('')}
-                </div>
-            </div>
-        `;
-
-        this._attachEvents();
+        
+        searchInput.placeholder = selectedItems.length > 0 ? "" : "Buscar en la tienda...";
+    } else {
+        searchInput.value = selectedItems.length > 0 ? selectedItems[0] : "";
     }
 }
-customElements.define('custom-select', CustomSelect);
-export default CustomSelect;
+
+// lista optimizada
+function renderList(dataToRender) {
+    dropdownList.innerHTML = '';
+    
+    let totalItems = 0;
+
+    dataToRender.forEach(group => {
+        if (group.products.length === 0) return;
+        
+        // Crear título de categoría
+        const categoryHeader = document.createElement('li');
+        categoryHeader.className = 'category-title';
+        categoryHeader.textContent = group.category;
+        dropdownList.appendChild(categoryHeader);
+
+        // Crear opciones de productos
+        group.products.forEach(product => {
+            totalItems++;
+            const li = document.createElement('li');
+            li.className = 'option-item';
+            
+            // Marcar como seleccionado si está en la lista
+            if (selectedItems.includes(product)) {
+                li.classList.add('selected');
+                li.innerHTML = `${product} <span>✓</span>`;
+            } else {
+                li.textContent = product;
+            }
+            
+            // Lógica al hacer clic en un producto
+            li.addEventListener('click', (e) => {
+                e.stopPropagation();
+                
+                if (config.multiSelect) {
+                    if (selectedItems.includes(product)) {
+                        selectedItems = selectedItems.filter(i => i !== product);
+                    } else {
+                        selectedItems.push(product);
+                    }
+                    // Mantener foco en el input para seguir buscando
+                    searchInput.focus();
+                } else {
+                    selectedItems = [product];
+                    dropdownList.classList.add('hidden');
+                }
+                
+                updateTagsDisplay();
+                renderList(getFilteredData(searchInput.value));
+            });
+            
+            dropdownList.appendChild(li);
+        });
+    });
+
+    if (totalItems === 0) {
+        const li = document.createElement('li');
+        li.textContent = "No se encontraron productos";
+        li.style.padding = "12px 20px";
+        li.style.color = "rgba(255,255,255,0.5)";
+        dropdownList.appendChild(li);
+    }
+}
+
+// Lógica de busqueda optimizada (filtro dentro de las categorías)
+function getFilteredData(query) {
+    if (!query || !config.searchEnabled) return storeData;
+    
+    const lowerQuery = query.toLowerCase();
+    
+    return storeData.map(group => {
+        return {
+            category: group.category,
+            products: group.products.filter(p => p.toLowerCase().includes(lowerQuery))
+        };
+    }).filter(group => group.products.length > 0);
+}
+
+// Evento de escritura en el input
+searchInput.addEventListener('input', (e) => {
+    if (!config.searchEnabled) return;
+    
+    dropdownList.classList.remove('hidden');
+    dropdownList.style.display = 'block';
+    renderList(getFilteredData(e.target.value));
+});
+
+// abrir la lista
+selectBox.addEventListener('click', () => {
+    dropdownList.classList.remove('hidden');
+    dropdownList.style.display = 'block';
+    renderList(getFilteredData(searchInput.value));
+    if (config.searchEnabled) searchInput.focus();
+});
+
+// Cerrar lista al hacer clic fuera
+document.addEventListener('click', (e) => {
+    if (!selectBox.contains(e.target) && !dropdownList.contains(e.target)) {
+        dropdownList.classList.add('hidden');
+        setTimeout(() => { dropdownList.style.display = 'none'; }, 300);
+    }
+});
+
+// --- CONTROLES DE CONFIGURACIÓN ---
+
+toggleSearch.addEventListener('change', (e) => {
+    config.searchEnabled = e.target.checked;
+    if (!config.searchEnabled) {
+        searchInput.readOnly = true;
+        searchInput.classList.add('disabled-search');
+        searchInput.value = '';
+        renderList(storeData);
+    } else {
+        searchInput.readOnly = false;
+        searchInput.classList.remove('disabled-search');
+    }
+});
+
+toggleMultiSelect.addEventListener('change', (e) => {
+    config.multiSelect = e.target.checked;
+    selectedItems = []; 
+    searchInput.value = '';
+    updateTagsDisplay();
+    renderList(storeData);
+});
+
+// Inicialización
+updateTagsDisplay();
+renderList(storeData);
