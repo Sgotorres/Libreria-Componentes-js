@@ -23,97 +23,63 @@
 
         <main class="grid-layout">
             
-            <!-- COLUMNA IZQUIERDA: CONTROLES DE FORMULARIO -->
             <section class="sidebar">
-                
-                <!-- 1. Input Text (David) -->
                 <div class="panel-cristal">
-                    <div class="panel-titulo">1. Motor de Validaciones (Input)</div>
+                    <div class="panel-titulo">Asignación de Tareas</div>
                     <div class="control-group">
+                        
                         <div>
-                            <span class="label-tech">Solo Números (Mín 3 - Máx 8):</span>
-                            <input-text tipo="numeros" min="3" max="8" placeholder="Ej: 123456" ancho="100%"></input-text>
+                            <span class="label-tech">1. Usuario Responsable:</span>
+                            <input-text id="in-usuario" tipo="letras" placeholder="Ej: Angel Torres" ancho="100%"></input-text>
                         </div>
+
                         <div>
-                            <span class="label-tech">Sin Caracteres Especiales:</span>
-                            <input-text tipo="sin-especiales" placeholder="Ej: Usuario2026" ancho="100%"></input-text>
+                            <span class="label-tech">2. Tipo de Tarea:</span>
+                            <custom-select id="sel-categoria" enable-search="false" multiple="false" placeholder="Hogar, Viajes, Escuela..."></custom-select>
                         </div>
+
+                        <div style="margin-top: 10px;">
+                            <span class="label-tech">3. Fecha de Entrega:</span>
+                            <date-range id="cal-fecha" color-tema="#3ee7b8" allow-past="false" allow-future="true"></date-range>
+                        </div>
+
+                        <button class="btn-trigger" id="btn-abrir-modal" style="background:#3b82f6;color:white;width:100%;margin-top:15px;padding:12px;">
+                            Siguiente: Detalles de la Tarea ➔
+                        </button>
+
                     </div>
                 </div>
-
-                <!-- 2. Select Dinámico (Dudu) -->
-                <div class="panel-cristal">
-                    <div class="panel-titulo">2. Menús Inteligentes (Select)</div>
-                    <div class="control-group">
-                        <div>
-                            <span class="label-tech">Multiselección con Buscador (Tags):</span>
-                            <custom-select id="select-roles" enable-search="true" multiple="true" placeholder="Asignar roles..."></custom-select>
-                        </div>
-                        <div>
-                            <span class="label-tech">Selección Única Simple:</span>
-                            <custom-select id="select-estado" enable-search="false" multiple="false" placeholder="Estado del sistema..."></custom-select>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 3. Rango de Fechas (Yox) -->
-                <div class="panel-cristal">
-                    <div class="panel-titulo">3. Control Cronológico (Date)</div>
-                    <div class="control-group" style="align-items: center;">
-                        <span class="label-tech" style="width: 100%; text-align: left;">Calendario (Pasado Bloqueado):</span>
-                        <date-range color-tema="#3ee7b8" allow-past="false" allow-future="true"></date-range>
-                    </div>
-                </div>
-
             </section>
 
-            <!-- COLUMNA DERECHA: TABLA Y MODAL -->
             <section class="main-content">
-                
-                <!-- 4. Disparador del Modal -->
-                <div class="panel-cristal" style="display: flex; flex-direction: column; gap: 12px;">
-                    <div class="panel-titulo" style="margin: 0; border: none; padding: 0;">4. Ventanas Emergentes Inyectables (Modal)</div>
-                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                        <button class="btn-trigger" id="btn-info" style="background:#3b82f6;color:white">Info</button>
-                        <button class="btn-trigger" id="btn-error" style="background:#ef4444;color:white">Error</button>
-                        <button class="btn-trigger" id="btn-confirm" style="background:#eab308;color:#0f172a">Confirmaci&oacute;n</button>
-                        <button class="btn-trigger" id="btn-custom" style="background:#8b5cf6;color:white">Personalizado</button>
-                        <button class="btn-trigger" id="btn-settings" style="background:#1e293b;color:#94a3b8;border:1px solid rgba(255,255,255,0.1)">⚙ Personalizar</button>
-                    </div>
-                </div>
-
-                <!-- 5. Tabla Dinámica de Ángel -->
                 <div style="flex-grow: 1; display: flex; flex-direction: column;">
-                    <h3 class="panel-titulo" style="margin-bottom: 10px; padding-left: 10px;">5. Data Table Avanzada (Ángel)</h3>
-                    <custom-table id="tabla-maestra" page-size="6" ancho="100%"></custom-table>
+                    <h3 class="panel-titulo" style="margin-bottom: 10px; padding-left: 10px;">Tablero de Ejecución</h3>
+                    <custom-table id="tabla-tareas" page-size="6" ancho="100%"></custom-table>
                 </div>
-
             </section>
         </main>
-    </div>
-
-    <!-- COMPONENTE MODAL GLOBAL (Oculto por defecto) -->
-    <!-- Rúbrica: Imagen superior, custom bg, 2 botones, componentes inyectados -->
-    <custom-modal 
-        id="modal-sistema" 
+    </div> <custom-modal 
+        id="modal-tarea" 
         type="custom" 
         bg-color="rgba(15, 23, 42, 0.9)" 
-        header-image="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80"
-        btn-1="Crear Registro" 
-        btn-2="Cancelar Operación">
+        btn-1="Guardar Tarea" 
+        btn-2="Cancelar">
         
-        <h3 style="color: #3ee7b8; margin-top: 0; margin-bottom: 5px;">Nuevo Registro de Sistema</h3>
-        <p style="color: #94a3b8; font-size: 13px; margin-bottom: 25px;">Complete los datos utilizando nuestros propios componentes web.</p>
+        <h3 style="color: #3ee7b8; margin-top: 0; margin-bottom: 5px;">Redactar Detalles</h3>
+        <p style="color: #94a3b8; font-size: 13px; margin-bottom: 25px;">Define qué se debe realizar en esta asignación.</p>
         
-        <!-- Aquí inyectamos componentes dentro de otro componente (SLOT) -->
         <div style="display: flex; flex-direction: column; gap: 15px; text-align: left;">
             <div>
-                <label style="font-size: 12px; color: #94a3b8; margin-bottom: 5px; display: block;">Nombre (Solo Letras):</label>
-                <input-text tipo="letras" placeholder="Ej: Proyecto Alfa"></input-text>
+                <label style="font-size: 12px; color: #94a3b8; margin-bottom: 5px; display: block;">Nombre de la Tarea:</label>
+                <input-text id="in-nombre-tarea" tipo="todo" min="5" max="50" placeholder="Ej: Configurar entorno backend"></input-text>
             </div>
             <div>
-                <label style="font-size: 12px; color: #94a3b8; margin-bottom: 5px; display: block;">Nivel de Prioridad:</label>
-                <custom-select id="select-prioridad" enable-search="false" multiple="false" placeholder="Seleccione prioridad..."></custom-select>
+                <label style="font-size: 12px; color: #94a3b8; margin-bottom: 5px; display: block;">Descripción o Notas (Sin caracteres especiales):</label>
+                <input-text id="in-desc-tarea" tipo="sin-especiales" min="0" max="100" placeholder="Ej: Utilizar el framework pactado"></input-text>
+            </div>
+            <div>
+                <label style="font-size: 12px; color: #94a3b8; margin-bottom: 5px; display: block;">Estado Inicial:</label>
+                <custom-select id="sel-estado" enable-search="false" multiple="false" placeholder="Seleccione..."></custom-select>
             </div>
         </div>
     </custom-modal>
