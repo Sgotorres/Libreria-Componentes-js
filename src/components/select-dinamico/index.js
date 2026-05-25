@@ -45,6 +45,7 @@ class CustomSelect extends HTMLElement {
             this._isOpen = false;
         }
         this.render();
+        this.dispatchEvent(new CustomEvent('change', { bubbles: true, composed: true }));
     }
 
     _removeTag(e, item) {

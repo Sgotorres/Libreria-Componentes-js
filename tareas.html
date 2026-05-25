@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Tareas</title>
+    <link rel="stylesheet" href="./assets/style.css">
+    <style>
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .task-header h1 {
+            color: var(--primary-color, #3ee7b8);
+            font-size: 2rem;
+            margin: 10px 0 0 0;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+        .btn-primary {
+            background: var(--primary-color, #3ee7b8);
+            border: none;
+            color: #0f172a;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 14px;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(62, 231, 184, 0.4);
+        }
+        .btn-back {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-muted, #94a3b8);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-back:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--text-main, #f8fafc);
+        }
+        .crear-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+        @media(min-width: 1024px) {
+            .crear-layout {
+                grid-template-columns: 400px 1fr;
+            }
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .form-group label {
+            font-size: 12px;
+            color: var(--text-muted, #94a3b8);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: block;
+        }
+        .ejemplos-tipos {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 4px;
+        }
+        .ejemplos-tipos span {
+            background: rgba(62, 231, 184, 0.1);
+            border: 1px solid rgba(62, 231, 184, 0.2);
+            color: #3ee7b8;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .ejemplos-tipos span:hover {
+            background: rgba(62, 231, 184, 0.25);
+        }
+        .ejemplos-tipos span.active {
+            background: rgba(62, 231, 184, 0.35);
+            border-color: #3ee7b8;
+            box-shadow: 0 0 12px rgba(62, 231, 184, 0.3);
+        }
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .modal-form label {
+            font-size: 12px;
+            color: var(--text-muted, #94a3b8);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="glass-background">
+        <div class="floating-orb orb-1"></div>
+        <div class="floating-orb orb-2"></div>
+        <div class="floating-orb orb-3"></div>
+    </div>
+
+    <div class="lab-container" style="max-width: 1400px; margin: 0 auto; padding: 40px 20px;">
+
+        <div class="task-header">
+            <div>
+                <a href="./index.html" class="btn-back">← Volver al Inicio</a>
+                <h1>Gestión de Tareas</h1>
+            </div>
+        </div>
+
+        <div class="crear-layout">
+
+            <!-- COLUMNA IZQUIERDA: CREAR TAREA -->
+            <div class="panel-cristal">
+                <div class="panel-titulo">Crear Nueva Tarea</div>
+                <div class="form-group">
+
+                    <div>
+                        <label>Nombre de la persona</label>
+                        <input-text id="input-persona" tipo="letras" placeholder="Ej: Ángel Torres"></input-text>
+                    </div>
+
+                    <div>
+                        <label>Tipo de tarea</label>
+                        <input-text id="input-tipo-tarea" tipo="sin-especiales" placeholder="Ej: Frontend"></input-text>
+                        <div class="ejemplos-tipos" id="chips-tipo-tarea">
+                            <span data-tipo="Diseño UI">Diseño UI</span>
+                            <span data-tipo="Frontend">Frontend</span>
+                            <span data-tipo="Backend">Backend</span>
+                            <span data-tipo="QA">QA</span>
+                            <span data-tipo="DevOps">DevOps</span>
+                            <span data-tipo="Documentación">Documentación</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label>Rango de fechas</label>
+                        <div style="display: flex; justify-content: center;">
+                            <date-range id="rango-fechas" color-tema="#3ee7b8" allow-past="false" allow-future="true"></date-range>
+                        </div>
+                        <div id="fechas-seleccionadas" style="text-align: center; margin-top: 8px; color: var(--text-muted, #94a3b8); font-size: 12px;">
+                            Selecciona un rango de fechas
+                        </div>
+                    </div>
+
+                    <button class="btn-primary" id="btn-crear-tarea">+ Crear Tarea</button>
+
+                </div>
+            </div>
+
+            <!-- COLUMNA DERECHA: TABLA -->
+            <div>
+                <div style="margin-bottom:12px;">
+                    <custom-select id="filtro-busqueda" placeholder="Seleccione un valor para filtrar..." ancho="100%"></custom-select>
+                    <div id="filtro-chips" class="ejemplos-tipos" style="margin-top:8px;gap:5px;"></div>
+                </div>
+                <custom-table id="tabla-tareas" page-size="8" ancho="100%" hide-search></custom-table>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- MODAL DE ERROR -->
+    <custom-modal id="modal-error" type="error" btn-1="Entendido">
+        <h2 style="margin-top:0;color:#ef4444;">Error</h2>
+        <p id="error-mensaje" style="color:#cbd5e1;">Mensaje de error</p>
+    </custom-modal>
+
+    <!-- MODAL DE INFORMACIÓN DE TAREA -->
+    <custom-modal id="modal-info-tarea" type="info" btn-1="Terminar" btn-2="Cerrar">
+        <h2 style="margin-top:0;color:#3b82f6;">Detalle de Tarea</h2>
+        <div id="info-contenido" style="text-align:left;color:#cbd5e1;font-size:14px;line-height:1.8;"></div>
+    </custom-modal>
+
+    <!-- MODAL DE CONFIRMACIÓN -->
+    <custom-modal id="modal-confirmar" type="confirm" btn-1="Sí, crear tarea" btn-2="Cancelar">
+        <h2 style="margin-top:0;color:#eab308;">Confirmar Tarea</h2>
+        <div id="confirm-resumen" style="text-align:left;color:#94a3b8;font-size:13px;margin-bottom:15px;"></div>
+        <div class="modal-form">
+            <div>
+                <label>Nombre de la tarea</label>
+                <input-text id="confirm-nombre" tipo="sin-especiales" placeholder="Ej: Diseñar interfaz de usuario"></input-text>
+            </div>
+            <div>
+                <label>Descripción corta</label>
+                <input-text id="confirm-descripcion" tipo="sin-especiales" placeholder="Ej: Corregir errores del login"></input-text>
+            </div>
+            <div>
+                <label>Estado de la tarea</label>
+                <custom-select id="confirm-estado" placeholder="Seleccione estado..." ancho="100%"></custom-select>
+            </div>
+        </div>
+    </custom-modal>
+
+    <script type="module" src="./src/index.js"></script>
+    <script type="module">
+        let tareas = [];
+        let fechaInicio = null;
+        let fechaFin = null;
+
+        const columnas = [
+            { key: 'persona', label: 'Persona', type: 'string' },
+            { key: 'nombre', label: 'Nombre', type: 'string' },
+            { key: 'tipo', label: 'Tipo', type: 'string' },
+            { key: 'descripcion', label: 'Descripción', type: 'string' },
+            { key: 'estado', label: 'Estado', type: 'string' },
+            { key: 'fechaInicio', label: 'Inicio', type: 'date' },
+            { key: 'fechaFin', label: 'Límite', type: 'date' },
+        ];
+
+        const tabla = document.getElementById('tabla-tareas');
+        tabla.columns = columnas;
+        tabla.data = [];
+
+        const filtroBusqueda = document.getElementById('filtro-busqueda');
+        const filtroChips = document.getElementById('filtro-chips');
+        let columnaActiva = null;
+
+        function poblarOpciones() {
+            if (columnaActiva) {
+                filtroBusqueda.opciones = [...new Set(tareas.map(t => t[columnaActiva]).filter(Boolean))].sort();
+            } else {
+                const vals = new Set();
+                tareas.forEach(t => Object.values(t).forEach(v => { if (v) vals.add(v); }));
+                filtroBusqueda.opciones = [...vals].sort();
+            }
+        }
+
+        function renderChips() {
+            filtroChips.innerHTML = columnas.map(col =>
+                `<span class="chip-filtro ${columnaActiva === col.key ? 'active' : ''}" data-col="${col.key}">${col.label}</span>`
+            ).join('');
+            filtroChips.querySelectorAll('.chip-filtro').forEach(el => {
+                el.addEventListener('click', () => {
+                    columnaActiva = columnaActiva === el.dataset.col ? null : el.dataset.col;
+                    filtroBusqueda._seleccionados = [];
+                    poblarOpciones();
+                    filtroBusqueda.render();
+                    renderChips();
+                    actualizarTabla();
+                });
+            });
+        }
+
+        function actualizarTabla() {
+            const sel = filtroBusqueda.seleccionados[0];
+            if (sel) {
+                const term = sel.toLowerCase();
+                if (columnaActiva) {
+                    tabla.data = tareas.filter(t => {
+                        const val = t[columnaActiva];
+                        return val && val.toLowerCase().includes(term);
+                    });
+                } else {
+                    tabla.data = tareas.filter(t =>
+                        Object.values(t).some(v => v && v.toLowerCase().includes(term))
+                    );
+                }
+            } else {
+                tabla.data = [...tareas];
+            }
+        }
+
+        filtroBusqueda.addEventListener('change', actualizarTabla);
+
+        poblarOpciones();
+        renderChips();
+
+        const inputPersona = document.getElementById('input-persona');
+        const inputTipo = document.getElementById('input-tipo-tarea');
+        const modalError = document.getElementById('modal-error');
+        const modalConfirm = document.getElementById('modal-confirmar');
+        const confirmNombre = document.getElementById('confirm-nombre');
+        const confirmDesc = document.getElementById('confirm-descripcion');
+        const confirmEstado = document.getElementById('confirm-estado');
+        confirmEstado.opciones = ['En Proceso', 'Terminada'];
+        confirmEstado._seleccionados = ['En Proceso'];
+        confirmEstado.render();
+
+        document.getElementById('rango-fechas').addEventListener('range-changed', (e) => {
+            fechaInicio = e.detail.start;
+            fechaFin = e.detail.end;
+            const info = document.getElementById('fechas-seleccionadas');
+            if (fechaInicio && fechaFin) {
+                const opts = { year: 'numeric', month: 'long', day: 'numeric' };
+                info.textContent = `${fechaInicio.toLocaleDateString('es', opts)} → ${fechaFin.toLocaleDateString('es', opts)}`;
+            } else {
+                info.textContent = 'Selecciona un rango de fechas';
+            }
+        });
+
+        document.querySelectorAll('#chips-tipo-tarea span').forEach(el => {
+            el.addEventListener('click', () => {
+                inputTipo.value = el.dataset.tipo;
+            });
+        });
+
+        document.getElementById('btn-crear-tarea').addEventListener('click', () => {
+            const persona = inputPersona.value || '';
+            if (!persona.trim()) {
+                document.getElementById('error-mensaje').textContent = 'Debes escribir tu nombre antes de crear una tarea.';
+                modalError.open();
+                return;
+            }
+            if (!fechaInicio || !fechaFin) {
+                document.getElementById('error-mensaje').textContent = 'Selecciona un rango de fechas en el calendario.';
+                modalError.open();
+                return;
+            }
+
+            const tipo = inputTipo.value || 'General';
+            document.getElementById('confirm-resumen').innerHTML = `
+                <p><strong>Persona:</strong> ${persona}</p>
+                <p><strong>Tipo:</strong> ${tipo}</p>
+                <p><strong>Fechas:</strong> ${fechaInicio.toLocaleDateString('es')} → ${fechaFin.toLocaleDateString('es')}</p>
+            `;
+            confirmNombre.value = '';
+            confirmDesc.value = '';
+            confirmEstado._seleccionados = ['En Proceso'];
+            confirmEstado.render();
+            modalConfirm.open();
+        });
+
+        const modalInfo = document.getElementById('modal-info-tarea');
+        let tareaSeleccionada = null;
+
+        tabla.addEventListener('row-click', (e) => {
+            tareaSeleccionada = e.detail.data;
+            const d = tareaSeleccionada;
+            document.getElementById('info-contenido').innerHTML = `
+                <p><strong>Persona:</strong> ${d.persona}</p>
+                <p><strong>Nombre:</strong> ${d.nombre}</p>
+                <p><strong>Tipo:</strong> ${d.tipo}</p>
+                <p><strong>Descripción:</strong> ${d.descripcion}</p>
+                <p><strong>Estado:</strong> ${d.estado}</p>
+                <p><strong>Inicio:</strong> ${d.fechaInicio}</p>
+                <p><strong>Límite:</strong> ${d.fechaFin}</p>
+            `;
+            modalInfo.open();
+        });
+
+        modalInfo.addEventListener('action-1', () => {
+            if (tareaSeleccionada) {
+                tareaSeleccionada.estado = 'Terminada';
+                actualizarTabla();
+            }
+        });
+
+        modalInfo.addEventListener('action-2', () => {
+            tareaSeleccionada = null;
+        });
+
+        modalConfirm.addEventListener('action-1', () => {
+            const nombre = confirmNombre.value || '';
+            const descripcion = confirmDesc.value || '';
+            const estado = (confirmEstado.seleccionados[0]) || 'En Proceso';
+            const tipo = inputTipo.value || 'General';
+            const persona = inputPersona.value || '';
+
+            if (!nombre.trim()) {
+                document.getElementById('error-mensaje').textContent = 'El nombre de la tarea es obligatorio.';
+                modalError.open();
+                return;
+            }
+
+            tareas.push({
+                persona: persona.trim(),
+                nombre: nombre.trim(),
+                tipo: tipo.trim(),
+                descripcion: descripcion.trim() || '(sin descripción)',
+                estado: estado.trim(),
+                fechaInicio: fechaInicio.toISOString().slice(0, 10),
+                fechaFin: fechaFin.toISOString().slice(0, 10),
+            });
+
+            poblarOpciones();
+            actualizarTabla();
+            confirmNombre.value = '';
+            confirmDesc.value = '';
+            confirmEstado._seleccionados = ['En Proceso'];
+            confirmEstado.render();
+            inputPersona.value = '';
+            inputTipo.value = '';
+            fechaInicio = null;
+            fechaFin = null;
+            document.getElementById('fechas-seleccionadas').textContent = 'Selecciona un rango de fechas';
+        });
+    </script>
+</body>
+</html>

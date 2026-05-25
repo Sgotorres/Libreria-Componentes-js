@@ -1,155 +1,201 @@
 # Librería de Componentes UI
 
-Componentes web nativos con estilo glassmorphism, construidos con Vanilla JS y Shadow DOM.
-
-## 📂 Estructura
-
-```
-src/components/
-├── date-range/        # Yox
-│   ├── index.js       # Componente + página de prueba
-│   └── style.css
-├── input-text/        # David
-│   ├── index.js
-│   └── style.css
-├── modal/             # Eduardo
-│   ├── index.js
-│   └── style.css
-├── select-dinamico/   # Dudu
-│   ├── index.js
-│   └── style.css
-└── table/             # Ángel
-    ├── index.js
-    └── style.css
-
-assets/
-├── style.css          # Estilos globales de la página demo
-└── app.js             # Inicialización de datos demo
-
-src/index.js           # Importa todos los componentes
-index.html             # Página demo (solo HTML, sin CSS/JS inline)
-```
-
-## 🧠 ¿Qué cambió?
-
-### Componentes
-Antes cada componente estaba definido **inline** en `index.html` con un `class` + `customElements.define`. Ahora cada componente vive en su propia carpeta como **módulo independiente**.
-
-### assets/
-Antes `assets/` tenía estilos y JS viejos que no se usaban. Ahora:
-- `assets/style.css` — los estilos globales de la página demo (antes estaban inline en el `<style>` del HTML)
-- `assets/app.js` — la inicialización de los datos demo (selects, tabla, modales), antes inline en un `<script>`
-
-El `index.html` quedó mucho más limpio — solo tiene el HTML estructurado y dos `<script>` que cargan los módulos.
-
-### Ventajas
-- Cada uno trabaja en su carpeta sin tocar el `index.html` principal
-- Puedes abrir el componente solo para probarlo sin la página grande
-- No hay conflictos de código entre miembros del equipo
-
-## 🚀 Cómo trabajar
-
-### 1. Desarrollo normal (página demo)
-Solo abre `index.html` con Live Server. Todos los componentes se cargan desde `src/index.js`.
-
-### 2. Probar un componente solo
-Abre directamente su `index.js` en el navegador. Si el `body` está vacío, el componente se muestra solo con datos de ejemplo. Si ya hay contenido (como en la página demo), se comporta normal.
-
-```
-http://localhost:5500/src/components/table/index.js
-```
-
-### 3. Agregar datos de ejemplo a la página demo
-Abre `assets/app.js`. Ahí dentro del `DOMContentLoaded` se configuran selects, tabla y modales. Agrega lo que necesites:
-
-```js
-// Ej: más filas a la tabla
-tabla.data = [
-    { ticket: 1045, asunto: 'Ejemplo', fecha: '2026-06-15', prioridad: 'Alta' },
-    // ...
-];
-```
-
-## 📦 Componentes
-
-### DateRange (`<date-range>`) — Yox
-```html
-<date-range color-tema="#3ee7b8" allow-past="false"></date-range>
-```
-| Atributo | Descripción |
-|---|---|
-| `color-tema` | Color de acento |
-| `allow-past` | `"true"`/`"false"` — permite fechas pasadas |
-| `allow-future` | `"true"`/`"false"` — permite fechas futuras |
-
-**Evento:** `range-changed` → `e.detail.start`, `e.detail.end`
-**Método:** `.clearRange()`
+Componentes web nativos con estilo glassmorphism, construidos con Vanilla JS y Shadow DOM. Incluye una aplicación de gestión de tareas (`tareas.html`) que integra todos los componentes.
 
 ---
 
-### CustomModal (`<custom-modal>`) — Eduardo
+## Índice
+
+1. [Estructura del proyecto](#-estructura-del-proyecto)
+2. [Cómo empezar](#-cómo-empezar)
+3. [Aplicación: Gestión de Tareas](#-aplicación-gestión-de-tareas)
+4. [Componentes](#-componentes)
+   - [InputText](#inputtext)
+   - [CustomSelect](#customselect)
+   - [DateRange](#daterange)
+   - [CustomModal](#custommodal)
+   - [CustomTable](#customtable)
+5. [Página demo (index.html)](#-página-demo-indexhtml)
+6. [Crear un componente nuevo paso a paso](#-crear-un-componente-nuevo-paso-a-paso)
+
+---
+
+## 📂 Estructura del proyecto
+
+```
+src/
+├── components/
+│   ├── date-range/        # Calendario de rango de fechas
+│   │   ├── index.js
+│   │   └── style.css
+│   ├── input-text/        # Campo de texto con validación
+│   │   ├── index.js
+│   │   └── style.css
+│   ├── modal/             # Modal con tipos (info, error, confirm, custom)
+│   │   ├── index.js
+│   │   └── style.css
+│   ├── select-dinamico/   # Select con búsqueda y selección múltiple
+│   │   ├── index.js
+│   │   └── style.css
+│   └── table/             # Tabla con búsqueda, ordenación y paginación
+│       ├── index.js
+│       └── style.css
+├── index.js               # Barrel — importa y re-exporta todos los componentes
+
+assets/
+├── style.css              # Estilos globales (glassmorphism, layout)
+└── app.js                 # Inicialización de la página demo
+
+index.html                 # Página demo principal
+tareas.html                # Aplicación de gestión de tareas
+```
+
+Cada componente vive en su propia carpeta como **módulo independiente**. Puedes abrir su `index.js` directamente en el navegador para probarlo de forma aislada (si el `body` está vacío, el componente se renderiza con datos de ejemplo).
+
+---
+
+## 🚀 Cómo empezar
+
+1. Abre el proyecto con **Live Server** (VS Code) o cualquier servidor HTTP estático.
+2. `index.html` — página demo con todos los componentes.
+3. `tareas.html` — aplicación funcional de gestión de tareas.
+
+No requiere npm install ni build. Son Web Components nativos.
+
+---
+
+## 📋 Aplicación: Gestión de Tareas
+
+`tareas.html` es una aplicación completa que usa todos los componentes.
+
+### ¿Qué hace?
+
+- **Crear tareas**: llenas nombre de persona → tipo de tarea (con chips rápidos) → rango de fechas → botón "Crear Tarea" → modal de confirmación con nombre, descripción y estado → se agrega a la tabla.
+- **Filtrar tareas**: chips de columna (Persona, Nombre, Tipo, Descripción, Estado, Inicio, Límite) + select desplegable. Al seleccionar un chip, el select muestra solo los valores únicos de esa columna. Al elegir un valor, la tabla se filtra.
+- **Ver detalle**: haz clic en una fila de la tabla → se abre un modal info con todos los datos.
+- **Completar tareas**: en el modal de detalle, botón "Terminar" → cambia el estado a "Terminada" y la fila se muestra atenuada con tachado.
+
+### Flujo paso a paso
+
+1. Escribe tu nombre en el campo "Nombre de la persona".
+2. Selecciona un tipo de tarea (escribe o haz clic en un chip: "Frontend", "Backend", etc.).
+3. Elige un rango de fechas en el calendario.
+4. Presiona **"+ Crear Tarea"**.
+5. En el modal de confirmación, escribe nombre, descripción y selecciona estado ("En Proceso" / "Terminada").
+6. Presiona **"Sí, crear tarea"** → la tarea aparece en la tabla.
+7. Para filtrar, haz clic en un chip de columna (ej: "Tipo") → el select muestra solo los tipos disponibles → selecciona uno.
+8. Haz clic en cualquier fila de la tabla → se abre el detalle.
+9. Presiona **"Terminar"** para marcar como completada.
+
+---
+
+## 🧩 Componentes
+
+### InputText
+
+Campo de texto con validación en tiempo real.
+
 ```html
-<custom-modal type="error" btn-1="Reintentar" btn-2="Cancelar">
+<input-text tipo="letras" min="3" max="20" placeholder="Tu nombre"></input-text>
+```
+
+| Atributo       | Descripción                                      |
+|----------------|--------------------------------------------------|
+| `tipo`         | `"numeros"` / `"letras"` / `"sin-especiales"` / `"todo"` |
+| `min`          | Longitud mínima de caracteres                    |
+| `max`          | Longitud máxima de caracteres                    |
+| `placeholder`  | Texto de ayuda                                   |
+| `ancho`        | Ancho del componente (ej: `"100%"`, `"300px"`)   |
+| `largo`        | Altura del input (ej: `"45px"`)                  |
+
+**Propiedades:**
+- `.value` — getter/setter para leer o escribir el valor.
+
+**Eventos:**
+- `valor-cambiado` → `e.detail.valor`, `e.detail.valido` — se dispara en cada tecla.
+
+---
+
+### CustomSelect
+
+Select dinámico con búsqueda y soporte múltiple.
+
+```html
+<custom-select placeholder="Seleccione..." enable-search="true" multiple="true"></custom-select>
+```
+
+```js
+const select = document.getElementById('mi-select');
+select.opciones = ['Admin', 'Editor', 'Viewer'];
+```
+
+| Atributo         | Descripción                                    |
+|------------------|------------------------------------------------|
+| `placeholder`    | Texto cuando no hay selección                  |
+| `enable-search`  | `"true"` / `"false"` — muestra caja de búsqueda dentro del dropdown |
+| `multiple`       | `"true"` / `"false"` — selección múltiple con tags |
+| `ancho`          | Ancho del componente                           |
+
+**Propiedades:**
+- `.opciones` (setter) — array de strings para poblar el dropdown.
+- `.seleccionados` (getter) — array con los valores seleccionados.
+
+**Eventos:**
+- `change` — se dispara cuando cambia la selección (burbujea, compuesto).
+
+---
+
+### DateRange
+
+Calendario para seleccionar un rango de fechas.
+
+```html
+<date-range color-tema="#3ee7b8" allow-past="false" allow-future="true"></date-range>
+```
+
+| Atributo       | Descripción                                    |
+|----------------|------------------------------------------------|
+| `color-tema`   | Color de acento del calendario                 |
+| `allow-past`   | `"true"` / `"false"` — permite fechas pasadas  |
+| `allow-future` | `"true"` / `"false"` — permite fechas futuras  |
+
+**Eventos:**
+- `range-changed` → `e.detail.start` (Date), `e.detail.end` (Date).
+
+**Métodos:**
+- `.clearRange()` — limpia la selección.
+
+---
+
+### CustomModal
+
+Modal con 4 tipos predefinidos y soporte para contenido personalizado.
+
+```html
+<custom-modal type="confirm" btn-1="Sí, crear tarea" btn-2="Cancelar">
+    <h2>Título</h2>
     <p>Mensaje</p>
 </custom-modal>
 ```
-| Atributo | Descripción |
-|---|---|
-| `type` | `"info"` / `"error"` / `"confirm"` / `"custom"` |
-| `btn-1` | Texto botón primario |
-| `btn-2` | Texto botón secundario |
-| `header-image` | URL de imagen de cabecera |
-| `bg-color` | Color del overlay |
 
-**Eventos:** `action-1`, `action-2`
-**Métodos:** `.open()`, `.close()`
+| Atributo        | Descripción                                      |
+|-----------------|--------------------------------------------------|
+| `type`          | `"info"` / `"error"` / `"confirm"` / `"custom"` |
+| `btn-1`         | Texto del botón primario                         |
+| `btn-2`         | Texto del botón secundario (opcional)            |
+| `header-image`  | URL de imagen de cabecera (solo type="custom")   |
+| `bg-color`      | Color del overlay (por defecto: `rgba(15,23,42,0.85)`) |
+| `color`         | Color del botón primario y del ícono             |
 
-Los modales de la página demo se crean desde `assets/app.js`, no están escritos en HTML directo.
+**Eventos:**
+- `action-1` — clic en botón primario.
+- `action-2` — clic en botón secundario.
 
----
+**Métodos:**
+- `.open()` — abre el modal.
+- `.close()` — cierra el modal.
 
-### InputText (`<input-text>`) — David
-```html
-<input-text tipo="numeros" min="3" max="8" placeholder="Ej: 123456"></input-text>
-```
-| Atributo | Descripción |
-|---|---|
-| `tipo` | `"numeros"` / `"letras"` / `"sin-especiales"` / `"email"` |
-| `min` / `max` | Largo mínimo/máximo |
-| `placeholder` | Texto de ayuda |
-| `ancho` | Ancho del componente |
-
----
-
-### CustomSelect (`<custom-select>`) — Dudu
-```html
-<custom-select id="roles" enable-search="true" multiple="true" placeholder="Seleccionar..."></custom-select>
-```
-```js
-// Poblar opciones desde JS
-document.getElementById('roles').opciones = ['Admin', 'Editor', 'Viewer'];
-```
-
----
-
-### CustomTable (`<custom-table>`) — Ángel
-```html
-<custom-table id="tabla" page-size="6" ancho="100%"></custom-table>
-```
-```js
-const t = document.getElementById('tabla');
-t.columns = [
-    { key: 'nombre', label: 'Nombre', type: 'string' },
-    { key: 'edad', label: 'Edad', type: 'number' },
-];
-t.data = [
-    { nombre: 'Ana', edad: 30 },
-    { nombre: 'Luis', edad: 25 },
-];
-```
-
-## ⚙️ Modal — Personalización global
-Define en tu CSS:
+**Personalización global (CSS:root):**
 ```css
 :root {
     --modal-accent: #3ee7b8;
@@ -158,10 +204,103 @@ Define en tu CSS:
     --modal-font-family: 'Segoe UI', sans-serif;
 }
 ```
-O en tiempo real desde el botón "Personalizar" de la página demo.
 
-## 🔧 Reglas importantes
-1. **No edites `index.html`** si solo quieres cambiar tu componente — trabaja en tu carpeta
-2. **No borres archivos de otros** — cada quien su carpeta
-3. **Si necesitas más datos demo**, edita `assets/app.js` (ahí está el `DOMContentLoaded`)
-4. **Para probar tu componente aislado**, abre su `index.js` directo en el navegador
+---
+
+### CustomTable
+
+Tabla con búsqueda, ordenación por columnas y paginación.
+
+```html
+<custom-table id="tabla" page-size="8" ancho="100%" hide-search></custom-table>
+```
+
+```js
+const tabla = document.getElementById('tabla');
+tabla.columns = [
+    { key: 'nombre', label: 'Nombre', type: 'string' },
+    { key: 'edad', label: 'Edad', type: 'number' },
+];
+tabla.data = [
+    { nombre: 'Ana', edad: 30 },
+    { nombre: 'Luis', edad: 25 },
+];
+```
+
+| Atributo      | Descripción                                      |
+|---------------|--------------------------------------------------|
+| `page-size`   | Filas por página (por defecto: 6)                |
+| `ancho`       | Ancho del componente                             |
+| `largo`       | Alto del componente                              |
+| `hide-search` | Si está presente, oculta el buscador interno      |
+
+**Propiedades:**
+- `.columns` — array de objetos `{ key, label, type }`.
+- `.data` — array de objetos con los valores a mostrar.
+
+**Eventos:**
+- `row-click` → `e.detail.data` (objeto completo de la fila clickeada).
+
+**Funcionalidades internas:**
+- Buscador (filtra en todas las columnas).
+- Ordenación: clic en encabezado para ordenar A-Z / Z-A / ninguno.
+- Paginación con botones anterior/siguiente.
+- Vista responsive: en pantallas pequeñas muestra tarjetas en lugar de tabla.
+
+---
+
+## 🏠 Página demo (index.html)
+
+La página `index.html` muestra todos los componentes en un solo lugar con datos de ejemplo.
+
+- Los estilos globales se cargan desde `assets/style.css`.
+- La inicialización de los componentes demo (poblar selects, tabla, configurar modales) se hace en `assets/app.js` dentro de `DOMContentLoaded`.
+- Para agregar más datos de ejemplo, edita `assets/app.js`.
+
+---
+
+## ✨ Crear un componente nuevo paso a paso
+
+1. Crea una carpeta en `src/components/` con el nombre de tu componente (ej: `src/components/mi-componente/`).
+
+2. Dentro, crea `index.js`:
+
+```js
+class MiComponente extends HTMLElement {
+    constructor() {
+        super();
+        this.attachShadow({ mode: 'open' });
+    }
+    connectedCallback() { this.render(); }
+    render() {
+        this.shadowRoot.innerHTML = `
+            <link rel="stylesheet" href="${new URL('./style.css', import.meta.url).href}">
+            <div>Hola desde MiComponente</div>
+        `;
+    }
+}
+customElements.define('mi-componente', MiComponente);
+
+// Prueba aislada: si el body está vacío, se muestra solo
+if (document.body.children.length === 0) {
+    document.body.appendChild(document.createElement('mi-componente'));
+}
+
+export default MiComponente;
+```
+
+3. (Opcional) Crea `style.css` en la misma carpeta.
+
+4. Impórtalo en `src/index.js`:
+
+```js
+export { default as MiComponente } from './components/mi-componente/index.js';
+```
+
+5. Úsalo en `index.html` o `tareas.html`:
+
+```html
+<mi-componente></mi-componente>
+```
+
+6. Para probarlo solo, abre `src/components/mi-componente/index.js` directo en el navegador.

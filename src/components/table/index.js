@@ -124,6 +124,27 @@ class CustomTable extends HTMLElement {
             });
         });
 
+        // Evento de clic en filas
+        const tbody = root.querySelector('tbody');
+        if (tbody) {
+            tbody.addEventListener('click', (e) => {
+                const tr = e.target.closest('tr');
+                if (tr && tr.parentElement === tbody) {
+                    const index = Array.from(tbody.children).indexOf(tr);
+                    const processedData = this._getProcessedData();
+                    const start = (this._currentPage - 1) * this._pageSize;
+                    const rowData = processedData[start + index];
+                    if (rowData) {
+                        this.dispatchEvent(new CustomEvent('row-click', {
+                            detail: { data: rowData },
+                            bubbles: true,
+                            composed: true
+                        }));
+                    }
+                }
+            });
+        }
+
         // Eventos de Paginación
         const processedData = this._getProcessedData();
         const totalPages = Math.ceil(processedData.length / this._pageSize) || 1;
@@ -153,15 +174,16 @@ class CustomTable extends HTMLElement {
         const start = (this._currentPage - 1) * this._pageSize;
         const pageData = processedData.slice(start, start + this._pageSize);
 
+        const hideSearch = this.hasAttribute('hide-search');
         this.shadowRoot.innerHTML = `
             <style>:host { width: ${ancho}; height: ${largo}; display: block; }</style>
             <link rel="stylesheet" href="${new URL('./style.css', import.meta.url).href}">
             
             <div class="table-wrapper">
-                
+                ${hideSearch ? '' : `
                 <div class="toolbar">
                     <input type="text" class="search-input" placeholder="Buscar en la tabla..." value="${this._searchTerm}">
-                </div>
+                </div>`}
 
                 <div class="table-responsive">
                     <table>
@@ -175,11 +197,12 @@ class CustomTable extends HTMLElement {
                             </tr>
                         </thead>
                         <tbody>
-                            ${pageData.length > 0 ? pageData.map(row => `
-                                <tr>
+                            ${pageData.length > 0 ? pageData.map(row => {
+                                const isCompleted = row.estado === 'Terminada';
+                                return `<tr class="${isCompleted ? 'completed' : ''}">
                                     ${this._columns.map(col => `<td>${row[col.key] != null ? row[col.key] : ''}</td>`).join('')}
-                                </tr>
-                            `).join('') : `<tr><td colspan="${this._columns.length}" class="empty-state">No se encontraron resultados.</td></tr>`}
+                                </tr>`;
+                            }).join('') : `<tr><td colspan="${this._columns.length}" class="empty-state">No se encontraron resultados.</td></tr>`}
                         </tbody>
                     </table>
                 </div>

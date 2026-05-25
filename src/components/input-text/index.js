@@ -75,6 +75,19 @@ class CustomInput extends HTMLElement {
         }
     }
 
+    get value() {
+        const input = this.shadowRoot?.querySelector('input');
+        return input ? input.value : '';
+    }
+
+    set value(val) {
+        const input = this.shadowRoot?.querySelector('input');
+        if (input) {
+            input.value = val;
+            this._validate(val);
+        }
+    }
+
     _attachEvents() {
         const input = this.shadowRoot.querySelector('input');
         if (!input) return;

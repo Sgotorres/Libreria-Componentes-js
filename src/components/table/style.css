@@ -44,6 +44,7 @@ th {
 th:hover { color: #3ee7b8; background: rgba(255,255,255,0.03); }
 tr { transition: background 0.2s; }
 tr:hover td { background: rgba(255,255,255,0.03); }
+tr.completed td { opacity: 0.45; text-decoration: line-through; }
 
 .sort-icon { color: #64748b; margin-left: 6px; font-size: 11px; }
 th:hover .sort-icon { color: #3ee7b8; }
