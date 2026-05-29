@@ -1,0 +1,100 @@
+.custom-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: var(--ff-base, system-ui, sans-serif);
+    font-weight: 600;
+    border-radius: var(--r-sm, 10px);
+    cursor: pointer;
+    transition: all var(--t-base, 0.25s) ease;
+    outline: none;
+    box-sizing: border-box;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+}
+
+/* Efecto de pulsación */
+.custom-btn:active:not(.disabled) {
+    transform: scale(0.96);
+}
+
+.custom-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* --- Tamaños --- */
+.btn-sm { padding: 6px 12px; font-size: var(--fs-sm, 12px); min-height: 32px; }
+.btn-md { padding: 10px 20px; font-size: var(--fs-base, 14px); min-height: 44px; }
+.btn-lg { padding: 14px 28px; font-size: var(--fs-md, 16px); min-height: 52px; }
+
+/* --- Variantes Visuales --- */
+
+/* 1. Primario: Color sólido de acento */
+.btn-primario {
+    background: var(--clr-primary, #3ee7b8);
+    color: #0f172a; /* Texto oscuro para contrastar con el fondo claro */
+    border: 1px solid transparent;
+    box-shadow: 0 4px 10px var(--clr-primary-dim, rgba(62, 231, 184, 0.2));
+}
+.btn-primario:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 6px 15px var(--clr-primary-dim, rgba(62, 231, 184, 0.4));
+}
+
+/* 2. Secundario: Glassmorphism puro */
+.btn-secundario {
+    background: var(--glass-bg, rgba(255, 255, 255, 0.05));
+    color: #f8fafc;
+    border: var(--glass-border, 1px solid rgba(255, 255, 255, 0.1));
+    backdrop-filter: var(--glass-blur, blur(10px));
+    -webkit-backdrop-filter: var(--glass-blur, blur(10px));
+    box-shadow: var(--glass-shadow-inset);
+}
+.btn-secundario:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-top: var(--glass-border-top, 1px solid rgba(255, 255, 255, 0.35));
+    border-left: var(--glass-border-left, 1px solid rgba(255, 255, 255, 0.2));
+}
+
+/* 3. Peligro: Para acciones destructivas (ej. eliminar) */
+.btn-peligro {
+    background: rgba(255, 100, 100, 0.15); /* Usando base de var(--clr-red) */
+    color: var(--clr-red, #ff6464);
+    border: 1px solid rgba(255, 100, 100, 0.3);
+}
+.btn-peligro:hover {
+    background: var(--clr-red, #ff6464);
+    color: white;
+    box-shadow: 0 4px 10px rgba(255, 100, 100, 0.3);
+}
+
+/* 4. Fantasma: Sin fondo ni bordes hasta hacer hover */
+.btn-fantasma {
+    background: transparent;
+    color: var(--clr-primary, #3ee7b8);
+    border: 1px solid transparent;
+}
+.btn-fantasma:hover {
+    background: var(--clr-primary-dim, rgba(62, 231, 184, 0.2));
+}
+
+/* --- Contenedores de Íconos --- */
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Asegura que los SVGs hereden el color y tamaño del botón */
+.btn-icon svg {
+    width: 1.25em;
+    height: 1.25em;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
