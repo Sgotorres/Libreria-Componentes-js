@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba Aislada - Botón Glassmorphism</title>
+    
+    <link rel="stylesheet" href="../../theme.css">
+    <link rel="stylesheet" href="./style.css">
+    
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        /* Estilos del laboratorio de pruebas */
+        body {
+            background-color: #0f172a;
+            background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 70%);
+            color: #f8fafc;
+            font-family: system-ui, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            box-sizing: border-box;
+        }
+        .sandbox {
+            width: 100%;
+            max-width: 800px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 35px;
+        }
+        .seccion-titulo {
+            font-size: 14px;
+            color: #cbd5e1;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 8px;
+        }
+        .fila-botones {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+    <h2 style="margin-bottom: 30px; color: #3ee7b8;">Laboratorio: Botones</h2>
+    
+    <div id="root" style="width: 100%; max-width: 800px;"></div>
+
+    <script type="text/babel">
+        // --- EL COMPONENTE BOTÓN ---
+        // Idéntico a tu Boton.jsx
+        function Button({
+            children,
+            onClick,
+            variante = 'primario',
+            tamano = 'md',
+            iconoIzquierda,
+            iconoDerecha,
+            disabled = false,
+            tipo = 'button',
+            ancho = 'auto',
+            className = ''
+        }) {
+            const classNames = `custom-btn btn-${variante} btn-${tamano} ${disabled ? 'disabled' : ''} ${className}`;
+
+            return (
+                <button
+                    type={tipo}
+                    className={classNames}
+                    onClick={onClick}
+                    disabled={disabled}
+                    style={{ width: ancho }}
+                >
+                    {iconoIzquierda && <span className="btn-icon left">{iconoIzquierda}</span>}
+                    {children && <span className="btn-text">{children}</span>}
+                    {iconoDerecha && <span className="btn-icon right">{iconoDerecha}</span>}
+                </button>
+            );
+        }
+
+        // --- LA ESCENA DE PRUEBAS ---
+        function App() {
+            // Íconos SVG de ejemplo para las pruebas
+            const IconoGuardar = <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>;
+            const IconoBasura = <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>;
+            const IconoFlecha = <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>;
+
+            return (
+                <div className="sandbox">
+                    
+                    {/* Sección 1: Variantes */}
+                    <div>
+                        <div className="seccion-titulo">1. Variantes Visuales</div>
+                        <div className="fila-botones">
+                            <Button variante="primario" onClick={() => alert('Primario click!')}>Primario</Button>
+                            <Button variante="secundario">Secundario (Glass)</Button>
+                            <Button variante="peligro">Peligro</Button>
+                            <Button variante="fantasma">Fantasma</Button>
+                        </div>
+                    </div>
+
+                    {/* Sección 2: Tamaños */}
+                    <div>
+                        <div className="seccion-titulo">2. Tamaños Disponibles</div>
+                        <div className="fila-botones">
+                            <Button variante="secundario" tamano="sm">Pequeño (sm)</Button>
+                            <Button variante="secundario" tamano="md">Normal (md)</Button>
+                            <Button variante="secundario" tamano="lg">Grande (lg)</Button>
+                        </div>
+                    </div>
+
+                    {/* Sección 3: Íconos y Estados */}
+                    <div>
+                        <div className="seccion-titulo">3. Con Íconos y Estados</div>
+                        <div className="fila-botones">
+                            <Button variante="primario" iconoIzquierda={IconoGuardar}>Guardar Cambios</Button>
+                            <Button variante="peligro" iconoDerecha={IconoBasura} tamano="sm">Eliminar</Button>
+                            <Button variante="fantasma" iconoDerecha={IconoFlecha}>Siguiente paso</Button>
+                            <Button variante="primario" disabled={true}>Deshabilitado</Button>
+                        </div>
+                    </div>
+
+                    {/* Sección 4: Ancho Completo */}
+                    <div>
+                        <div className="seccion-titulo">4. Ancho Dinámico</div>
+                        <div className="fila-botones">
+                            <Button variante="secundario" ancho="100%">Botón Ocupando el 100% del contenedor</Button>
+                        </div>
+                    </div>
+
+                </div>
+            );
+        }
+
+        // Inicializar React
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

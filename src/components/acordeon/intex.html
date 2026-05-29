@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba Aislada - Acordeón Glassmorphism</title>
+    
+    <link rel="stylesheet" href="../../theme.css">
+    <link rel="stylesheet" href="./style.css">
+    
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        /* Estilos del laboratorio de pruebas */
+        body {
+            background-color: #0f172a;
+            background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 70%);
+            color: #f8fafc;
+            font-family: system-ui, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            box-sizing: border-box;
+        }
+        .sandbox {
+            width: 100%;
+            max-width: 600px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+        .controles {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: #cbd5e1;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2 style="margin-bottom: 30px; color: #3ee7b8;">Laboratorio: Acordeón</h2>
+    
+    <div id="root" style="width: 100%; max-width: 600px;"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        // --- EL COMPONENTE ACORDEÓN ---
+        // Es exactamente el mismo código de tu Acordeon.jsx
+        function Acordeon({ items = [], permiteMultiples = false, ancho = '100%', className = '' }) {
+            const [abiertos, setAbiertos] = useState([]);
+
+            const manejarClick = (index) => {
+                if (permiteMultiples) {
+                    if (abiertos.includes(index)) {
+                        setAbiertos(abiertos.filter(i => i !== index));
+                    } else {
+                        setAbiertos([...abiertos, index]);
+                    }
+                } else {
+                    setAbiertos(abiertos.includes(index) ? [] : [index]);
+                }
+            };
+
+            return (
+                <div className={`custom-acordeon ${className}`} style={{ width: ancho }}>
+                    {items.map((item, index) => {
+                        const isOpen = abiertos.includes(index);
+                        
+                        return (
+                            <div key={item.id || index} className={`acordeon-item ${isOpen ? 'open' : ''}`}>
+                                <button className="acordeon-header" onClick={() => manejarClick(index)}>
+                                    <span className="acordeon-titulo">{item.titulo}</span>
+                                    <span className="acordeon-icono">{isOpen ? '−' : '+'}</span>
+                                </button>
+                                
+                                <div className="acordeon-body" style={{ maxHeight: isOpen ? '1000px' : '0px' }}>
+                                    <div className="acordeon-contenido">
+                                        {item.contenido && <div className="acordeon-texto">{item.contenido}</div>}
+                                        
+                                        {item.enlaces && item.enlaces.length > 0 && (
+                                            <div className="acordeon-enlaces">
+                                                {item.enlaces.map((enlace, i) => (
+                                                    <a key={i} href={enlace.url} target="_blank" rel="noopener noreferrer" className="enlace-card">
+                                                        <span className="enlace-texto">{enlace.texto}</span>
+                                                        <span className="enlace-flecha">↗</span>
+                                                    </a>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            );
+        }
+
+        // --- LA ESCENA DE PRUEBAS ---
+        function App() {
+            // Estado para el interruptor de prueba
+            const [multiples, setMultiples] = useState(false);
+
+            // Datos estructurados para alimentar el acordeón
+            const datosPrueba = [
+                {
+                    id: 1,
+                    titulo: "🍕 Documentación de Proyecto: Panzerotto",
+                    contenido: "Revisión del Capítulo 4 y gestión del sistema de pedidos. Asegúrate de que las citas sigan las normas APA.",
+                    enlaces: [
+                        { texto: "Ver Documento", url: "#" },
+                        { texto: "Prototipo en Figma", url: "#" }
+                    ]
+                },
+                {
+                    id: 2,
+                    titulo: "💻 Stack Tecnológico",
+                    contenido: "El backend está construido con Node.js, Python y PostgreSQL, mientras que el frontend utiliza HTML/CSS, JavaScript y React con estilos de cristal esmerilado.",
+                },
+                {
+                    id: 3,
+                    titulo: "🎮 Hardware y Mantenimiento",
+                    contenido: "Diagramas técnicos y procedimientos de reparación. Despliega los enlaces para ver las guías específicas.",
+                    enlaces: [
+                        { texto: "Despiece PlayStation 2", url: "#" },
+                        { texto: "Componentes Xbox 360", url: "#" },
+                        { texto: "Esquemas Nintendo DSi/XL", url: "#" }
+                    ]
+                }
+            ];
+
+            return (
+                <div className="sandbox">
+                    
+                    {/* Panel de control superior */}
+                    <div className="controles">
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                            <input 
+                                type="checkbox" 
+                                checked={multiples} 
+                                onChange={(e) => setMultiples(e.target.checked)} 
+                                style={{ accentColor: '#3ee7b8', width: '16px', height: '16px' }}
+                            />
+                            Permitir múltiples pestañas abiertas al mismo tiempo
+                        </label>
+                    </div>
+
+                    {/* Renderizado del componente */}
+                    <Acordeon 
+                        items={datosPrueba} 
+                        permiteMultiples={multiples} 
+                    />
+                    
+                </div>
+            );
+        }
+
+        // 4. Inicializar React
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

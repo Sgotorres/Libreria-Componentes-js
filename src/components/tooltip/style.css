@@ -1,0 +1,114 @@
+.custom-tooltip-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tooltip-box {
+    position: absolute;
+    background: var(--glass-bg, rgba(15, 23, 42, 0.85));
+    border: var(--glass-border, 1px solid rgba(255, 255, 255, 0.1));
+    backdrop-filter: var(--glass-blur, blur(10px));
+    -webkit-backdrop-filter: var(--glass-blur, blur(10px));
+    box-shadow: var(--glass-shadow-dense, 0 10px 20px rgba(0, 0, 0, 0.5));
+    border-radius: var(--r-sm, 8px);
+    padding: 10px 14px;
+    color: #f8fafc;
+    font-family: var(--ff-base, system-ui, sans-serif);
+    font-size: var(--fs-sm, 12px);
+    z-index: 1000;
+    pointer-events: none; /* Evita que el tooltip interfiera con el mouse */
+    animation: tooltipFadeIn var(--t-fast, 0.2s) ease-out forwards;
+}
+
+/* Efecto de aparición suave */
+@keyframes tooltipFadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* --- Posicionamiento y Flechas --- */
+
+/* Arriba */
+.tooltip-arriba {
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+}
+.tooltip-arriba .tooltip-arrow {
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    border-bottom: var(--glass-border);
+    border-right: var(--glass-border);
+}
+
+/* Abajo */
+.tooltip-abajo {
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+}
+.tooltip-abajo .tooltip-arrow {
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    border-top: var(--glass-border);
+    border-left: var(--glass-border);
+}
+
+/* Izquierda */
+.tooltip-izquierda {
+    right: calc(100% + 10px);
+    top: 50%;
+    transform: translateY(-50%);
+}
+.tooltip-izquierda .tooltip-arrow {
+    right: -5px;
+    top: 50%;
+    transform: translateY(-50%) rotate(45deg);
+    border-top: var(--glass-border);
+    border-right: var(--glass-border);
+}
+
+/* Derecha */
+.tooltip-derecha {
+    left: calc(100% + 10px);
+    top: 50%;
+    transform: translateY(-50%);
+}
+.tooltip-derecha .tooltip-arrow {
+    left: -5px;
+    top: 50%;
+    transform: translateY(-50%) rotate(45deg);
+    border-bottom: var(--glass-border);
+    border-left: var(--glass-border);
+}
+
+/* Construcción de la flecha */
+.tooltip-arrow {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: inherit; /* Hereda el color glass del padre */
+    backdrop-filter: inherit;
+    z-index: -1; /* Para que quede por debajo del contenido pero tape el borde */
+}
+
+/* Ajustes para contenido dentro del tooltip (ej. imágenes) */
+.tooltip-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    text-align: center;
+}
+
+.tooltip-content img {
+    max-width: 150px;
+    border-radius: 4px;
+    display: block;
+}
