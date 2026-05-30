@@ -7,6 +7,8 @@ import DateRange from './components/date-range/DateRange.jsx';
 import Modal from './components/modal/Modal.jsx';
 import SelectDinamico from './components/select-dinamico/SelectDinamico.jsx';
 import Table from './components/table/Table.jsx';
+import Toast from './components/toast/Toast.jsx';
+import Carrusel from './components/carrusel/Carrusel.jsx';
 
 // 2. Creamos una "Página" para mostrar el Input Text
 // Encuentra la función InputTextDemo en tu App.jsx y cámbiala por esto:
@@ -221,6 +223,48 @@ function TableDemo() {
   );
 }
 
+function ToastDemo() {
+  const [toast, setToast] = useState(null);
+
+  function mostrar(tipo, mensaje) {
+    setToast({ tipo, mensaje });
+  }
+
+  const btnStyle = { padding: '12px 24px', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', color: 'white' };
+
+  return (
+    <div>
+      <h2 style={{ borderBottom: '2px solid #eee', paddingBottom: '10px' }}>Toast</h2>
+      <p>Notificaciones emergentes que se cierran solas.</p>
+      <div style={{ background: '#0f172a', padding: '30px', borderRadius: '15px', display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center' }}>
+        <button style={{ ...btnStyle, background: '#22c55e' }} onClick={() => mostrar('success', 'Operación exitosa')}>Success</button>
+        <button style={{ ...btnStyle, background: '#ef4444' }} onClick={() => mostrar('error', 'Algo salió mal')}>Error</button>
+        <button style={{ ...btnStyle, background: '#3b82f6' }} onClick={() => mostrar('info', 'Esto es informativo')}>Info</button>
+      </div>
+
+      {toast && (
+        <Toast tipo={toast.tipo} mensaje={toast.mensaje} duracion={3000} onClose={() => setToast(null)} />
+      )}
+    </div>
+  );
+}
+
+function CarruselDemo() {
+  const imagenes = [
+    { src: 'https://picsum.photos/800/400?1', alt: 'Montañas', titulo: 'Montañas', descripcion: 'Paisaje de montaña nevada', link: '/montañas' },
+    { src: 'https://picsum.photos/800/400?2', alt: 'Playa', titulo: 'Playa', descripcion: 'Atardecer en la playa' },
+    { src: 'https://picsum.photos/800/400?3', alt: 'Bosque', titulo: 'Bosque', descripcion: 'Sendero entre árboles' },
+  ];
+
+  return (
+    <div>
+      <h2 style={{ borderBottom: '2px solid #eee', paddingBottom: '10px' }}>Carrusel de Imágenes</h2>
+      <p>Slideshow con texto superpuesto, botones de navegación y autoplay.</p>
+      <Carrusel imagenes={imagenes} intervalo={4000} mostrarBotones={true} altura="450px" />
+    </div>
+  );
+}
+
 // 3. Creamos una "Página" de Inicio
 function InicioDemo() {
   return <h2>Bienvenido a nuestra Librería de Componentes 🚀</h2>;
@@ -242,8 +286,8 @@ export default function App() {
             <Link to="/modal" style={{ textDecoration: 'none', color: '#007bff' }}>Ventana Modal</Link>
             <Link to="/select" style={{ textDecoration: 'none', color: '#007bff' }}>Select Dinámico</Link>
             <Link to="/table" style={{ textDecoration: 'none', color: '#007bff' }}>Tabla Dinámica</Link>
-            <span style={{ color: '#999', cursor: 'not-allowed' }}>Modal (Próximamente)</span>
-            <span style={{ color: '#999', cursor: 'not-allowed' }}>Tabla (Próximamente)</span>
+            <Link to="/toast" style={{ textDecoration: 'none', color: '#007bff' }}>Toast</Link>
+            <Link to="/carrusel" style={{ textDecoration: 'none', color: '#007bff' }}>Carrusel</Link>
           </nav>
         </aside>
 
@@ -256,6 +300,8 @@ export default function App() {
             <Route path="/modal" element={<ModalDemo />} />
             <Route path="/select" element={<SelectDemo />} />
             <Route path="/table" element={<TableDemo />} />
+            <Route path="/toast" element={<ToastDemo />} />
+            <Route path="/carrusel" element={<CarruselDemo />} />
           </Routes>
         </main>
 
