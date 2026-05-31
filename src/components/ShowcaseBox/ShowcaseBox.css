@@ -1,0 +1,63 @@
+.showcase-wrapper {
+  margin-bottom: 3rem;
+  font-family: system-ui, sans-serif;
+}
+
+.showcase-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #fff; /* O el color de tu texto principal */
+}
+
+.showcase-description {
+  color: #9ca3af;
+  margin-bottom: 1rem;
+}
+
+.showcase-container {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.showcase-tabs {
+  display: flex;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.showcase-tab {
+  padding: 10px 20px;
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.showcase-tab.active {
+  color: #3ee7b8; /* Tu color de acento */
+  border-bottom: 2px solid #3ee7b8;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.showcase-preview-area {
+  padding: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* El famoso fondo de líneas diagonales de DaisyUI (adaptado a tu tema oscuro) */
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.02),
+    rgba(255, 255, 255, 0.02) 10px,
+    transparent 10px,
+    transparent 20px
+  );
+}
+
+.showcase-code-area {
+  overflow-x: auto;
+}
