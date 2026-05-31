@@ -1,38 +1,54 @@
-:root {
-    /* ── Colors ── */
-    --clr-primary: #3ee7b8;
-    --clr-primary-dim: rgba(62, 231, 184, 0.2);
-    --clr-accent: #c893f9;
-    --clr-blue: #29a3ff;
-    --clr-yellow: #ffc832;
-    --clr-red: #ff6464;
+/* Layout Principal */
+.daisy-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #0f172a; /* Color oscuro de fondo para resaltar el glassmorphism */
+  color: white;
+}
 
-    /* ── Glassmorphism tokens ── */
-    --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
-    --glass-border: 1px solid rgba(255, 255, 255, 0.1);
-    --glass-border-top: 1px solid rgba(255, 255, 255, 0.35);
-    --glass-border-left: 1px solid rgba(255, 255, 255, 0.2);
-    --glass-blur: blur(10px) saturate(180%);
-    --glass-blur-intense: blur(15px) saturate(220%);
-    --glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-    --glass-shadow-inset: inset 0 0 20px rgba(255, 255, 255, 0.05);
-    --glass-shadow-dense: 0 10px 20px rgba(0, 0, 0, 0.6);
+/* Sidebar fija a la izquierda */
+.daisy-sidebar {
+  width: 260px;
+  background: rgba(255, 255, 255, 0.05); /* Toque glassmorphism */
+  backdrop-filter: blur(10px);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  overflow-y: auto;
+}
 
-    /* ── Radii ── */
-    --r-sm: 10px;
-    --r-md: 18px;
-    --r-lg: 25px;
-    --r-xl: 40px;
-    --r-full: 50px;
+/* Panel derecho principal */
+.daisy-main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
 
-    /* ── Typography ── */
-    --ff-base: inherit;
-    --fs-sm: 12px;
-    --fs-base: 14px;
-    --fs-md: 16px;
+/* Cabecera del panel derecho */
+.daisy-header {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
 
-    /* ── Transitions ── */
-    --t-fast: 0.15s;
-    --t-base: 0.25s;
-    --t-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+/* Lienzo donde se ven los componentes */
+.daisy-canvas {
+  padding: 2rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Caja bonita para mostrar el componente (como en DaisyUI) */
+.component-showcase {
+  padding: 3rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
 }
