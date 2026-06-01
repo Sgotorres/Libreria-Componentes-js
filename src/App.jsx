@@ -512,18 +512,25 @@ function Ejemplo() {
 // --- ESTRUCTURA PRINCIPAL DEL LAYOUT ---
 
 export default function App() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <Router>
       <div className="daisy-layout">
         
-        {/* Barra Lateral de Navegación */}
-        <div className="daisy-sidebar">
-          <Sidebar />
+        <div className={`daisy-sidebar ${sidebarOpen ? 'open' : ''}`}>
+          <Sidebar onNavigate={() => setSidebarOpen(false)} />
         </div>
 
-        {/* Panel Principal Derecho */}
+        {sidebarOpen && <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} />}
+
         <main className="daisy-main-content">
           <header className="daisy-header">
+            <button className="menu-toggle" onClick={() => setSidebarOpen(!sidebarOpen)}>
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
             <h1>Documentación - Librería JS</h1>
           </header>
           

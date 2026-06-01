@@ -2,8 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import './style.css'; 
 
-function Sidebar() {
-  // En tu Sidebar.jsx
+function Sidebar({ onNavigate }) {
 const listaComponentes = [
   { path: '/', nombre: 'Inicio' },
   { path: '/boton', nombre: 'Botón' },
@@ -32,6 +31,7 @@ const listaComponentes = [
               <NavLink
                 to={item.path}
                 className={({ isActive }) => `menu-button ${isActive ? 'activo' : ''}`}
+                onClick={onNavigate}
               >
                 {item.nombre}
               </NavLink>
