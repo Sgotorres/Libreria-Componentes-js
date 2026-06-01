@@ -471,8 +471,8 @@ function Ejemplo() {
 
 function CarruselDemo() {
   const imagenes = [
-    { src: 'https://picsum.photos/800/400?1', alt: 'Montañas', titulo: 'Montañas' },
-    { src: 'https://picsum.photos/800/400?2', alt: 'Playa', titulo: 'Playa' }
+    { src: 'https://i.pinimg.com/1200x/c9/0e/7a/c90e7a26e1dbc89d9edf6a3adcd3499c.jpg', alt: 'Montañas', titulo: 'Montañas' },
+    { src: 'https://i.pinimg.com/1200x/34/80/d0/3480d0ca3ee63fefd9eed67c999f631d.jpg', alt: 'Playa', titulo: 'Playa' }
   ];
 
   const codigoString = `import { Carrusel } from './ruta-a-index';

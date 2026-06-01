@@ -3,8 +3,8 @@ import './style.css';
 
 export default function Tooltip({
     children, // El elemento que activará el tooltip (ej. un botón o icono)
-    contenido, // Lo que va dentro de la burbuja (texto, imagen, etc.)
-    posicion = 'arriba', // 'arriba', 'abajo', 'izquierda', 'derecha'
+    contenido = <div className="image-wrapper"><img src="https://i.pinimg.com/736x/1b/54/a5/1b54a5fb9e5717ef1081009f92c978a1.jpg"alt="Imagen del tooltip" /></div>, // Lo que va dentro de la burbuja (texto, imagen, etc.)
+    posicion = 'abajo',// 'arriba', 'abajo', 'izquierda', 'derecha'
     ancho = 'max-content',
     retraso = 200, // Retraso en milisegundos antes de aparecer
     className = ''
