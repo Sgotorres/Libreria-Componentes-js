@@ -66,7 +66,7 @@ const PremiumTabs = () => {
             
             <div className={`content-panel ${activeTab === 'tab1' ? 'active' : ''}`}>
               <div className="panel-layout">
-                <div className="image-wrapper"><img src="kanata.jpg" alt="Fantech Kanata VX9" className="product-image" /></div>
+                <div className="image-wrapper"><img src="https://i.pinimg.com/736x/54/8c/61/548c61f03c6e520480c4f09540ca566b.jpg" alt="Fantech Kanata VX9" className="product-image" /></div>
                 <div className="text-wrapper">
                   <span className="category-tag">Ratón Gaming</span>
                   <h3>Kanata VX9</h3>
@@ -78,7 +78,7 @@ const PremiumTabs = () => {
 
             <div className={`content-panel ${activeTab === 'tab2' ? 'active' : ''}`}>
               <div className="panel-layout">
-                <div className="image-wrapper"><img src="kumara.jpg" alt="Teclado Redragon" className="product-image" /></div>
+                <div className="image-wrapper"><img src="https://i.pinimg.com/736x/4f/6b/05/4f6b050a585991a54b86322ec50687a8.jpg" alt="Teclado Redragon" className="product-image" /></div>
                 <div className="text-wrapper">
                   <span className="category-tag">Teclado Mecánico</span>
                   <h3>Kumara</h3>
@@ -90,7 +90,7 @@ const PremiumTabs = () => {
 
             <div className={`content-panel ${activeTab === 'tab3' ? 'active' : ''}`}>
               <div className="panel-layout">
-                <div className="image-wrapper"><img src="logitech.jpg" alt="Logitech G Pro" className="product-image" /></div>
+                <div className="image-wrapper"><img src="https://i.pinimg.com/1200x/04/0f/c8/040fc83fa5650844865e8a20fc7e6d62.jpg" alt="Logitech G Pro" className="product-image" /></div>
                 <div className="text-wrapper">
                   <span className="category-tag">Ratón Inalámbrico</span>
                   <h3>Logitech G Pro</h3>
@@ -102,7 +102,7 @@ const PremiumTabs = () => {
 
             <div className={`content-panel ${activeTab === 'tab4' ? 'active' : ''}`}>
               <div className="panel-layout">
-                <div className="image-wrapper"><img src="x11.jpg" alt="Attack Shark x11" className="product-image" /></div>
+                <div className="image-wrapper"><img src="https://i.pinimg.com/1200x/fb/7c/c7/fb7cc7fc373ea61d891edfc74282b950.jpg" alt="Attack Shark x11" className="product-image" /></div>
                 <div className="text-wrapper">
                   <span className="category-tag">Edición Especial</span>
                   <h3>Attack Shark x11</h3>
