@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './style.css'; // Ahora importamos nuestro archivo limpio
+import { createPortal } from 'react-dom';
+import './style.css';
 
 export default function SelectDinamico({
     opciones = [],
@@ -7,16 +8,16 @@ export default function SelectDinamico({
     enableSearch = true,
     multiple = false,
     placeholder = 'Seleccione...',
-    onChange // Función opcional para reportar datos seleccionados al padre
+    onChange
 }) {
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [seleccionados, setSeleccionados] = useState([]);
+    const [dropdownStyle, setDropdownStyle] = useState({});
     
-    // Este ref nos dirá si el usuario dio clic fuera de la caja
     const containerRef = useRef(null);
+    const triggerRef = useRef(null);
 
-    // Lógica para cerrar el modal si se hace clic afuera
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (containerRef.current && !containerRef.current.contains(event.target)) {
@@ -27,12 +28,21 @@ export default function SelectDinamico({
         return () => document.removeEventListener('click', handleClickOutside);
     }, []);
 
-    // Cada vez que seleccionados cambie, avisamos al componente padre
     useEffect(() => {
         if (onChange) onChange(seleccionados);
     }, [seleccionados, onChange]);
 
-    // Lógica principal: Añadir o quitar una opción
+    useEffect(() => {
+      if (isOpen && triggerRef.current) {
+        const rect = triggerRef.current.getBoundingClientRect();
+        setDropdownStyle({
+          left: rect.left + 'px',
+          width: rect.width + 'px',
+          top: rect.bottom + 8 + 'px',
+        });
+      }
+    }, [isOpen]);
+
     const handleSelect = (item) => {
         if (multiple) {
             if (seleccionados.includes(item)) {
@@ -42,22 +52,19 @@ export default function SelectDinamico({
             }
         } else {
             setSeleccionados([item]);
-            setIsOpen(false); // Si no es múltiple, cerramos al elegir
+            setIsOpen(false);
         }
     };
 
-    // Quitar un tag haciendo clic en la "X"
     const removeTag = (e, item) => {
         e.stopPropagation();
         setSeleccionados(seleccionados.filter(i => i !== item));
     };
 
-    // Filtramos las opciones según el texto de búsqueda
     const filteredOptions = opciones.filter(opt =>
         opt.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    // Construimos la vista de lo que va adentro del "botón" principal
     let triggerContent = <span className="placeholder">{placeholder}</span>;
     if (seleccionados.length > 0) {
         if (multiple) {
@@ -76,46 +83,47 @@ export default function SelectDinamico({
         }
     }
 
+    const dropdown = isOpen && (
+        <div className="dropdown-menu open" style={dropdownStyle}>
+            {enableSearch && (
+                <input
+                    type="text"
+                    className="search-box"
+                    placeholder="Buscar..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onClick={(e) => e.stopPropagation()}
+                />
+            )}
+            <div className="options-list">
+                {filteredOptions.length > 0 ? (
+                    filteredOptions.map(opt => (
+                        <div
+                            key={opt}
+                            className={`option-item ${seleccionados.includes(opt) ? 'selected' : ''}`}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleSelect(opt);
+                            }}
+                        >
+                            <span>{opt}</span>
+                            <span className="check-icon">✓</span>
+                        </div>
+                    ))
+                ) : (
+                    <div className="empty-msg">No se encontraron resultados</div>
+                )}
+            </div>
+        </div>
+    );
+
     return (
         <div className="custom-select-container" style={{ width: ancho }} ref={containerRef}>
-            
-            <div className={`select-trigger ${isOpen ? 'active' : ''}`} onClick={() => setIsOpen(!isOpen)}>
+            <div className={`select-trigger ${isOpen ? 'active' : ''}`} onClick={() => setIsOpen(!isOpen)} ref={triggerRef}>
                 {triggerContent}
             </div>
 
-            <div className={`dropdown-menu ${isOpen ? 'open' : 'closed'}`}>
-                {enableSearch && (
-                    <input
-                        type="text"
-                        className="search-box"
-                        placeholder="Buscar..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        onClick={(e) => e.stopPropagation()} 
-                    />
-                )}
-                
-                <div className="options-list">
-                    {filteredOptions.length > 0 ? (
-                        filteredOptions.map(opt => (
-                            <div
-                                key={opt}
-                                className={`option-item ${seleccionados.includes(opt) ? 'selected' : ''}`}
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleSelect(opt);
-                                }}
-                            >
-                                <span>{opt}</span>
-                                <span className="check-icon">✓</span>
-                            </div>
-                        ))
-                    ) : (
-                        <div className="empty-msg">No se encontraron resultados</div>
-                    )}
-                </div>
-            </div>
-
+            {createPortal(dropdown, document.body)}
         </div>
     );
 }

@@ -1,58 +1,70 @@
 .showcase-wrapper {
-  margin-bottom: 3rem;
-  font-family: system-ui, sans-serif;
+  margin-bottom: 2.5rem;
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
 .showcase-title {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 700;
-  margin-bottom: 0.5rem;
-  color: #fff; /* O el color de tu texto principal */
+  margin-bottom: 0.3rem;
+  color: #f1f5f9;
 }
 
 .showcase-description {
-  color: #9ca3af;
+  color: #94a3b8;
   margin-bottom: 1rem;
+  font-size: 0.875rem;
 }
 
 .showcase-container {
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  overflow: hidden;
-  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.4);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
 }
 
 .showcase-tabs {
   display: flex;
-  background: rgba(0, 0, 0, 0.2);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 8px;
+  padding: 10px 16px;
+  background: rgba(0, 0, 0, 0.25);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .showcase-tab {
-  padding: 10px 20px;
+  padding: 6px 16px;
   background: transparent;
-  border: none;
-  color: #9ca3af;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #94a3b8;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.showcase-tab:hover {
+  color: #cbd5e1;
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .showcase-tab.active {
-  color: #3ee7b8; /* Tu color de acento */
-  border-bottom: 2px solid #3ee7b8;
-  background: rgba(255, 255, 255, 0.05);
+  color: #3ee7b8;
+  border-color: rgba(62, 231, 184, 0.5);
+  background: rgba(62, 231, 184, 0.08);
+  box-shadow: 0 0 12px rgba(62, 231, 184, 0.08);
 }
 
 .showcase-preview-area {
-  padding: 3rem;
+  padding: 2.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  /* El famoso fondo de líneas diagonales de DaisyUI (adaptado a tu tema oscuro) */
+  min-height: 120px;
   background: repeating-linear-gradient(
     45deg,
-    rgba(255, 255, 255, 0.02),
-    rgba(255, 255, 255, 0.02) 10px,
+    rgba(255, 255, 255, 0.015),
+    rgba(255, 255, 255, 0.015) 10px,
     transparent 10px,
     transparent 20px
   );

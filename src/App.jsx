@@ -32,18 +32,30 @@ function InicioDemo() {
 }
 
 function BotonDemo() {
-  const buttonSizesCode = `
-<Boton text="Small" tamano="sm" />
-<Boton text="Medium" tamano="md" />
-<Boton text="Large" tamano="lg" />
-  `.trim();
+  const buttonSizesCode = `import { Boton } from './ruta-a-index';
 
-  const buttonColorsCode = `
-<Boton text="Primary" variante="primario" />
-<Boton text="Secondary" variante="secundario" />
-<Boton text="Danger" variante="peligro" />
-<Boton text="Ghost" variante="fantasma" />
-  `.trim();
+function Ejemplo() {
+  return (
+    <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+      <Boton text="Small" tamano="sm" />
+      <Boton text="Medium" tamano="md" />
+      <Boton text="Large" tamano="lg" />
+    </div>
+  );
+}`;
+
+  const buttonColorsCode = `import { Boton } from './ruta-a-index';
+
+function Ejemplo() {
+  return (
+    <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+      <Boton text="Primary" variante="primario" />
+      <Boton text="Secondary" variante="secundario" />
+      <Boton text="Danger" variante="peligro" />
+      <Boton text="Ghost" variante="fantasma" />
+    </div>
+  );
+}`;
 
   return (
     <div className="preview-container">
@@ -79,10 +91,16 @@ function BotonDemo() {
 }
 
 function InputTextDemo() {
-  const codigoString = `
-<InputText tipo="numeros" min="3" max="8" ancho="100%" placeholder="Solo números (Mín 3, Máx 8)" />
-<InputText tipo="letras" ancho="100%" placeholder="Solo letras" />
-  `.trim();
+  const codigoString = `import { InputText } from './ruta-a-index';
+
+function Ejemplo() {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 15 }}>
+      <InputText tipo="numeros" min="3" max="8" ancho="100%" placeholder="Solo números (Mín 3, Máx 8)" />
+      <InputText tipo="letras" ancho="100%" placeholder="Solo letras" />
+    </div>
+  );
+}`;
 
   return (
     <div className="preview-container">
@@ -101,13 +119,50 @@ function InputTextDemo() {
 }
 
 function AcordeonDemo() {
-  const codigoString = `
-<Acordeon 
-  items={[
-    { id: 1, titulo: "¿Qué es esta librería?", contenido: "Es una colección de componentes UI construida con React y Vite." }
-  ]} 
-/>
-  `.trim();
+  const codigoString = `import { Acordeon } from './ruta-a-index';
+
+const items = [
+  { titulo: 'Pregunta 1', contenido: 'Respuesta 1' },
+  {
+    titulo: 'Categoría con hijos',
+    subcategorias: [
+      { titulo: 'Sub 1', contenido: 'Anidado nivel 2' },
+      { titulo: 'Sub 2', contenido: 'Otro elemento hijo' },
+    ],
+  },
+];
+
+function Ejemplo() {
+  return <Acordeon items={items} />;
+}`;
+
+  const items = [
+    { titulo: '¿Qué es esta librería?', contenido: 'Colección de componentes UI modernos con React y Vite. Diseño glassmorphism oscuro, cada componente es independiente y personalizable.' },
+    { titulo: 'Instalación', contenido: 'Solo clona el repo, ejecuta npm run dev e importa los componentes desde src/index.js.' },
+    {
+      titulo: 'Componentes',
+      subcategorias: [
+        {
+          titulo: 'Botón',
+          subcategorias: [
+            { titulo: 'Primary', contenido: 'Fondo sólido con hover. Usa la prop variant="primary".' },
+            { titulo: 'Outline', contenido: 'Borde sin relleno. Usa la prop variant="outline".' },
+            { titulo: 'Ghost', contenido: 'Sin borde ni relleno. Usa la prop variant="ghost".' },
+          ],
+        },
+        {
+          titulo: 'Modal',
+          subcategorias: [
+            { titulo: 'Info', contenido: 'Ventana informativa azul. type="info".' },
+            { titulo: 'Confirm', contenido: 'Ventana con confirmación. type="confirm".' },
+          ],
+        },
+        { titulo: 'Carrusel', contenido: 'Autoplay configurable, overlay de texto, botones de navegación y altura ajustable.' },
+        { titulo: 'Toast', contenido: 'Notificaciones tipo success, error, info, custom. Auto-close y animación slide-in.' },
+      ],
+    },
+    { titulo: 'Personalización', contenido: 'Todos aceptan props para colores, tamaños y comportamientos. Las clases CSS planas permiten sobrescribir estilos fácilmente.' },
+  ];
 
   return (
     <div className="preview-container">
@@ -116,25 +171,26 @@ function AcordeonDemo() {
         description="El acordeón se utiliza para mostrar y ocultar contenido. Solo un elemento puede permanecer abierto a la vez."
         codeString={codigoString}
       >
-         {/* Aquí va el componente real que se renderiza en la pestaña Preview */}
-         <Acordeon 
-            items={[
-              { id: 1, titulo: "¿Qué es esta librería?", contenido: "Es una colección de componentes UI construida con React y Vite." }
-            ]} 
-         />
+        <div style={{ width: '100%', maxWidth: 600 }}>
+          <Acordeon items={items} />
+        </div>
       </ShowcaseBox>
     </div>
   );
 }
 
 function DateRangeDemo() {
-  const codigoString = `
-<DateRange 
-  colorTema="#3ee7b8" 
-  allowPast={false} 
-  allowFuture={true} 
-/>
-  `.trim();
+  const codigoString = `import { DateRange } from './ruta-a-index';
+
+function Ejemplo() {
+  return (
+    <DateRange 
+      colorTema="#3ee7b8" 
+      allowPast={false} 
+      allowFuture={true} 
+    />
+  );
+}`;
 
   return (
     <div className="preview-container">
@@ -153,18 +209,28 @@ function DateRangeDemo() {
 }
 function ModalDemo() {
   const [modalInfo, setModalInfo] = useState(false);
-  const btnStyle = { padding: '12px 24px', border: 'none', borderRadius: '8px', cursor: 'pointer', color: 'white', background: '#3b82f6' };
+  const [modalError, setModalError] = useState(false);
+  const [modalConfirm, setModalConfirm] = useState(false);
+  const [modalCustom, setModalCustom] = useState(false);
+  const btnBase = { padding: '12px 24px', border: 'none', borderRadius: '8px', cursor: 'pointer', color: 'white', fontWeight: 600 };
 
-  const codigoString = `
-const [modalInfo, setModalInfo] = useState(false);
+  const codigoString = `import { useState } from 'react';
+import { Modal } from './ruta-a-index';
 
-<button onClick={() => setModalInfo(true)}>Abrir Modal</button>
+function Ejemplo() {
+  const [open, setOpen] = useState(false);
 
-<Modal isOpen={modalInfo} onClose={() => setModalInfo(false)} type="info" btn1="Entendido">
-  <h2>Información</h2>
-  <p>Actualización completada correctamente.</p>
-</Modal>
-  `.trim();
+  return (
+    <>
+      <button onClick={() => setOpen(true)}>Abrir Modal</button>
+
+      <Modal isOpen={open} onClose={() => setOpen(false)} type="info" btn1="Entendido">
+        <h2>Información</h2>
+        <p>Actualización completada correctamente.</p>
+      </Modal>
+    </>
+  );
+}`;
 
   return (
     <div className="preview-container">
@@ -173,13 +239,46 @@ const [modalInfo, setModalInfo] = useState(false);
         description="Diálogos superpuestos para mostrar información importante o pedir confirmación al usuario."
         codeString={codigoString}
       >
-        <div>
-          <button style={btnStyle} onClick={() => setModalInfo(true)}>Abrir Modal Info</button>
-          <Modal isOpen={modalInfo} onClose={() => setModalInfo(false)} type="info" btn1="Entendido">
-            <h2 style={{ marginTop: 0, color: '#3b82f6' }}>Información</h2>
-            <p style={{ color: '#cbd5e1' }}>Actualización completada correctamente.</p>
-          </Modal>
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
+          <button style={{ ...btnBase, background: '#3b82f6' }} onClick={() => setModalInfo(true)}>Info</button>
+          <button style={{ ...btnBase, background: '#ef4444' }} onClick={() => setModalError(true)}>Error</button>
+          <button style={{ ...btnBase, background: '#eab308' }} onClick={() => setModalConfirm(true)}>Confirmación</button>
+          <button style={{ ...btnBase, background: '#8b5cf6' }} onClick={() => setModalCustom(true)}>Personalizado</button>
         </div>
+
+        <Modal isOpen={modalInfo} onClose={() => setModalInfo(false)} type="info" btn1="Entendido">
+          <h2 style={{ marginTop: 0, color: '#3b82f6' }}>Información del Sistema</h2>
+          <p style={{ color: '#cbd5e1' }}>Actualización completada correctamente.</p>
+        </Modal>
+
+        <Modal isOpen={modalError} onClose={() => setModalError(false)} type="error" btn1="Reintentar" btn2="Cancelar">
+          <h2 style={{ marginTop: 0, color: '#ef4444' }}>Error de Conexión</h2>
+          <p style={{ color: '#cbd5e1' }}>No se pudo conectar con el servidor.</p>
+        </Modal>
+
+        <Modal isOpen={modalConfirm} onClose={() => setModalConfirm(false)} type="confirm" btn1="Eliminar" btn2="Cancelar" onAction1={() => alert('¡Eliminado!')}>
+          <h2 style={{ marginTop: 0, color: '#eab308' }}>Confirmar Eliminación</h2>
+          <p style={{ color: '#cbd5e1' }}>¿Estás seguro de eliminar este elemento?</p>
+        </Modal>
+
+        <Modal
+          isOpen={modalCustom}
+          onClose={() => setModalCustom(false)}
+          type="custom"
+          headerImage="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80"
+          actionSlot={
+            <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', width: '100%' }}>
+              <button style={{ padding: '10px 20px', background: '#8b5cf6', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }} onClick={() => setModalCustom(false)}>Guardar</button>
+              <button style={{ padding: '10px 20px', background: 'transparent', color: '#94a3b8', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', cursor: 'pointer' }} onClick={() => setModalCustom(false)}>Descartar</button>
+            </div>
+          }
+        >
+          <h3 style={{ color: '#8b5cf6', marginTop: 0 }}>Nuevo Producto</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', textAlign: 'left' }}>
+            <input type="text" placeholder="Nombre..." style={{ padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }} />
+            <input type="number" placeholder="Precio..." style={{ padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }} />
+          </div>
+        </Modal>
       </ShowcaseBox>
     </div>
   );
@@ -190,17 +289,21 @@ function SelectDemo() {
   const [isMultiple, setIsMultiple] = useState(true);
   const opciones = ['HP Pavilion', 'Asus VivoBook', 'MacBook Air M2', 'Monitor 24 pulgadas'];
 
-  const codigoString = `
+  const codigoString = `import { SelectDinamico } from './ruta-a-index';
+
 const opciones = ['HP Pavilion', 'Asus VivoBook', 'MacBook Air M2'];
 
-<SelectDinamico 
-  ancho="100%" 
-  opciones={opciones} 
-  enableSearch={true} 
-  multiple={true} 
-  placeholder="Seleccione productos..." 
-/>
-  `.trim();
+function Ejemplo() {
+  return (
+    <SelectDinamico 
+      ancho="100%" 
+      opciones={opciones} 
+      enableSearch={true} 
+      multiple={true} 
+      placeholder="Seleccione productos..." 
+    />
+  );
+}`;
 
   return (
     <div className="preview-container">
@@ -210,9 +313,17 @@ const opciones = ['HP Pavilion', 'Asus VivoBook', 'MacBook Air M2'];
         codeString={codigoString}
       >
         <div style={{ flexDirection: 'column', width: '100%', maxWidth: '500px' }}>
-          <div style={{ display: 'flex', gap: '15px', marginBottom: '15px', color: 'white' }}>
-            <label><input type="checkbox" checked={enableSearch} onChange={(e) => setEnableSearch(e.target.checked)} /> Búsqueda</label>
-            <label><input type="checkbox" checked={isMultiple} onChange={(e) => setIsMultiple(e.target.checked)} /> Múltiple</label>
+          <div style={{ display: 'flex', gap: '20px', marginBottom: '15px', alignItems: 'center' }}>
+            <label className="toggle-label">
+              <input type="checkbox" checked={enableSearch} onChange={(e) => setEnableSearch(e.target.checked)} />
+              <span className="toggle-switch"></span>
+              Búsqueda
+            </label>
+            <label className="toggle-label">
+              <input type="checkbox" checked={isMultiple} onChange={(e) => setIsMultiple(e.target.checked)} />
+              <span className="toggle-switch"></span>
+              Múltiple
+            </label>
           </div>
           <SelectDinamico ancho="100%" opciones={opciones} enableSearch={enableSearch} multiple={isMultiple} placeholder="Seleccione productos..." />
         </div>
@@ -265,9 +376,11 @@ const datos = [
 }
 
 function TabsDemo() {
-  const codigoString = `
-<PremiumTabs />
-  `.trim();
+  const codigoString = `import { PremiumTabs } from './ruta-a-index';
+
+function Ejemplo() {
+  return <PremiumTabs />;
+}`;
 
   return (
     <div className="preview-container">
@@ -285,11 +398,15 @@ function TabsDemo() {
 }
 
 function TooltipDemo() {
-  const codigoString = `
-<Tooltip texto="¡Hola! Soy un tooltip">
-  <button>Pasa el mouse aquí</button>
-</Tooltip>
-  `.trim();
+  const codigoString = `import { Tooltip } from './ruta-a-index';
+
+function Ejemplo() {
+  return (
+    <Tooltip texto="¡Hola! Soy un tooltip">
+      <button>Pasa el mouse aquí</button>
+    </Tooltip>
+  );
+}`;
 
   return (
     <div className="preview-container">
@@ -312,22 +429,29 @@ function ToastDemo() {
   const [toast, setToast] = useState(null);
   const btnStyle = { padding: '12px 24px', border: 'none', borderRadius: '8px', cursor: 'pointer', color: 'white', background: '#22c55e' };
 
-  const codigoString = `
-const [toast, setToast] = useState(null);
+  const codigoString = `import { useState } from 'react';
+import { Toast } from './ruta-a-index';
 
-<button onClick={() => setToast({ tipo: 'success', mensaje: 'Operación exitosa' })}>
-  Mostrar Notificación
-</button>
+function Ejemplo() {
+  const [toast, setToast] = useState(null);
 
-{toast && (
-  <Toast 
-    tipo={toast.tipo} 
-    mensaje={toast.mensaje} 
-    duracion={3000} 
-    onClose={() => setToast(null)} 
-  />
-)}
-  `.trim();
+  return (
+    <>
+      <button onClick={() => setToast({ tipo: 'success', mensaje: 'Operación exitosa' })}>
+        Mostrar Notificación
+      </button>
+
+      {toast && (
+        <Toast 
+          tipo={toast.tipo} 
+          mensaje={toast.mensaje} 
+          duracion={3000} 
+          onClose={() => setToast(null)} 
+        />
+      )}
+    </>
+  );
+}`;
 
   return (
     <div className="preview-container">
@@ -351,19 +475,23 @@ function CarruselDemo() {
     { src: 'https://picsum.photos/800/400?2', alt: 'Playa', titulo: 'Playa' }
   ];
 
-  const codigoString = `
+  const codigoString = `import { Carrusel } from './ruta-a-index';
+
 const imagenes = [
   { src: 'img1.jpg', alt: 'Montañas', titulo: 'Montañas' },
   { src: 'img2.jpg', alt: 'Playa', titulo: 'Playa' }
 ];
 
-<Carrusel 
-  imagenes={imagenes} 
-  intervalo={4000} 
-  mostrarBotones={true} 
-  altura="450px" 
-/>
-  `.trim();
+function Ejemplo() {
+  return (
+    <Carrusel 
+      imagenes={imagenes} 
+      intervalo={4000} 
+      mostrarBotones={true} 
+      altura="450px" 
+    />
+  );
+}`;
 
   return (
     <div className="preview-container">

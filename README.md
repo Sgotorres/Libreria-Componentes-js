@@ -6,13 +6,13 @@ Componentes web nativos con estilo glassmorphism, construidos con Vanilla JS y S
 
 ```
 src/components/
-├── date-range/        # Yox
+├── date-range/        # Yoxz
 │   ├── index.js       # Componente + página de prueba
 │   └── style.css
 ├── input-text/        # David
 │   ├── index.js
 │   └── style.css
-├── modal/             # Eduardo
+├── modal/             # Yoxz
 │   ├── index.js
 │   └── style.css
 ├── select-dinamico/   # Dudu
@@ -22,25 +22,13 @@ src/components/
     ├── index.js
     └── style.css
 
-assets/
-├── style.css          # Estilos globales de la página demo
-└── app.js             # Inicialización de datos demo
-
 src/index.js           # Importa todos los componentes
-index.html             # Página demo (solo HTML, sin CSS/JS inline)
+index.html             # Página demo que los usa
 ```
 
 ## 🧠 ¿Qué cambió?
 
-### Componentes
 Antes cada componente estaba definido **inline** en `index.html` con un `class` + `customElements.define`. Ahora cada componente vive en su propia carpeta como **módulo independiente**.
-
-### assets/
-Antes `assets/` tenía estilos y JS viejos que no se usaban. Ahora:
-- `assets/style.css` — los estilos globales de la página demo (antes estaban inline en el `<style>` del HTML)
-- `assets/app.js` — la inicialización de los datos demo (selects, tabla, modales), antes inline en un `<script>`
-
-El `index.html` quedó mucho más limpio — solo tiene el HTML estructurado y dos `<script>` que cargan los módulos.
 
 ### Ventajas
 - Cada uno trabaja en su carpeta sin tocar el `index.html` principal
@@ -60,7 +48,7 @@ http://localhost:5500/src/components/table/index.js
 ```
 
 ### 3. Agregar datos de ejemplo a la página demo
-Abre `assets/app.js`. Ahí dentro del `DOMContentLoaded` se configuran selects, tabla y modales. Agrega lo que necesites:
+Dentro de `index.html` hay un script `DOMContentLoaded` donde se configuran selects, tablas y modales. Ahí agregas lo que necesites:
 
 ```js
 // Ej: más filas a la tabla
@@ -104,7 +92,7 @@ tabla.data = [
 **Eventos:** `action-1`, `action-2`
 **Métodos:** `.open()`, `.close()`
 
-Los modales de la página demo se crean desde `assets/app.js`, no están escritos en HTML directo.
+Los modales de la página demo se crean desde el `DOMContentLoaded` en `index.html`, no están escritos en HTML directo.
 
 ---
 
@@ -163,5 +151,7 @@ O en tiempo real desde el botón "Personalizar" de la página demo.
 ## 🔧 Reglas importantes
 1. **No edites `index.html`** si solo quieres cambiar tu componente — trabaja en tu carpeta
 2. **No borres archivos de otros** — cada quien su carpeta
-3. **Si necesitas más datos demo**, edita `assets/app.js` (ahí está el `DOMContentLoaded`)
+3. **Si necesitas más datos demo**, agrega en el `DOMContentLoaded` de `index.html`
 4. **Para probar tu componente aislado**, abre su `index.js` directo en el navegador
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+npm run dev

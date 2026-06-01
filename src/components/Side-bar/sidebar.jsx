@@ -22,29 +22,16 @@ const listaComponentes = [
   return (
     <aside className="sidebar-wrapper">
       <div className="sidebar-header">
-        <h2 style={{ color: 'white', padding: '20px' }}>Componentes</h2>
+        <h2>Componentes</h2>
       </div>
       
       <nav className="sidebar-menu">
-        <ul style={{ listStyle: 'none', padding: '0 15px' }}>
+        <ul>
           {listaComponentes.map((item, index) => (
-            <li key={index} style={{ marginBottom: '0.5rem' }}>
+            <li key={index}>
               <NavLink
                 to={item.path}
                 className={({ isActive }) => `menu-button ${isActive ? 'activo' : ''}`}
-                style={({ isActive }) => ({
-                  display: 'block',
-                  width: '100%',
-                  textAlign: 'left',
-                  padding: '10px 15px',
-                  background: isActive ? 'rgba(255, 255, 255, 0.2)' : 'transparent',
-                  border: 'none',
-                  color: 'white',
-                  cursor: 'pointer',
-                  borderRadius: '8px',
-                  transition: 'background 0.3s ease',
-                  textDecoration: 'none'
-                })}
               >
                 {item.nombre}
               </NavLink>
