@@ -20,32 +20,82 @@
 
 .sidebar-header h2 {
     margin: 0;
-    font-size: 1rem;
+    font-size: 0.85rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 1.5px;
+    color: rgba(255, 255, 255, 0.3);
 }
 
 .sidebar-menu {
-    padding: 0.8rem 0;
+    padding: 0.6rem 0;
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* Section */
+.sidebar-section {
+    margin-bottom: 4px;
+}
+
+.sidebar-section .section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+    user-select: none;
+}
+
+.sidebar-section .section-header:hover {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.sidebar-section .section-icon {
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.sidebar-section .section-titulo {
     flex: 1;
 }
 
-.sidebar-menu ul {
-    list-style: none;
-    padding: 0 10px;
+.sidebar-section .section-arrow {
+    font-size: 0.7rem;
+    transition: transform 0.2s;
 }
 
-.sidebar-menu li {
-    margin-bottom: 2px;
+.sidebar-section.open .section-arrow {
+    transform: rotate(0deg);
 }
 
+.sidebar-section .section-body {
+    display: none;
+    padding: 0 10px 6px;
+}
+
+.sidebar-section.open .section-body {
+    display: block;
+}
+
+.sidebar-section .section-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.06);
+    margin: 4px 14px;
+}
+
+/* Menu items */
 .menu-button {
     display: block;
     width: 100%;
     text-align: left;
-    padding: 8px 14px;
+    padding: 7px 14px;
     background: transparent;
     border: none;
     color: rgba(255, 255, 255, 0.65);
@@ -53,8 +103,9 @@
     border-radius: 8px;
     transition: all 0.2s ease;
     text-decoration: none;
-    font-size: 0.875rem;
+    font-size: 0.85rem;
     font-weight: 500;
+    margin-bottom: 1px;
 }
 
 .menu-button:hover {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
 import ShowcaseBox from './components/ShowcaseBox/ShowcaseBox'; // Ajusta la ruta
 
 // 1. Importamos todos los componentes desde tu archivo barril central
@@ -14,7 +14,10 @@ import {
   PremiumTabs, 
   Tooltip, 
   Toast, 
-  Carrusel 
+  Carrusel,
+  FileUpload,
+  Stepper,
+  SwitchToggle
 } from './index';
 
 // 2. Importamos el layout
@@ -25,8 +28,146 @@ import './theme.css';
 function InicioDemo() {
   return (
     <div className="preview-container">
-      <h2 style={{ fontSize: '2rem', marginBottom: '1rem'}}>Bienvenido a la Librería de Componentes 🚀</h2>
-      <p style={{ color: '#9ca3af' }}>Selecciona un componente en el menú lateral para ver su documentación y probarlo.</p>
+      <section className="inicio-section" id="introduccion">
+        <div className="inicio-hero">
+          <div className="inicio-hero-badge">React 19 + Vite</div>
+          <h2 className="inicio-hero-title">Librería de Componentes UI</h2>
+          <p className="inicio-hero-sub">
+            11 componentes modernos con diseño glassmorphism oscuro.
+          </p>
+          <div className="inicio-hero-actions">
+            <NavLink to="/componentes" className="inicio-btn-primary">
+              Explorar componentes
+            </NavLink>
+          </div>
+        </div>
+      </section>
+
+      <div className="inicio-features">
+        <div className="inicio-feature-box">
+          <div className="feature-box-glow" />
+          <div className="feature-box-icon">⚡</div>
+          <h4>Rápido</h4>
+          <p>Construido con Vite, hot reload instantáneo.</p>
+        </div>
+        <div className="inicio-feature-box">
+          <div className="feature-box-glow" />
+          <div className="feature-box-icon">🎨</div>
+          <h4>Personalizable</h4>
+          <p>Cada componente acepta props para colores, tamaños y comportamientos.</p>
+        </div>
+        <div className="inicio-feature-box">
+          <div className="feature-box-glow" />
+          <div className="feature-box-icon">📦</div>
+          <h4>Modular</h4>
+          <p>Importa solo lo que necesitas desde un barrel central.</p>
+        </div>
+      </div>
+
+      <section className="inicio-block" id="instalacion">
+        <div className="inicio-block-header">
+          <span className="inicio-block-step">01</span>
+          <div>
+            <h3 className="inicio-block-title">Instalación</h3>
+            <p className="inicio-block-desc">Poné el proyecto en marcha en menos de un minuto.</p>
+          </div>
+        </div>
+        <div className="inicio-block-body">
+          <div className="inicio-terminal">
+            <div className="terminal-header">
+              <span className="terminal-dot red" />
+              <span className="terminal-dot yellow" />
+              <span className="terminal-dot green" />
+              <span className="terminal-title">bash</span>
+            </div>
+            <div className="terminal-body">
+              <div className="code-line"><span className="code-comment"># Clonar el repositorio</span></div>
+              <div className="code-line"><span className="code-prompt">$</span> git clone https://github.com/tu-usuario/libreria-componentes-js</div>
+              <div className="code-line"><span className="code-prompt">$</span> cd libreria-componentes-js</div>
+              <div className="code-line"><span className="code-prompt">$</span> npm install</div>
+              <div className="code-separator" />
+              <div className="code-line"><span className="code-comment"># Windows: dar permisos a PowerShell (solo primera vez)</span></div>
+              <div className="code-line"><span className="code-prompt">$</span> Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass</div>
+              <div className="code-line"><span className="code-prompt">$</span> npm run dev</div>
+              <div className="code-separator" />
+              <div className="code-line"><span className="code-comment"># Abrir en el navegador</span></div>
+              <div className="code-line" style={{ color: '#a5f3e0' }}>→ http://localhost:5173</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="inicio-block" id="uso">
+        <div className="inicio-block-header">
+          <span className="inicio-block-step">02</span>
+          <div>
+            <h3 className="inicio-block-title">Cómo usar los componentes</h3>
+            <p className="inicio-block-desc">Importalos y usalos en tu proyecto.</p>
+          </div>
+        </div>
+        <div className="inicio-block-body">
+          <div className="inicio-terminal">
+            <div className="terminal-header">
+              <span className="terminal-dot red" />
+              <span className="terminal-dot yellow" />
+              <span className="terminal-dot green" />
+              <span className="terminal-title">bash</span>
+            </div>
+            <div className="terminal-body">
+              <div className="code-line"><span className="code-comment"># Importar componentes</span></div>
+              <div className="code-line"><span className="code-prompt">$</span> <span className="code-import">import</span> {`{ Boton, Modal, Toast }`} <span className="code-import">from</span> <span className="code-string">'./ruta-a-index'</span><span className="code-punctuation">;</span></div>
+              <div className="code-separator" />
+              <div className="code-line"><span className="code-comment"># Usar en tu componente</span></div>
+              <div className="code-line" style={{ color: '#e2e8f0' }}>{`<Boton text="Hola" variante="primario" />`}</div>
+            </div>
+          </div>
+          <p className="inicio-desc" style={{ marginTop: '1rem', color: '#94a3b8', fontSize: '0.9rem' }}>
+            Cada demo incluye una pestaña <strong style={{ color: '#3ee7b8' }}>JSX</strong> con el código completo listo para copiar y pegar.
+          </p>
+          <div className="inicio-cta-wrap" style={{ marginTop: '1.5rem' }}>
+            <NavLink to="/componentes" className="inicio-btn-primary">Ver galería de componentes →</NavLink>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function ComponentesGallery() {
+  const items = [
+    { path: '/boton', nombre: 'Botón', desc: 'Variantes primary, secondary, danger, ghost. Tamaños sm, md, lg.' },
+    { path: '/input', nombre: 'Input de Texto', desc: 'Validación en tiempo real: números, letras, email.' },
+    { path: '/select', nombre: 'Select Dinámico', desc: 'Búsqueda integrada, selección múltiple, tags.' },
+    { path: '/tabs', nombre: 'Tabs Premium', desc: 'Pestañas animadas con contenido multimedia.' },
+    { path: '/acordeon', nombre: 'Acordeón', desc: 'Secciones expandibles con soporte de subcategorías.' },
+    { path: '/table', nombre: 'Tabla', desc: 'Datos ordenables con paginación integrada.' },
+    { path: '/carrusel', nombre: 'Carrusel', desc: 'Slider de imágenes autoplay con overlay de texto.' },
+    { path: '/modal', nombre: 'Modal', desc: '4 tipos: info, error, confirm, custom.' },
+    { path: '/toast', nombre: 'Toast', desc: 'Notificaciones auto-close con animación slide-in.' },
+    { path: '/tooltip', nombre: 'Tooltip', desc: 'Tooltip contextual al hacer hover.' },
+    { path: '/date-range', nombre: 'DateRange', desc: 'Selector de rango de fechas configurable.' },
+    { path: '/file-upload', nombre: 'File Upload', desc: 'Drag & drop, vista previa de imágenes, control de tamaño.' },
+    { path: '/stepper', nombre: 'Stepper', desc: 'Formulario multi-paso con indicador de progreso.' },
+    { path: '/switch-toggle', nombre: 'Switch Toggle', desc: 'Interruptor animado con transiciones suaves.' },
+  ];
+
+  return (
+    <div className="preview-container">
+      <h2 className="inicio-title">Componentes</h2>
+      <p className="inicio-subtitle">Selecciona un componente para ver su documentación y ejemplos interactivos.</p>
+      <div className="gallery-grid">
+        {items.map((item, i) => (
+          <NavLink key={i} to={item.path} className="gallery-card" onClick={() => window.scrollTo(0, 0)}>
+            <div className="gallery-card-icon">
+              {item.nombre.charAt(0).toUpperCase()}
+            </div>
+            <div className="gallery-card-body">
+              <h4 className="gallery-card-title">{item.nombre}</h4>
+              <p className="gallery-card-desc">{item.desc}</p>
+            </div>
+          </NavLink>
+        ))}
+      </div>
     </div>
   );
 }
@@ -57,6 +198,22 @@ function Ejemplo() {
   );
 }`;
 
+  const customBoton = `// Props del componente Boton
+// 
+// text     : string  — Texto del botón (obligatorio)
+// variante : string  — Estilo visual
+//   "primario"   (default) → fondo verde
+//   "secundario"           → fondo azul
+//   "peligro"              → fondo rojo
+//   "fantasma"             → sin fondo, borde
+// tamano   : string  — Tamaño del botón
+//   "sm"   → pequeño
+//   "md"   → mediano (default)
+//   "lg"   → grande
+//
+// Ejemplo:
+// <Boton text="Click" variante="primario" tamano="md" />`;
+  
   return (
     <div className="preview-container">
       <h1>Botones</h1>
@@ -66,6 +223,7 @@ function Ejemplo() {
       <ShowcaseBox 
         title="Button sizes" 
         codeString={buttonSizesCode}
+        customString={customBoton}
       >
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
           <Boton text="Small" tamano="sm" />
@@ -78,6 +236,7 @@ function Ejemplo() {
       <ShowcaseBox 
         title="Buttons colors" 
         codeString={buttonColorsCode}
+        customString={customBoton}
       >
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
           <Boton text="Primary" variante="primario" />
@@ -102,12 +261,28 @@ function Ejemplo() {
   );
 }`;
 
+  const customInput = `// Props del componente InputText
+//
+// tipo       : string  — Tipo de validación
+//   "numeros"        → solo dígitos
+//   "letras"         → solo letras
+//   "sin-especiales" → sin caracteres especiales
+//   "email"          → formato email
+// min        : number — Longitud mínima
+// max        : number — Longitud máxima
+// ancho      : string — Ancho del input (ej: "100%", "300px")
+// placeholder: string — Texto de ayuda
+//
+// Ejemplo:
+// <InputText tipo="numeros" min="3" max="8" ancho="100%" placeholder="Ej: 123" />`;
+
   return (
     <div className="preview-container">
       <ShowcaseBox 
         title="Input de Texto" 
         description="Campos de entrada de texto personalizables con validación integrada."
         codeString={codigoString}
+        customString={customInput}
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', width: '100%', maxWidth: '400px' }}>
           <InputText tipo="numeros" min="3" max="8" ancho="100%" placeholder="Solo números (Mín 3, Máx 8)" />
@@ -135,6 +310,24 @@ const items = [
 function Ejemplo() {
   return <Acordeon items={items} />;
 }`;
+
+  const customAcordeon = `// Props del componente Acordeon
+//
+// items : array — Lista de elementos del acordeón
+//
+// Cada item puede tener:
+//   titulo       : string  — Título visible (obligatorio)
+//   contenido    : string  — Texto al expandir
+//   subcategorias: array   — Items anidados (misma estructura)
+//   id           : string  — Identificador único (opcional)
+
+// Ejemplo:
+// <Acordeon items={[
+//   { titulo: "FAQ", contenido: "Respuesta..." },
+//   { titulo: "Categoría", subcategorias: [
+//     { titulo: "Sub", contenido: "Anidado" }
+//   ]}
+// ]} />`;
 
   const items = [
     { titulo: '¿Qué es esta librería?', contenido: 'Colección de componentes UI modernos con React y Vite. Diseño glassmorphism oscuro, cada componente es independiente y personalizable.' },
@@ -170,6 +363,7 @@ function Ejemplo() {
         title="Acordeón" 
         description="El acordeón se utiliza para mostrar y ocultar contenido. Solo un elemento puede permanecer abierto a la vez."
         codeString={codigoString}
+        customString={customAcordeon}
       >
         <div style={{ width: '100%', maxWidth: 600 }}>
           <Acordeon items={items} />
@@ -192,12 +386,25 @@ function Ejemplo() {
   );
 }`;
 
+  const customDateRange = `// Props del componente DateRange
+//
+// colorTema  : string — Color de acento (ej: "#3ee7b8")
+// allowPast  : bool   — Permitir fechas pasadas (default: false)
+// allowFuture: bool   — Permitir fechas futuras (default: true)
+//
+// Evento: onChange recibe { start, end }
+// Método: clearRange()
+
+// Ejemplo:
+// <DateRange colorTema="#3ee7b8" allowPast={false} allowFuture={true} />`;
+
   return (
     <div className="preview-container">
       <ShowcaseBox 
         title="Date Range Picker" 
         description="Selector de rango de fechas con configuración de colores."
         codeString={codigoString}
+        customString={customDateRange}
       >
         {/* Envoltura protectora para evitar saltos */}
         <div style={{ minHeight: '380px', display: 'flex', alignItems: 'flex-start' }}>
@@ -232,12 +439,34 @@ function Ejemplo() {
   );
 }`;
 
+  const customModal = `// Props del componente Modal
+//
+// isOpen     : bool   — Controla visibilidad (obligatorio)
+// onClose    : func   — Función al cerrar (obligatorio)
+// type       : string — Estilo visual
+//   "info"    → azul
+//   "error"   → rojo
+//   "confirm" → amarillo
+//   "custom"  → personalizable
+// btn1       : string — Texto botón primario
+// btn2       : string — Texto botón secundario
+// onAction1  : func   — Callback botón primario
+// onAction2  : func   — Callback botón secundario
+// headerImage: string — URL imagen de cabecera (solo custom)
+// actionSlot : node   — Slot para acciones personalizadas (solo custom)
+//
+// Ejemplo:
+// <Modal isOpen={open} onClose={() => setOpen(false)} type="info" btn1="Ok">
+//   <p>Mensaje</p>
+// </Modal>`;
+
   return (
     <div className="preview-container">
       <ShowcaseBox 
         title="Ventanas Modales" 
         description="Diálogos superpuestos para mostrar información importante o pedir confirmación al usuario."
         codeString={codigoString}
+        customString={customModal}
       >
         <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
           <button style={{ ...btnBase, background: '#3b82f6' }} onClick={() => setModalInfo(true)}>Info</button>
@@ -305,12 +534,25 @@ function Ejemplo() {
   );
 }`;
 
+  const customSelect = `// Props del componente SelectDinamico
+//
+// opciones    : array  — Lista de opciones (strings) (obligatorio)
+// ancho       : string — Ancho del select (ej: "100%", "300px")
+// enableSearch: bool   — Mostrar campo de búsqueda (default: true)
+// multiple    : bool   — Permitir selección múltiple (default: false)
+// placeholder : string — Texto cuando no hay selección
+// onChange    : func   — Callback con array de seleccionados
+//
+// Ejemplo:
+// <SelectDinamico ancho="100%" opciones={['A','B','C']} multiple={true} />`;
+
   return (
     <div className="preview-container">
       <ShowcaseBox 
         title="Select Dinámico" 
         description="Menú desplegable avanzado con opciones de búsqueda integrada y selección múltiple."
         codeString={codigoString}
+        customString={customSelect}
       >
         <div style={{ flexDirection: 'column', width: '100%', maxWidth: '500px' }}>
           <div style={{ display: 'flex', gap: '20px', marginBottom: '15px', alignItems: 'center' }}>
@@ -360,12 +602,26 @@ const datos = [
 <Table columns={columnas} data={datos} pageSize={4} />
   `.trim();
 
+  const customTable = `// Props del componente Table
+//
+// columns  : array  — Definición de columnas (obligatorio)
+//   Cada columna: { key, label, type }
+//   key  : string — Nombre del campo en datos
+//   label: string — Texto del encabezado
+//   type : string — "string" | "number" (para ordenamiento)
+// data     : array  — Datos a mostrar (obligatorio)
+// pageSize : number — Filas por página (default: 5)
+//
+// Ejemplo:
+// <Table columns={columnas} data={datos} pageSize={4} />`;
+
   return (
     <div className="preview-container">
       <ShowcaseBox 
         title="Tabla Dinámica" 
         description="Tabla de datos con soporte para paginación y ordenamiento por columnas."
         codeString={codigoString}
+        customString={customTable}
       >
         <div style={{ width: '100%' }}>
           <Table columns={columnas} data={datos} pageSize={4} />
@@ -382,12 +638,21 @@ function Ejemplo() {
   return <PremiumTabs />;
 }`;
 
+  const customTabs = `// Componente PremiumTabs
+//
+// No requiere props — las pestañas y su contenido
+// vienen predefinidas con animaciones y multimedia.
+//
+// Uso básico:
+// <PremiumTabs />`;
+
   return (
     <div className="preview-container">
       <ShowcaseBox 
         title="Tabs Premium" 
         description="Sistema de navegación por pestañas con animaciones suaves y soporte para contenido multimedia."
         codeString={codigoString}
+        customString={customTabs}
       >
         <div style={{ width: '100%' }}>
           <PremiumTabs />
@@ -408,12 +673,22 @@ function Ejemplo() {
   );
 }`;
 
+  const customTooltip = `// Props del componente Tooltip
+//
+// texto: string — Contenido del tooltip (obligatorio)
+//
+// Envuelve cualquier elemento hijo:
+// <Tooltip texto="Ayuda">
+//   <button>Hover aquí</button>
+// </Tooltip>`;
+
   return (
     <div className="preview-container">
       <ShowcaseBox 
         title="Tooltip" 
         description="Mensaje emergente que aparece al pasar el cursor sobre un elemento para proporcionar información adicional."
         codeString={codigoString}
+        customString={customTooltip}
       >
         <Tooltip texto="¡Hola! Soy un tooltip">
           <button style={{ padding: '10px 20px', borderRadius: '8px', cursor: 'pointer', border: '1px solid #4b5563', background: 'transparent', color: '#fff' }}>
@@ -453,12 +728,27 @@ function Ejemplo() {
   );
 }`;
 
+  const customToast = `// Props del componente Toast
+//
+// tipo    : string — Tipo de notificación
+//   "success" → verde
+//   "error"   → rojo
+//   "info"    → azul
+//   "custom"  → personalizable
+// mensaje : string — Texto del toast (obligatorio)
+// duracion : number — Tiempo en ms antes de cerrar (default: 3000)
+// onClose  : func  — Callback al cerrar
+//
+// Ejemplo:
+// <Toast tipo="success" mensaje="Listo" duracion={3000} onClose={() => setToast(null)} />`;
+
   return (
     <div className="preview-container">
       <ShowcaseBox 
         title="Toast (Notificaciones)" 
         description="Notificaciones temporales no intrusivas que informan al usuario sobre el resultado de una acción."
         codeString={codigoString}
+        customString={customToast}
       >
         <div>
           <button style={btnStyle} onClick={() => setToast({ tipo: 'success', mensaje: 'Operación exitosa' })}>Mostrar Success</button>
@@ -493,16 +783,183 @@ function Ejemplo() {
   );
 }`;
 
+  const customCarrusel = `// Props del componente Carrusel
+//
+// imagenes      : array  — Lista de imágenes (obligatorio)
+//   Cada imagen: { src, alt, titulo }
+//   src   : string — URL de la imagen
+//   alt   : string — Texto alternativo
+//   titulo: string — Texto superpuesto
+// intervalo    : number — ms entre cambios (default: 4000)
+// mostrarBotones: bool  — Mostrar botones de navegación (default: true)
+// altura       : string — Alto del carrusel (ej: "450px", "100%")
+//
+// Ejemplo:
+// <Carrusel imagenes={imagenes} intervalo={4000} mostrarBotones={true} altura="450px" />`;
+
   return (
     <div className="preview-container">
       <ShowcaseBox 
         title="Carrusel de Imágenes" 
         description="Visor de imágenes deslizante con controles."
         codeString={codigoString}
+        customString={customCarrusel}
       >
         {/* Envoltura protectora para forzar las dimensiones del carrusel */}
         <div style={{ width: '100%', height: '400px', display: 'block', position: 'relative' }}>
           <Carrusel imagenes={imagenes} intervalo={4000} mostrarBotones={true} altura="100%" />
+        </div>
+      </ShowcaseBox>
+    </div>
+  );
+}
+
+function FileUploadDemo() {
+  const [files, setFiles] = useState([]);
+
+  const codigoString = `import { FileUpload } from './ruta-a-index';
+
+function Ejemplo() {
+  return (
+    <FileUpload 
+      accept="image/*"
+      multiple={true}
+      maxSize={5 * 1024 * 1024}
+    />
+  );
+}`;
+
+  const customFU = `// Props del componente FileUpload
+//
+// accept   : string — Tipos aceptados (ej: "image/*", ".pdf")
+// multiple : bool   — Permitir múltiples archivos
+// maxSize  : number — Tamaño máximo en bytes
+// onChange : func   — Callback con lista de archivos
+//
+// Ejemplo:
+// <FileUpload accept="image/*" multiple maxSize={5242880} />`;
+
+  return (
+    <div className="preview-container">
+      <ShowcaseBox
+        title="File Upload"
+        description="Selector de archivos con arrastrar y soltar, vista previa de imágenes y control de tamaño."
+        codeString={codigoString}
+        customString={customFU}
+      >
+        <FileUpload accept="image/*,.pdf" multiple maxSize={5 * 1024 * 1024} onChange={setFiles} />
+      </ShowcaseBox>
+    </div>
+  );
+}
+
+function StepperDemo() {
+  const [step, setStep] = useState(0);
+  const [toast, setToast] = useState(null);
+
+  const inputStyle = { padding: '10px 14px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: '#fff', fontSize: 14, outline: 'none', width: '100%' };
+  const btnStyle = { padding: '10px 20px', borderRadius: 8, border: 'none', background: '#3ee7b8', color: '#0b1120', fontWeight: 600, cursor: 'pointer', fontSize: 14 };
+
+  const steps = [
+    { label: 'Información', description: 'Datos básicos', content: <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 320 }}>
+      <input placeholder="Nombre" style={inputStyle} />
+      <input placeholder="Email" style={inputStyle} />
+      <button style={btnStyle} onClick={() => setStep(1)}>Siguiente →</button>
+    </div> },
+    { label: 'Detalles', description: 'Configuración', content: <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 320 }}>
+      <input placeholder="Teléfono" style={inputStyle} />
+      <select style={inputStyle}><option>Opción 1</option><option>Opción 2</option></select>
+      <div style={{ display: 'flex', gap: 8 }}>
+        <button style={{ ...btnStyle, background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', color: '#94a3b8' }} onClick={() => setStep(0)}>← Atrás</button>
+        <button style={btnStyle} onClick={() => setStep(2)}>Siguiente →</button>
+      </div>
+    </div> },
+    { label: 'Confirmar', description: 'Revisar datos', content: <div style={{ maxWidth: 320 }}>
+      <p style={{ color: '#cbd5e1', marginBottom: 16 }}>Todo listo para enviar.</p>
+      <button style={{ ...btnStyle, background: '#3ee7b8', color: '#0b1120' }} onClick={() => { setToast({ tipo: 'success', mensaje: '¡Formulario completado con éxito!' }); setStep(0); }}>Finalizar</button>
+    </div> },
+  ];
+
+  const codigoString = `import { useState } from 'react';
+import { Stepper } from './ruta-a-index';
+
+const steps = [
+  { label: 'Paso 1', description: 'Descripción', content: <div>Contenido...</div> },
+  { label: 'Paso 2', description: 'Más info', content: <div>Más...</div> },
+];
+
+function Ejemplo() {
+  const [step, setStep] = useState(0);
+  return <Stepper steps={steps} activeStep={step} onStepChange={setStep} />;
+}`;
+
+  const customStepper = `// Props del componente Stepper
+//
+// steps      : array  — Lista de pasos (obligatorio)
+//   Cada paso: { label, description?, content }
+//   label      : string — Título del paso
+//   description: string — Subtítulo opcional
+//   content    : node   — Contenido del paso
+// activeStep  : number — Paso activo (0-index)
+// onStepChange: func   — Callback al hacer clic en un paso
+//
+// Ejemplo:
+// <Stepper steps={steps} activeStep={0} onStepChange={setStep} />`;
+
+  return (
+    <div className="preview-container">
+      <ShowcaseBox
+        title="Stepper"
+        description="Indicador de progreso paso a paso con contenido dinámico."
+        codeString={codigoString}
+        customString={customStepper}
+      >
+        <Stepper steps={steps} activeStep={step} onStepChange={setStep} />
+        {toast && <Toast tipo={toast.tipo} mensaje={toast.mensaje} duracion={3000} onClose={() => setToast(null)} />}
+      </ShowcaseBox>
+    </div>
+  );
+}
+
+function SwitchToggleDemo() {
+  const [notif, setNotif] = useState(false);
+  const [oscuro, setOscuro] = useState(true);
+
+  const codigoString = `import { SwitchToggle } from './ruta-a-index';
+
+function Ejemplo() {
+  const [checked, setChecked] = useState(false);
+  return (
+    <SwitchToggle
+      checked={checked}
+      onChange={setChecked}
+      label="Activar"
+    />
+  );
+}`;
+
+  const customSwitch = `// Props del componente SwitchToggle
+//
+// checked : bool   — Estado activo/inactivo
+// onChange: func   — Callback con nuevo valor
+// label   : string — Texto al lado del switch (opcional)
+// disabled: bool   — Deshabilitar interacción
+//
+// Ejemplo:
+// <SwitchToggle checked={checked} onChange={setChecked} label="WiFi" />`;
+
+  return (
+    <div className="preview-container">
+      <ShowcaseBox
+        title="Switch Toggle"
+        description="Interruptor animado con transiciones suaves. Ideal para settings y preferencias."
+        codeString={codigoString}
+        customString={customSwitch}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 20, alignItems: 'flex-start' }}>
+          <SwitchToggle checked={notif} onChange={setNotif} label="Notificaciones" />
+          <SwitchToggle checked={oscuro} onChange={setOscuro} label="Modo oscuro" />
+          <SwitchToggle checked={false} onChange={() => {}} label="WiFi" disabled />
         </div>
       </ShowcaseBox>
     </div>
@@ -537,6 +994,7 @@ export default function App() {
           <div className="daisy-canvas">
             <Routes>
               <Route path="/" element={<InicioDemo />} />
+              <Route path="/componentes" element={<ComponentesGallery />} />
               <Route path="/boton" element={<BotonDemo />} />
               <Route path="/input" element={<InputTextDemo />} />
               <Route path="/acordeon" element={<AcordeonDemo />} />
@@ -548,6 +1006,9 @@ export default function App() {
               <Route path="/tooltip" element={<TooltipDemo />} />
               <Route path="/toast" element={<ToastDemo />} />
               <Route path="/carrusel" element={<CarruselDemo />} />
+              <Route path="/file-upload" element={<FileUploadDemo />} />
+              <Route path="/stepper" element={<StepperDemo />} />
+              <Route path="/switch-toggle" element={<SwitchToggleDemo />} />
             </Routes>
           </div>
         </main>

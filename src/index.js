@@ -10,10 +10,11 @@ export { default as Sidebar } from './components/Side-bar/sidebar';
 export { default as Table } from './components/table/Table';
 export { default as PremiumTabs } from './components/tabs/PremiumTabs';
 export { default as Tooltip } from './components/tooltip/Tooltip';
-
-// Agrega los dos que faltan:
 export { default as Toast } from './components/toast/Toast';
 export { default as Carrusel } from './components/carrusel/Carrusel';
+export { default as FileUpload } from './components/file-upload/FileUpload';
+export { default as Stepper } from './components/stepper/Stepper';
+export { default as SwitchToggle } from './components/switch-toggle/SwitchToggle';
 
 import './theme.css';
 

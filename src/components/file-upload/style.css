@@ -1,0 +1,137 @@
+.fu-wrapper {
+  width: 100%;
+  max-width: 500px;
+  font-family: 'Inter', sans-serif;
+}
+
+.fu-dropzone {
+  border: 2px dashed rgba(255,255,255,0.1);
+  border-radius: 14px;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s;
+  background: rgba(255,255,255,0.02);
+}
+.fu-dropzone:hover {
+  border-color: rgba(62,231,184,0.3);
+  background: rgba(62,231,184,0.03);
+}
+.fu-dropzone.dragover {
+  border-color: rgba(62,231,184,0.5);
+  background: rgba(62,231,184,0.06);
+  box-shadow: 0 0 30px rgba(62,231,184,0.06);
+}
+
+.fu-icon { font-size: 2.5rem; margin-bottom: 0.8rem; }
+.fu-text { color: #94a3b8; font-size: 0.95rem; margin: 0 0 4px; }
+.fu-link { color: #3ee7b8; font-weight: 500; }
+.fu-hint { color: #475569; font-size: 0.8rem; }
+
+.fu-files {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.fu-file {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px;
+  transition: background 0.2s;
+}
+.fu-file:hover { background: rgba(255,255,255,0.05); }
+
+.fu-preview {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.fu-file-icon { font-size: 1.5rem; flex-shrink: 0; }
+.fu-file-info { flex: 1; min-width: 0; }
+.fu-file-name {
+  display: block;
+  color: #e2e8f0;
+  font-size: 0.85rem;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fu-file-size {
+  display: block;
+  color: #64748b;
+  font-size: 0.75rem;
+  margin-top: 1px;
+}
+.fu-remove {
+  background: none;
+  border: none;
+  color: #64748b;
+  font-size: 1.3rem;
+  cursor: pointer;
+  padding: 0 4px;
+  transition: color 0.2s;
+  flex-shrink: 0;
+}
+.fu-remove:hover { color: #ef4444; }
+
+.fu-preview { cursor: pointer; }
+
+.fu-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  animation: fadeIn 0.2s ease;
+}
+.fu-modal {
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.fu-modal-img {
+  max-width: 100%;
+  max-height: 80vh;
+  border-radius: 14px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+}
+.fu-modal-close {
+  align-self: flex-end;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #94a3b8;
+  font-size: 1.3rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s;
+  line-height: 1;
+}
+.fu-modal-close:hover {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+}
+.fu-modal-name {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  margin: 0;
+  text-align: center;
+}
